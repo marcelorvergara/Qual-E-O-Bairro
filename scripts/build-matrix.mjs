@@ -79,7 +79,13 @@ function nearestOnSegment(target, start, end) {
   const py = target[1]
   const lengthSquared = (bx - ax) ** 2 + (by - ay) ** 2
   const ratio = lengthSquared
-    ? Math.max(0, Math.min(1, ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / lengthSquared))
+    ? Math.max(
+        0,
+        Math.min(
+          1,
+          ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / lengthSquared,
+        ),
+      )
     : 0
   return [(ax + ratio * (bx - ax)) / scaleX, ay + ratio * (by - ay)]
 }
@@ -122,14 +128,25 @@ assert.ok(
   copaSantaCruzSpan >= 50 && copaSantaCruzSpan <= 65,
   `Copacabana↔Santa Cruz geographic span must be 50–65 km; got ${copaSantaCruzSpan}`,
 )
-assert.ok(adj[paqueta].every((value) => !value), 'Paquetá must have no adjacency')
+assert.ok(
+  adj[paqueta].every((value) => !value),
+  'Paquetá must have no adjacency',
+)
 
 for (let left = 0; left < size; left += 1) {
   assert.equal(km[left][left], 0, `km diagonal differs at ${left}`)
   assert.equal(adj[left][left], false, `adj diagonal differs at ${left}`)
   for (let right = 0; right < size; right += 1) {
-    assert.equal(km[left][right], km[right][left], `km matrix differs at ${left},${right}`)
-    assert.equal(adj[left][right], adj[right][left], `adj matrix differs at ${left},${right}`)
+    assert.equal(
+      km[left][right],
+      km[right][left],
+      `km matrix differs at ${left},${right}`,
+    )
+    assert.equal(
+      adj[left][right],
+      adj[right][left],
+      `adj matrix differs at ${left},${right}`,
+    )
   }
 }
 

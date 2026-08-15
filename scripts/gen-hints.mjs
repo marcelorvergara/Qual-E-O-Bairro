@@ -3,7 +3,9 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 const apiKey = process.env.ANTHROPIC_API_KEY
 if (!apiKey) throw new Error('Set ANTHROPIC_API_KEY before generating hints')
 
-const bairros = JSON.parse(readFileSync('data/bairros.geojson', 'utf8')).features
+const bairros = JSON.parse(
+  readFileSync('data/bairros.geojson', 'utf8'),
+).features
 const output = existsSync('data/hints.json')
   ? JSON.parse(readFileSync('data/hints.json', 'utf8'))
   : {}

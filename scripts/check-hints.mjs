@@ -31,15 +31,25 @@ const forbiddenNameWords = (name) =>
 
 const engenhoWords = forbiddenNameWords('Engenho de Dentro')
 assert.equal(engenhoWords.has('de'), false, 'self-check: “de” must be allowed')
-assert.equal(engenhoWords.has('engenho'), true, 'self-check: “engenho” must be forbidden')
-assert.equal(engenhoWords.has('dentro'), true, 'self-check: “dentro” must be forbidden')
+assert.equal(
+  engenhoWords.has('engenho'),
+  true,
+  'self-check: “engenho” must be forbidden',
+)
+assert.equal(
+  engenhoWords.has('dentro'),
+  true,
+  'self-check: “dentro” must be forbidden',
+)
 assert.equal(
   forbiddenNameWords('Freguesia (Ilha)').has('ilha'),
   true,
   'self-check: “ilha” must be forbidden',
 )
 
-const bairros = JSON.parse(readFileSync('data/bairros.geojson', 'utf8')).features
+const bairros = JSON.parse(
+  readFileSync('data/bairros.geojson', 'utf8'),
+).features
 const hints = JSON.parse(readFileSync('data/hints.json', 'utf8'))
 const tiers = ['region', 'character', 'giveaway']
 const errors = []
@@ -59,11 +69,15 @@ for (const { properties } of bairros) {
       continue
     }
     if ([...hint].length > 140) {
-      errors.push(`${properties.codbairro} ${properties.nome}: ${tier} exceeds 140 characters`)
+      errors.push(
+        `${properties.codbairro} ${properties.nome}: ${tier} exceeds 140 characters`,
+      )
     }
     const leaked = words(hint).find((word) => forbidden.has(word))
     if (leaked) {
-      errors.push(`${properties.codbairro} ${properties.nome}: ${tier} leaks “${leaked}”`)
+      errors.push(
+        `${properties.codbairro} ${properties.nome}: ${tier} leaks “${leaked}”`,
+      )
     }
   }
 }
@@ -72,5 +86,7 @@ if (errors.length) {
   console.error(errors.join('\n'))
   process.exitCode = 1
 } else {
-  console.log(`Validated ${bairros.length} bairros with three leak-free hint tiers`)
+  console.log(
+    `Validated ${bairros.length} bairros with three leak-free hint tiers`,
+  )
 }
