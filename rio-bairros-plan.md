@@ -61,6 +61,8 @@ Acceptance: `npm run build:data` regenerates every file in `data/` deterministic
 
 ### Phase 1 — Static map (agent, ~2h)
 
+TODO: add the optional `data/roads.geojson` and `data/landmarks.json` context layers in a later phase.
+
 Vite + React + TS scaffold. Full-viewport SVG, `geoMercator().fitExtent` on the bairros with padding, one `<path>` per bairro with `data-cod`, thin stroke, neutral fill, hover shows name in a small fixed corner label (no tooltip following the cursor). Roads and landmarks rendered under the strokes at low opacity behind a boolean prop. Handles resize. Mobile-first: works at 360×640 in portrait, with the map letterboxed and the bottom 20% reserved for the input.
 
 Acceptance: renders all 166 bairros correctly oriented (Zona Sul at the bottom right, Santa Cruz at far left); no external network calls; Lighthouse performance ≥ 90 on mobile; bundle < 600 KB gzipped including data.
