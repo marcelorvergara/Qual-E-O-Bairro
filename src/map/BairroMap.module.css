@@ -1,6 +1,8 @@
 .mapPanel {
   position: relative;
-  flex: 0 0 80%;
+  width: 100%;
+  height: min(33.333vw, 45dvh);
+  flex: 0 0 min(33.333vw, 45dvh);
   min-height: 0;
   overflow: hidden;
 }
@@ -20,9 +22,46 @@
   transition: fill 100ms ease-out;
 }
 
-.bairro:hover {
+.bairro:not(.guessed):hover {
   fill: #c8c2b6;
   outline: none;
+}
+
+.hoverLabel:empty {
+  display: none;
+}
+.bucket1 {
+  fill: var(--bucket-1);
+}
+.bucket2 {
+  fill: var(--bucket-2);
+}
+.bucket3 {
+  fill: var(--bucket-3);
+}
+.bucket4 {
+  fill: var(--bucket-4);
+}
+.bucket5 {
+  fill: var(--bucket-5);
+}
+.encosta {
+  fill: var(--encosta);
+}
+.correct {
+  fill: var(--correct);
+}
+
+@media (hover: none) {
+  .hoverLabel {
+    display: none;
+  }
+}
+@media (orientation: landscape) {
+  .mapPanel {
+    height: auto;
+    flex: 1 1 auto;
+  }
 }
 
 .hoverLabel {

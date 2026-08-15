@@ -8,14 +8,68 @@
   background: #f6f3ed;
 }
 
-.inputPlaceholder {
-  display: grid;
-  flex: 1 1 20%;
-  min-height: 20%;
-  place-items: center;
+.gamePanel {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0.65rem 0.75rem 4.25rem;
   border-top: 1px solid #d7d1c5;
-  color: #6c675f;
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  background: #f6f3ed;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.8rem;
+}
+.controls button,
+.winBanner button {
+  min-height: 2.1rem;
+  border: 1px solid #aaa397;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: inherit;
+  cursor: pointer;
+}
+.segmented {
+  display: flex;
+}
+.segmented button {
+  border-radius: 0;
+}
+.segmented button:first-child {
+  border-radius: 0.4rem 0 0 0.4rem;
+}
+.segmented button:last-child {
+  margin-left: -1px;
+  border-radius: 0 0.4rem 0.4rem 0;
+}
+.segmented button[aria-pressed='true'] {
+  z-index: 1;
+  border-color: #25231f;
+  background: #25231f;
+  color: #fff;
+}
+.newGame {
+  margin-left: auto;
+}
+.hintPlaceholder {
+  min-height: 0.5rem;
+}
+.winBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.45rem;
+  background: #d7efe6;
+  font-size: 0.82rem;
+}
+
+@media (orientation: landscape) {
+  .gamePanel {
+    flex: 0 0 9rem;
+  }
 }
