@@ -100,11 +100,6 @@
   }
 }
 
-@media (hover: none) {
-  .hoverLabel {
-    display: none;
-  }
-}
 @media (orientation: landscape) {
   .mapPanel {
     height: auto;

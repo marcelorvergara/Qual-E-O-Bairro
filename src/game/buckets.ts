@@ -1,7 +1,11 @@
 import type { Bucket } from './types'
 
-export function bucketFor(km: number, isAdjacent: boolean): Bucket {
-  if (km === 0 && !isAdjacent) return 0
+export function bucketFor(
+  km: number,
+  isAdjacent: boolean,
+  isCorrect: boolean,
+): Bucket {
+  if (isCorrect) return 0
   if (isAdjacent) return 'encosta'
   if (km <= 3) return 1
   if (km <= 7) return 2

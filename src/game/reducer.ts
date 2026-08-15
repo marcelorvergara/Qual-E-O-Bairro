@@ -19,7 +19,7 @@ export function guess(state: GameState, cod: string): GameState {
   const won = cod === state.answer.cod
   const km = distance(cod, state.answer.cod)
   const isAdjacent = !won && adjacent(cod, state.answer.cod)
-  const bucket = won ? 0 : bucketFor(km || Number.EPSILON, isAdjacent)
+  const bucket = bucketFor(km, isAdjacent, won)
   return {
     ...state,
     guesses: [...state.guesses, { cod, km, adjacent: isAdjacent, bucket }],
