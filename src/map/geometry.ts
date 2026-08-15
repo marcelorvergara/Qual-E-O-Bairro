@@ -58,5 +58,7 @@ export function createBairroPaths(width: number, height: number) {
   return bairros.features.map((feature) => ({
     feature: feature as Feature<Geometry, BairroProperties>,
     path: path(feature) ?? '',
+    centroid: path.centroid(feature) as [number, number],
+    bounds: path.bounds(feature) as [[number, number], [number, number]],
   }))
 }

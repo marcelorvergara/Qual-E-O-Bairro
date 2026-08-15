@@ -52,6 +52,54 @@
   fill: var(--correct);
 }
 
+.newest {
+  stroke: #25231f;
+  stroke-width: 1.6;
+}
+
+.pulse {
+  animation: stroke-pulse 600ms ease-out;
+}
+
+.label {
+  pointer-events: none;
+}
+
+.label line {
+  stroke: #49453e;
+  stroke-width: 0.75;
+  vector-effect: non-scaling-stroke;
+}
+
+.label text {
+  fill: #25231f;
+  font-size: 11px;
+  font-weight: 650;
+  paint-order: stroke;
+  stroke: #f6f3ed;
+  stroke-linejoin: round;
+  stroke-width: 3px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+@keyframes stroke-pulse {
+  0%,
+  100% {
+    stroke-width: 1.6;
+  }
+  45% {
+    stroke: #fff;
+    stroke-width: 4;
+  }
+}
+
+@media (orientation: portrait) {
+  .label:not(.recentLabel) {
+    display: none;
+  }
+}
+
 @media (hover: none) {
   .hoverLabel {
     display: none;
