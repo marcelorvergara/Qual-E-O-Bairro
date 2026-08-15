@@ -8,6 +8,7 @@ Read `rio-bairros-plan.md` first. It is the product spec and phase plan; Section
 - `npm test` (Vitest), `npm run lint`, `npm run format:check`
 - `npm run build:data` regenerates everything in `data/` from `data/raw/` (geo → exclude → matrix → check:hints)
 - `npm run gen:hints` calls the Anthropic API and is run by a human only; never run it, never commit an API key
+- `npm run seed:daily` writes future answers to Supabase and is run by a human only; never run it as an agent
 
 ## Stack, in one line
 
