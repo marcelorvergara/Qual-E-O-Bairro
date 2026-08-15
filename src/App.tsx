@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GuessInput } from './components/GuessInput'
+import { allBairros } from './game/data'
 import { guess, guessCount, newGame, reset } from './game/reducer'
 import type { Bairro, PoolName } from './game/types'
 import { BairroMap } from './map/BairroMap'
@@ -7,14 +8,55 @@ import styles from './App.module.css'
 
 export default function App() {
   const [game, setGame] = useState(() => newGame('conhecidos'))
+  const [pulseCod, setPulseCod] = useState<string>()
+  const pulseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const bairrosByCode = new Map(
+    allBairros.map((bairro) => [bairro.cod, bairro]),
+  )
+
+  useEffect(() => () => clearTimeout(pulseTimer.current), [])
+
   const submitGuess = (bairro: Bairro) =>
     setGame((state) => guess(state, bairro.cod))
   const startPool = (pool: PoolName) => setGame(newGame(pool))
+  const pulse = (cod: string) => {
+    clearTimeout(pulseTimer.current)
+    setPulseCod(undefined)
+    requestAnimationFrame(() => {
+      setPulseCod(cod)
+      pulseTimer.current = setTimeout(() => setPulseCod(undefined), 600)
+    })
+  }
 
   return (
     <main className={styles.app}>
-      <BairroMap answerCod={game.answer.cod} guesses={game.guesses} />
+      <BairroMap
+        answerCod={game.answer.cod}
+        guesses={game.guesses}
+        pulseCod={pulseCod}
+      />
       <section className={styles.gamePanel} aria-label="Área de palpites">
+        <div className={styles.guessStrip} aria-label="Histórico de palpites">
+          {[...game.guesses].reverse().map((item) => {
+            const bairro = bairrosByCode.get(item.cod)
+            const result =
+              item.bucket === 0
+                ? '✓'
+                : item.bucket === 'encosta'
+                  ? 'encosta'
+                  : `${item.km.toFixed(1)} km`
+            return (
+              <button
+                className={`${styles.chip} ${item.bucket === 'encosta' ? styles.encosta : styles[`bucket${item.bucket}`]}`}
+                key={item.cod}
+                onClick={() => pulse(item.cod)}
+                type="button"
+              >
+                {bairro?.nome} · {result}
+              </button>
+            )
+          })}
+        </div>
         <div className={styles.controls}>
           <div className={styles.segmented} aria-label="Seleção de conjunto">
             {(['conhecidos', 'todos'] as const).map((pool) => (
