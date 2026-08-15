@@ -70,7 +70,11 @@ Acceptance: renders all 166 bairros correctly oriented (Zona Sul at the bottom r
 
 ### Phase 2 — Practice mode game loop (agent, ~3h)
 
+In portrait (viewport height greater than width), the map is fitted to full width and takes only the height required by its aspect ratio, capped at 45% of the viewport; everything below it is the game panel (guess strip, hint-area placeholder, and input). In landscape and on desktop the map keeps its Phase 1 behavior, fitted to the available area, with the game panel as a fixed-height bottom bar. The autocomplete input is always anchored to the bottom of the viewport so it remains above the mobile keyboard; use `100dvh` and test iOS-style keyboard opening by shrinking the viewport height.
+
 Autocomplete input, normalization, guess state, color buckets from the matrix, on-map labels (name + km, collision-avoided by nudging along the centroid or falling back to a leader line for tiny bairros), "encosta" state, win state, "novo jogo" button, choice between "conhecidos" and "todos". Pure logic in `src/game/` with Vitest tests. Colorblind check.
+
+Phase 2 is delivered as two stacked PRs: 2a adds the game logic, autocomplete, controls, responsive panel, and map coloring; 2b makes the map the guess log with collision-aware desktop labels and a newest-first portrait chip strip plus recent-guess highlighting.
 
 Acceptance: a full practice game is playable on desktop and phone; tests cover normalization edge cases (accents, parentheses, "São" vs "Sao"), color bucketing boundaries, and win detection; no layout shift when labels appear.
 

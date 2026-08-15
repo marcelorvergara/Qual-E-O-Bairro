@@ -1,0 +1,63 @@
+.wrapper {
+  position: absolute;
+  right: 0.75rem;
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  left: 0.75rem;
+}
+
+.input {
+  width: 100%;
+  height: 3rem;
+  padding: 0 1rem;
+  border: 1px solid #8f887d;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.input:focus {
+  border-color: #25231f;
+  outline: 2px solid rgb(37 35 31 / 18%);
+}
+
+.suggestions {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 3;
+  max-height: min(18rem, 45dvh);
+  margin: 0;
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid #bcb5a9;
+  border-radius: 0.5rem;
+  background: #fff;
+  box-shadow: 0 -0.25rem 1rem rgb(37 35 31 / 14%);
+  list-style: none;
+}
+
+.suggestion {
+  display: flex;
+  min-height: 2.6rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.suggestion small {
+  margin-left: 0.75rem;
+  white-space: nowrap;
+}
+
+.active {
+  background: #ece8df;
+}
+.guessed {
+  opacity: 0.48;
+  cursor: default;
+}
