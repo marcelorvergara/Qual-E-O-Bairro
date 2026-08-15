@@ -53,11 +53,8 @@ export function BairroMap() {
                 d={path}
                 data-cod={feature.properties.codbairro}
                 key={feature.properties.codbairro}
-                onBlur={() => setHoveredName('')}
-                onFocus={() => setHoveredName(feature.properties.nome)}
                 onPointerEnter={() => setHoveredName(feature.properties.nome)}
                 onPointerLeave={() => setHoveredName('')}
-                tabIndex={0}
               />
             ))}
           </g>

@@ -5,7 +5,15 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'data/*.json', 'data/*.geojson'] },
+  {
+    ignores: [
+      'dist',
+      'coverage',
+      '.lighthouse',
+      'data/*.json',
+      'data/*.geojson',
+    ],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {

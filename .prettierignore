@@ -1,6 +1,7 @@
 node_modules/
 dist/
 coverage/
+.lighthouse/
 data/
 package-lock.json
 rio-bairros-plan.md

@@ -6,7 +6,7 @@ import type {
   MultiPolygon,
   Polygon,
 } from 'geojson'
-import bairrosRaw from '../../data/bairros.geojson?raw'
+import bairrosJson from '../../data/bairros.geojson'
 
 export interface BairroProperties {
   codbairro: string
@@ -15,10 +15,7 @@ export interface BairroProperties {
   regiao_adm: string
 }
 
-const source = JSON.parse(bairrosRaw) as FeatureCollection<
-  Geometry,
-  BairroProperties
->
+const source = bairrosJson as FeatureCollection<Geometry, BairroProperties>
 
 function orientForD3(geometry: Geometry): Geometry {
   if (geometry.type === 'Polygon') {
