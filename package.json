@@ -17,7 +17,8 @@
     "test:hints-response": "node --test scripts/hints-response.selfcheck.mjs",
     "check:hints": "node scripts/check-hints.mjs",
     "build:shared": "node scripts/build-shared.mjs",
-    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run build:shared && npm run check:hints"
+    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run build:shared && npm run check:hints",
+    "seed:daily": "node --env-file-if-exists=.env scripts/seed-daily.mjs"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",
