@@ -142,9 +142,11 @@ export default function App() {
           )}
         </div>
         <GuessInput
+          answerCod={game.answer.cod}
           guesses={game.guesses}
           onGuess={submitGuess}
-          won={game.status === 'won'}
+          pulseCod={pulseCod}
+          status={game.status}
         />
       </section>
     </main>

@@ -2,16 +2,25 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { allBairros } from '../game/data'
 import { matchBairros, normalizeName } from '../game/normalize'
-import type { Bairro, Guess } from '../game/types'
+import type { Bairro, GameState, Guess } from '../game/types'
+import { BairroMap } from '../map/BairroMap'
 import styles from './GuessInput.module.css'
 
 interface GuessInputProps {
   guesses: Guess[]
-  won: boolean
+  answerCod: string
+  pulseCod?: string
+  status: GameState['status']
   onGuess: (bairro: Bairro) => void
 }
 
-export function GuessInput({ guesses, won, onGuess }: GuessInputProps) {
+export function GuessInput({
+  guesses,
+  answerCod,
+  pulseCod,
+  status,
+  onGuess,
+}: GuessInputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const overlayInputRef = useRef<HTMLInputElement>(null)
   const pushedHistory = useRef(false)
@@ -28,7 +37,11 @@ export function GuessInput({ guesses, won, onGuess }: GuessInputProps) {
     () => new Map(guesses.map((item) => [item.cod, item])),
     [guesses],
   )
-  const matches = open ? matchBairros(query, allBairros) : []
+  const matches =
+    open && (!overlay || normalizeName(query))
+      ? matchBairros(query, allBairros)
+      : []
+  const won = status === 'won'
 
   const closeOverlay = (goBack = true) => {
     setOverlay(false)
@@ -198,6 +211,15 @@ export function GuessInput({ guesses, won, onGuess }: GuessInputProps) {
               </button>
             </div>
             {matches.length > 0 && rows(true)}
+            <div className={styles.overlayMap}>
+              <BairroMap
+                answerCod={answerCod}
+                compact
+                guesses={guesses}
+                pulseCod={pulseCod}
+                status={status}
+              />
+            </div>
           </div>,
           document.body,
         )}

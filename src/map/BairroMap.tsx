@@ -19,6 +19,7 @@ interface BairroMapProps {
   answerCod: string
   pulseCod?: string
   status: GameState['status']
+  compact?: boolean
 }
 
 function guessText(guess: Guess): string {
@@ -32,6 +33,7 @@ export function BairroMap({
   answerCod,
   pulseCod,
   status,
+  compact = false,
 }: BairroMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const touchLabelTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -121,7 +123,10 @@ export function BairroMap({
   )
 
   return (
-    <div className={styles.mapPanel} ref={containerRef}>
+    <div
+      className={`${styles.mapPanel} ${compact ? styles.compact : ''}`}
+      ref={containerRef}
+    >
       <div className={styles.hoverLabel} aria-live="polite">
         {activeBairro
           ? interactionText(activeBairro.cod, activeBairro.name)
