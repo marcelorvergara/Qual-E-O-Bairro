@@ -42,16 +42,7 @@
 
 @media (orientation: landscape) and (max-height: 499px) {
   .panel {
-    position: absolute;
-    right: 0.75rem;
-    bottom: calc(100% + 0.5rem);
-    left: 0.75rem;
-    z-index: 3;
-    max-height: calc(100dvh - 5.25rem);
-    padding: 0.4rem;
-    overflow-y: auto;
-    border: 1px solid #d5c69e;
-    border-radius: 0.5rem;
-    background: #f6f3ed;
+    order: 3;
+    flex: 0 0 auto;
   }
 }

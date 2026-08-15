@@ -20,6 +20,12 @@ export interface PlacedLabel extends LabelCandidate {
   leader?: { x1: number; y1: number; x2: number; y2: number }
 }
 
+interface LayoutArea {
+  width: number
+  height: number
+  margin?: number
+}
+
 const directions: [number, number][] = [
   [1, 0],
   [-1, 0],
@@ -49,8 +55,18 @@ function rectangle(x: number, y: number, width: number, height: number): Rect {
   }
 }
 
-export function layoutLabels(candidates: LabelCandidate[]): PlacedLabel[] {
+export function layoutLabels(
+  candidates: LabelCandidate[],
+  area?: LayoutArea,
+): PlacedLabel[] {
   const placed: PlacedLabel[] = []
+  const margin = area?.margin ?? 4
+  const inside = (rect: Rect) =>
+    !area ||
+    (rect.left >= margin &&
+      rect.top >= margin &&
+      rect.right <= area.width - margin &&
+      rect.bottom <= area.height - margin)
 
   for (const candidate of candidates) {
     const [anchorX, anchorY] = candidate.anchor
@@ -63,6 +79,7 @@ export function layoutLabels(candidates: LabelCandidate[]): PlacedLabel[] {
     const bairroWidth = candidate.bounds[1][0] - candidate.bounds[0][0]
     if (
       bairroWidth >= candidate.width &&
+      inside(centered) &&
       !placed.some(({ rect }) => rectsOverlap(rect, centered))
     ) {
       placed.push({ ...candidate, x: anchorX, y: anchorY, rect: centered })
@@ -74,6 +91,7 @@ export function layoutLabels(candidates: LabelCandidate[]): PlacedLabel[] {
       const x = anchorX + dx * (candidate.width / 2 + 8)
       const y = anchorY + dy * (candidate.height / 2 + 8)
       const rect = rectangle(x, y, candidate.width, candidate.height)
+      if (!inside(rect)) continue
       chosen = {
         ...candidate,
         x,
@@ -87,6 +105,22 @@ export function layoutLabels(candidates: LabelCandidate[]): PlacedLabel[] {
         },
       }
       if (!placed.some((label) => rectsOverlap(label.rect, rect))) break
+    }
+    if (!chosen && area) {
+      const x = Math.min(
+        area.width - margin - candidate.width / 2,
+        Math.max(margin + candidate.width / 2, anchorX),
+      )
+      const y = Math.min(
+        area.height - margin - candidate.height / 2,
+        Math.max(margin + candidate.height / 2, anchorY),
+      )
+      chosen = {
+        ...candidate,
+        x,
+        y,
+        rect: rectangle(x, y, candidate.width, candidate.height),
+      }
     }
     if (chosen) placed.push(chosen)
   }

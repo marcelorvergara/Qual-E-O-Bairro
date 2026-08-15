@@ -61,6 +61,10 @@
   animation: stroke-pulse 600ms ease-out;
 }
 
+.tapPulse {
+  animation: tap-pulse 300ms ease-out;
+}
+
 .label {
   pointer-events: none;
 }
@@ -94,6 +98,13 @@
   }
 }
 
+@keyframes tap-pulse {
+  50% {
+    stroke: #25231f;
+    stroke-width: 3;
+  }
+}
+
 @media (orientation: portrait) {
   .label:not(.recentLabel) {
     display: none;
@@ -104,6 +115,14 @@
   .mapPanel {
     height: auto;
     flex: 1 1 auto;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 499px) {
+  .mapPanel {
+    width: 60%;
+    height: 100%;
+    flex: 0 0 60%;
   }
 }
 
