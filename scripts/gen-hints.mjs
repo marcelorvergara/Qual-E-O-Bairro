@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { parseHintsResponse, validateHints } from './hints-response.mjs'
 
 const apiKey = process.env.ANTHROPIC_API_KEY
 if (!apiKey) throw new Error('Set ANTHROPIC_API_KEY before generating hints')
@@ -9,23 +10,10 @@ const bairros = JSON.parse(
 const output = existsSync('data/hints.json')
   ? JSON.parse(readFileSync('data/hints.json', 'utf8'))
   : {}
-const tiers = ['region', 'character', 'giveaway']
 const retryableStatuses = new Set([429, 500, 529])
 
 const wait = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds))
-
-function validateHints(value, nome) {
-  if (!value || typeof value !== 'object') {
-    throw new Error(`${nome}: response must be a JSON object`)
-  }
-  for (const tier of tiers) {
-    if (typeof value[tier] !== 'string' || !value[tier].trim()) {
-      throw new Error(`${nome}: response is missing string tier “${tier}”`)
-    }
-  }
-  return value
-}
 
 async function requestHints(nome, prompt) {
   let lastError
@@ -84,14 +72,7 @@ Nenhuma dica pode conter o nome do bairro nem qualquer palavra que faça parte d
 Responda somente JSON estrito, sem markdown, exatamente neste formato: {"region":"...","character":"...","giveaway":"..."}`
 
   const body = await requestHints(nome, prompt)
-  const text = body.content?.find((block) => block.type === 'text')?.text
-  if (!text) throw new Error(`${nome}: response did not contain text`)
-
-  const json = text
-    .trim()
-    .replace(/^```(?:json)?\s*/i, '')
-    .replace(/\s*```$/, '')
-  output[codbairro] = validateHints(JSON.parse(json), nome)
+  output[codbairro] = parseHintsResponse(body.content, nome)
   writeFileSync('data/hints.json', `${JSON.stringify(output, null, 2)}\n`)
   console.log(`[${index + 1}/${bairros.length}] ${nome}`)
 }
