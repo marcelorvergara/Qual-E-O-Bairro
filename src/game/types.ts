@@ -14,9 +14,18 @@ export interface Guess {
   bucket: Bucket
 }
 
+export interface Hints {
+  region: string
+  character: string
+  giveaway: string
+}
+
+export type HintCount = 0 | 1 | 2 | 3
+
 export interface GameState {
   answer: Bairro
   guesses: Guess[]
   status: 'playing' | 'won'
   pool: PoolName
+  hintsUsed: HintCount
 }
