@@ -141,3 +141,13 @@
   font-size: 0.875rem;
   pointer-events: none;
 }
+
+.mapPanel.compact {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+.compact .hoverLabel {
+  display: none;
+}

@@ -72,11 +72,14 @@
   right: 0;
   left: 0;
   z-index: 20;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background: #f6f3ed;
 }
 .overlayHeader {
   display: grid;
+  flex: 0 0 auto;
   padding: max(0.65rem, env(safe-area-inset-top)) 0.75rem 0.65rem;
   grid-template-columns: 1fr auto;
   gap: 0.55rem;
@@ -90,9 +93,10 @@
   cursor: pointer;
 }
 .overlaySuggestions {
-  height: calc(100% - 4.3rem);
+  max-height: 176px;
+  flex: 0 0 auto;
   margin: 0;
-  padding: 0 0.75rem 0.75rem;
+  padding: 0 0.75rem;
   overflow-y: auto;
   list-style: none;
 }
@@ -103,6 +107,10 @@
   border-radius: 0;
   background: #fff;
   text-align: left;
+}
+.overlayMap {
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 @media (orientation: landscape) and (max-height: 499px) {
