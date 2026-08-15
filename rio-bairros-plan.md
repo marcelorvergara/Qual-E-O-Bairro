@@ -43,6 +43,7 @@ data/roads.geojson   Linha Vermelha, Linha Amarela, Av. Brasil (optional layer)
 data/landmarks.json  Cristo, Pão de Açúcar, Maracanã, Galeão runway as points/lines
 data/matrix.json     border distances km + adjacency, keyed by codbairro
 data/pool.json       daily pool codes
+data/exclude.json    codes excluded from "todos" and daily modes
 data/hints.json      three tiers per bairro
 scripts/             build:geo, build:matrix, gen:hints, check:hints
 src/                 app
@@ -60,6 +61,8 @@ Simplify the IPP GeoJSON with mapshaper (target 5–8%, keep-shapes, precision 0
 Acceptance: `npm run build:data` regenerates every file in `data/` deterministically from `data/raw/`; matrix sanity assertions pass; hints file passes the check and has been eyeballed.
 
 ### Phase 1 — Static map (agent, ~2h)
+
+TODO: add the optional `data/roads.geojson` and `data/landmarks.json` context layers in a later phase.
 
 Vite + React + TS scaffold. Full-viewport SVG, `geoMercator().fitExtent` on the bairros with padding, one `<path>` per bairro with `data-cod`, thin stroke, neutral fill, hover shows name in a small fixed corner label (no tooltip following the cursor). Roads and landmarks rendered under the strokes at low opacity behind a boolean prop. Handles resize. Mobile-first: works at 360×640 in portrait, with the map letterboxed and the bottom 20% reserved for the input.
 
