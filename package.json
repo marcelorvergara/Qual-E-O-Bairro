@@ -8,7 +8,7 @@
     "build:exclude": "node scripts/build-exclude.mjs",
     "build:matrix": "node scripts/build-matrix.mjs",
     "gen:hints": "node scripts/gen-hints.mjs",
-    "test:hints-response": "node --test scripts/hints-response.test.mjs",
+    "test:hints-response": "node --test scripts/hints-response.selfcheck.mjs",
     "check:hints": "node scripts/check-hints.mjs",
     "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run check:hints"
   },
