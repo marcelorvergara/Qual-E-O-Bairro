@@ -23,6 +23,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['supabase/functions/**/*.ts'],
+    languageOptions: {
+      globals: { ...globals.browser, Deno: 'readonly' },
+    },
+  },
+  {
     files: ['src/**/*.{ts,tsx}', 'vite.config.ts'],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     plugins: {

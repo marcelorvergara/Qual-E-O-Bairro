@@ -7,3 +7,5 @@ coverage/
 *.log
 .lighthouse/
 *.tsbuildinfo
+supabase/.branches/
+supabase/.temp/

@@ -16,7 +16,8 @@
     "gen:hints": "node scripts/gen-hints.mjs",
     "test:hints-response": "node --test scripts/hints-response.selfcheck.mjs",
     "check:hints": "node scripts/check-hints.mjs",
-    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run check:hints"
+    "build:shared": "node scripts/build-shared.mjs",
+    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run build:shared && npm run check:hints"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",

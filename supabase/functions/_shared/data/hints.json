@@ -1,0 +1,832 @@
+{
+  "100": {
+    "region": "Estou em uma ilha da zona norte do Rio, cercada pela Baía de Guanabara e conhecida por abrigar um grande aeroporto.",
+    "character": "Meu bairro tem cara de subúrbio tranquilo, com ruas arborizadas e forte presença de famílias tradicionais da Ilha do Governador.",
+    "giveaway": "Sou um bairro residencial da Ilha do Governador, vizinho ao Bancários, com nome que evoca o estado mais famoso do Brasil."
+  },
+  "101": {
+    "region": "Estou em uma ilha da zona norte do Rio de Janeiro, separada do continente mas parte do município carioca.",
+    "character": "Sou um bairro residencial tranquilo com vista para a Baía de Guanabara e próximo ao Aeroporto Internacional.",
+    "giveaway": "Faço parte da Ilha do Governador e meu nome remete a um rio indígena; sou vizinho de Bancários e Zumbi."
+  },
+  "102": {
+    "region": "Este bairro fica na Ilha do Governador, zona norte do Rio, cercado por água e com vista para a Baía de Guanabara.",
+    "character": "Tranquilo e residencial, guarda traços históricos da ocupação da ilha e tem forte identidade comunitária entre seus moradores.",
+    "giveaway": "Localizado na porção leste da ilha, faz divisa com Zumbi e Bancários, próximo à orla e ao Parque Estadual da Pedra Branca."
+  },
+  "103": {
+    "region": "Este bairro fica na Ilha do Governador, zona norte do Rio, rodeado de mar e com vista para a Baía de Guanabara.",
+    "character": "Área residencial tranquila, com ruas arborizadas e forte presença de famílias tradicionais da ilha.",
+    "giveaway": "Vizinho ao Jardim Guanabara, este bairro da ilha leva o nome de uma das regiões históricas do Brasil colonial."
+  },
+  "104": {
+    "region": "Este bairro fica na Ilha do Governador, zona norte do Rio, separada do continente pelas águas da Baía de Guanabara.",
+    "character": "Abriga o principal aeroporto internacional do Rio de Janeiro, com intenso movimento de aviões e infraestrutura de aviação civil e militar.",
+    "giveaway": "O Aeroporto Internacional Tom Jobim, conhecido como Antônio Carlos Jobim, está no coração deste bairro da ilha carioca."
+  },
+  "105": {
+    "region": "Este bairro fica na Ilha do Governador, zona norte do Rio, rodeado por águas da Baía de Guanabara.",
+    "character": "Abriga um importante campus federal de ensino superior, com intensa vida acadêmica e científica.",
+    "giveaway": "Sede da UFRJ na ilha, com faculdades, laboratórios e o famoso Parque Tecnológico ao redor."
+  },
+  "106": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento Pavuna e região administrativa de Anchieta.",
+    "character": "Área residencial popular com forte presença de comércio local e tradição operária na periferia carioca.",
+    "giveaway": "Vizinho de Anchieta e Cosmos, este bairro homenageia uma região histórica do México em seu nome."
+  },
+  "107": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região de planejamento da Pavuna, longe do litoral.",
+    "character": "Área predominantemente residencial, com forte presença de comunidades e comércio local de bairro.",
+    "giveaway": "É também o nome de sua própria região administrativa, homônima ao bairro que a centraliza no extremo norte carioca."
+  },
+  "108": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Pavuna, próximo à divisa com a Baixada Fluminense.",
+    "character": "Área predominantemente residencial, com perfil popular e forte presença de comércio local e igrejas evangélicas.",
+    "giveaway": "Faz parte da região administrativa homônima e fica vizinho a bairros como Guadalupe e Deodoro, no extremo norte carioca."
+  },
+  "109": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Anchieta e ao planejamento da Pavuna.",
+    "character": "Área residencial popular com forte presença de comércio local e boa ligação por trens da SuperVia.",
+    "giveaway": "Bairro vizinho a Anchieta e Guadalupe, próximo à estação de trem homônima na linha que vai até Japeri."
+  },
+  "110": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Pavuna, próximo à divisa com outros municípios da Baixada.",
+    "character": "Área residencial popular com forte presença de comunidades e comércio local vibrante, típico subúrbio carioca.",
+    "giveaway": "Bairro que homenageia um famoso escritor brasileiro, cronista e contista do início do século XX, nascido em 1864."
+  },
+  "111": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Pavuna, próximo à divisa com a Baixada Fluminense.",
+    "character": "Área popular e operária, marcada por comunidades tradicionais e forte presença de cultura funk e pagode suburbano.",
+    "giveaway": "Bairro cortado pelo ramal ferroviário de Deodoro, com estação própria e vizinho a Coelho Neto e Costa Barros."
+  },
+  "112": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Pavuna, próximo à divisa com a Baixada Fluminense.",
+    "character": "Área predominantemente residencial e popular, com forte presença de comércio local e comunidades tradicionais.",
+    "giveaway": "Vizinho de Coelho Neto e Guadalupe, este bairro leva sobrenome de família ilustre portuguesa."
+  },
+  "113": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Pavuna, próximo à divisa com a Baixada Fluminense.",
+    "character": "Área predominantemente residencial e popular, marcada por comunidades e forte presença de comércio local de rua.",
+    "giveaway": "Bairro vizinho a Anchieta e Guadalupe, na regional da Pavuna, com nome que remete à orla ou litoral, mas fica bem longe do mar."
+  },
+  "114": {
+    "region": "Bairro da Zona Norte do Rio de Janeiro, próximo à divisa com o município de Nova Iguaçu, na Baixada Fluminense.",
+    "character": "Região popular e movimentada, conhecida por seu grande terminal rodoviário e pela estação de metrô que conecta a periferia ao centro.",
+    "giveaway": "Seu nome batiza tanto a região administrativa quanto o planejamento local, e a estação de metrô homônima é ponto de referência obrigatório."
+  },
+  "115": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, em região de planejamento homônima, cercado por lagoas e morros.",
+    "character": "Conhecido por sua mistura de áreas residenciais, natureza exuberante e proximidade com a Floresta da Tijuca.",
+    "giveaway": "Bairro que dá nome à sua região administrativa e de planejamento, famoso pela Lagoa da Tijuca e pelo AutoDromo."
+  },
+  "116": {
+    "region": "Bairro da zona oeste carioca, pertencente à região administrativa de Jacarepaguá.",
+    "character": "Área residencial tranquila, com lagoas e vegetação, próxima à Floresta da Tijuca.",
+    "giveaway": "Vizinho de Pechincha e Freguesia, tem nome de uma cor azul-arroxeada presente na natureza."
+  },
+  "117": {
+    "region": "Bairro do Rio de Janeiro situado na região de planejamento de Jacarepaguá, zona oeste da cidade.",
+    "character": "Área residencial tranquila, com ruas arborizadas e perfil popular, próxima a lagoas e à Barra da Tijuca.",
+    "giveaway": "Bairro cujo nome evoca uma flor de cor diferenciada, localizado entre Curicica e Praça Seca, em Jacarepaguá."
+  },
+  "118": {
+    "region": "Este bairro carioca fica na região de planejamento de Jacarepaguá, zona oeste do Rio de Janeiro.",
+    "character": "Ficou mundialmente famoso após virar cenário de um aclamado filme brasileiro dos anos 2000 sobre violência urbana.",
+    "giveaway": "A região administrativa leva o mesmo nome do bairro, que remete a um lugar sagrado e celestial na tradição cristã."
+  },
+  "119": {
+    "region": "Bairro da Zona Oeste do Rio, na região de planejamento de Jacarepaguá, cercado por lagoas e morros.",
+    "character": "Área predominantemente residencial, com crescimento acelerado e próxima à Barra da Tijuca e ao Recreio.",
+    "giveaway": "Cortado pela Estrada do Catonho e pela Avenida Geremário Dantas, perto do Parque Estadual da Pedra Branca."
+  },
+  "120": {
+    "region": "Bairro da zona oeste carioca, na XVI Região Administrativa, cercado por lagoas e morros.",
+    "character": "Área residencial tranquila, com forte crescimento imobiliário e boa infraestrutura de comércio e serviços.",
+    "giveaway": "Bairro homônimo a um distrito histórico de Lisboa, localizado entre a Barra da Tijuca e o Recreio dos Bandeirantes."
+  },
+  "121": {
+    "region": "Bairro do Rio de Janeiro na região de planejamento de Jacarepaguá, zona oeste da cidade.",
+    "character": "Área residencial tranquila, com comércio local ativo e boa infraestrutura urbana próxima à Barra da Tijuca.",
+    "giveaway": "Bairro vizinho ao Taquara e ao Praça Seca, conhecido por seu cotidiano familiar e feiras de rua animadas."
+  },
+  "122": {
+    "region": "Bairro da zona oeste carioca, pertencente à região administrativa de Jacarepaguá, entre serras e lagoas.",
+    "character": "Área residencial com comércio local vibrante, próxima a shoppings e com fácil acesso à Barra da Tijuca.",
+    "giveaway": "Cortado pela Estrada dos Bandeirantes, tem estação do BRT e fica vizinho a Pechincha e Freguesia."
+  },
+  "123": {
+    "region": "Bairro da zona oeste carioca, na região de planejamento de Jacarepaguá, cercado por lagoas e morros.",
+    "character": "Área residencial tranquila com forte presença de comércio local e boa infraestrutura urbana.",
+    "giveaway": "Vizinho de Pechincha e Praça Seca, próximo à Lagoa da Tijuca, é um bairro de nome ligado a reservatório d'água."
+  },
+  "124": {
+    "region": "Bairro da zona oeste carioca, pertencente à região administrativa de Jacarepaguá, entre lagoas e morros.",
+    "character": "Bairro residencial de perfil popular, com feiras livres animadas e forte comércio local de rua.",
+    "giveaway": "Vizinho de Campinho e Madureira, seu nome remete a um logradouro sem vegetação, árido e aberto."
+  },
+  "125": {
+    "region": "Bairro da zona oeste do Rio, pertencente à região administrativa de Jacarepaguá, com fácil acesso à Linha 2 do metrô.",
+    "character": "Bairro residencial tranquilo, conhecido por suas ruas arborizadas e pela presença de clubes tradicionais cariocas.",
+    "giveaway": "Fica próximo à estação de metrô Praça Seca e tem no Clube Português um de seus pontos de referência históricos."
+  },
+  "126": {
+    "region": "Bairro nobre do Rio de Janeiro, pertence à região de planejamento da Barra da Tijuca, entre o mar e a montanha.",
+    "character": "Conhecido por mansões luxuosas, visual deslumbrante e acesso à famosa Pedra do Pontal e praias selvagens.",
+    "giveaway": "Bairro residencial exclusivo entre a Barra e São Conrado, com condomínios de alto padrão e vista para o Oceano Atlântico."
+  },
+  "127": {
+    "region": "Bairro da zona oeste do Rio, na região de planejamento da Barra da Tijuca, entre morros e lagoas.",
+    "character": "Área residencial tranquila, com vegetação abundante e proximidade à Floresta da Tijuca e ao Marapendi.",
+    "giveaway": "Vizinho de Grumari e da Barra, este bairro tem nome de origem tupi ligado à pedra ou rocha na água."
+  },
+  "128": {
+    "region": "Bairro da Zona Oeste carioca, às margens de uma vasta lagoa e próximo ao Recreio dos Bandeirantes.",
+    "character": "Conhecido por seus imensos shoppings, condomínios fechados e uma das maiores avenidas do Brasil.",
+    "giveaway": "Seu calçadão à beira-mar e o Parque Marapendi são ícones deste bairro planejado com lagoa e praia."
+  },
+  "129": {
+    "region": "Bairro da zona oeste do Rio, pertencente à região de planejamento da Barra da Tijuca.",
+    "character": "Tem área de proteção ambiental com lagoa e vegetação de restinga preservada.",
+    "giveaway": "Vizinho ao Recreio dos Bandeirantes, abriga a uma Lagoa... ops, uma lagoa homônima ao bairro."
+  },
+  "130": {
+    "region": "Bairro da zona oeste carioca, pertence à região de planejamento da Barra da Tijuca.",
+    "character": "Área rural com sítios e chácaras, preserva paisagem verde e tranquila próxima à Pedra Branca.",
+    "giveaway": "Bairro entre Recreio e Guaratiba, conhecido por produção agrícola e ambiente bucólico no Rio."
+  },
+  "131": {
+    "region": "Este bairro fica na zona oeste do Rio, dentro da região de planejamento da Barra da Tijuca.",
+    "character": "Tem perfil rural, com chácaras e sítios, bem diferente do agito da orla carioca.",
+    "giveaway": "Bairro tranquilo próximo a Guaratiba, famoso por restaurantes de comida caipira e natureza preservada."
+  },
+  "132": {
+    "region": "Bairro da zona oeste carioca, na região de planejamento da Barra da Tijuca, próximo à orla oceânica.",
+    "character": "Conhecido por praias extensas, lagoas e pelo surf, tem perfil residencial e tranquilo com forte crescimento imobiliário.",
+    "giveaway": "Seu trecho de praia abriga a famosa Prainha e o Pontal, sendo ponto de encontro de surfistas no extremo oeste do Rio."
+  },
+  "133": {
+    "region": "Bairro da zona oeste do Rio, na região de planejamento da Barra da Tijuca, próximo ao Recreio dos Bandeirantes.",
+    "character": "Lar de uma das praias mais preservadas do Rio, cercada por mata atlântica e dunas, quase sem urbanização.",
+    "giveaway": "Praia selvagem no extremo oeste carioca, famosa pelo naturismo e pela Reserva Biológica de Guaratiba ao lado."
+  },
+  "134": {
+    "region": "Bairro da Zona Oeste do Rio, pertencente à região administrativa de Realengo e ao planejamento de Bangu.",
+    "character": "Abriga um complexo militar histórico e uma estação de trem que conecta subúrbios cariocas desde o século XIX.",
+    "giveaway": "Seu nome homenageia um marechal brasileiro que proclamou a República em 1889 e foi o primeiro presidente do país."
+  },
+  "135": {
+    "region": "Bairro da zona oeste do Rio, pertencente à região administrativa de Realengo e ao planejamento de Bangu.",
+    "character": "Abriga instalações históricas do Exército Brasileiro, com forte presença castrense e tradição desde o século XIX.",
+    "giveaway": "Seu nome revela tudo: é um enclave residencial e institucional dedicado às Forças Armadas no Rio de Janeiro."
+  },
+  "136": {
+    "region": "Bairro da zona oeste do Rio, na região administrativa de Realengo, próximo a Bangu e à Serra da Pedra Branca.",
+    "character": "Abriga uma importante base da Força Aérea Brasileira, com longa tradição militar e aviação no Rio de Janeiro.",
+    "giveaway": "Seu nome homenageia uma família portuguesa e é sede do PAMA-RJ, centro de manutenção aeronáutica da FAB."
+  },
+  "137": {
+    "region": "Bairro da Zona Oeste carioca, na região administrativa de Realengo, próximo a Campo Grande e Bangu.",
+    "character": "Área residencial tranquila, com ruas arborizadas e perfil familiar, distante do agito do Centro do Rio.",
+    "giveaway": "Vizinho de Magalhães Bastos e Realengo, este bairro tem nome que evoca um ponto cardeal e uma planta típica."
+  },
+  "138": {
+    "region": "Bairro da Zona Oeste carioca, na região administrativa de Realengo, próximo a Bangu e Campo Grande.",
+    "character": "Área residencial tranquila, com forte presença de comunidades e próxima à linha férrea da SuperVia.",
+    "giveaway": "Vizinho de Realengo, este bairro homenageia um político brasileiro em seu nome composto por sobrenome ilustre."
+  },
+  "139": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, pertencente à região de planejamento de Bangu.",
+    "character": "Conhecido por abrigar uma importante fábrica de tecidos histórica e um quartel do Exército Brasileiro.",
+    "giveaway": "Sua estação de trem é ponto central e dá nome à região administrativa homônima na Zona Oeste carioca."
+  },
+  "140": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, pertencente à região administrativa de Bangu.",
+    "character": "Conhecido por ser um bairro popular e residencial, com forte presença da cultura suburbana carioca.",
+    "giveaway": "Leva o nome de um santo católico e fica próximo à divisa com Realengo e Senador Camará."
+  },
+  "141": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, em região de planejamento homônima, longe do Centro e da Zona Sul.",
+    "character": "Conhecido pela famosa fábrica têxtil que marcou sua história e pelo presídio de segurança máxima que leva seu nome.",
+    "giveaway": "Lar do estádio Proletário Guilherme da Silveira Filho e ponto de referência industrial e carcerário no extremo oeste carioca."
+  },
+  "142": {
+    "region": "Bairro da Zona Oeste do Rio, na região administrativa de Bangu, com forte presença de comunidades populares.",
+    "character": "Área residencial marcada por feiras livres, igrejas evangélicas e comércio local vibrante no subúrbio carioca.",
+    "giveaway": "Vizinho de Bangu e Padre Miguel, este bairro homenageia um político brasileiro em seu topônimo oficial."
+  },
+  "143": {
+    "region": "Bairro da Zona Oeste do Rio, pertencente à região administrativa de Campo Grande.",
+    "character": "Área residencial com forte presença de igrejas e comunidades religiosas católicas.",
+    "giveaway": "Seu nome homenageia a Trindade: Pai, Filho e Espírito Santo, numa só expressão sagrada."
+  },
+  "144": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, é um dos maiores centros comerciais e populacionais fora da área central da cidade.",
+    "character": "Conhecido por seu intenso comércio de rua, feiras livres e diversidade cultural, tem perfil suburbano e agitado.",
+    "giveaway": "Sede de uma das maiores regiões administrativas do Rio, abriga o Shopping Guadalupe e é ponto de referência do subúrbio oeste carioca."
+  },
+  "145": {
+    "region": "Bairro da Zona Oeste do Rio, na região de planejamento de Campo Grande, área de expansão urbana carioca.",
+    "character": "Bairro residencial popular, com perfil suburbano, comércio local ativo e forte presença de famílias trabalhadoras.",
+    "giveaway": "Leva o nome de um político brasileiro homenageado; fica entre Inhoaíba e Cosmos, no extremo oeste carioca."
+  },
+  "146": {
+    "region": "Bairro da Zona Oeste do Rio, na região de planejamento de Campo Grande, longe do agito do Centro.",
+    "character": "Área residencial e popular, com perfil suburbano, comércio local e forte presença de comunidades tradicionais.",
+    "giveaway": "Bairro vizinho a Cosmos e Santíssimo, cortado pela Estrada do Pacuí, na RA de Campo Grande."
+  },
+  "147": {
+    "region": "Bairro da Zona Oeste do Rio, pertencente à região administrativa de Campo Grande.",
+    "character": "Área residencial com perfil suburbano, crescimento recente e forte presença de comércio local.",
+    "giveaway": "Vizinho de Inhoaíba e Santíssimo, este bairro tem nome que remete ao universo e fica no extremo oeste carioca."
+  },
+  "148": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, pertencente à região de planejamento de Santa Cruz.",
+    "character": "Área residencial popular com forte presença industrial e proximidade à Baía de Sepetiba.",
+    "giveaway": "Bairro vizinho a Santa Cruz, próximo ao Polo Petroquímico e à Avenida Brasil, na extremidade oeste carioca."
+  },
+  "149": {
+    "region": "Bairro da Zona Oeste carioca, próximo à Baía de Sepetiba e com forte presença industrial e portuária.",
+    "character": "Abriga um dos maiores complexos siderúrgicos do Brasil e tem raízes históricas ligadas à fazenda jesuítica colonial.",
+    "giveaway": "Seu nome homenageia a um monumento erguido pelos jesuítas no século XVII, e hoje sedia a CSN e o Porto de Itaguaí nas proximidades."
+  },
+  "150": {
+    "region": "Bairro da zona oeste do Rio de Janeiro, na região de planejamento de Santa Cruz, às margens de uma Baía.",
+    "character": "Conhecido por suas praias tranquilas, pesca artesanal e paisagens de restinga com vista para ilhas na baía.",
+    "giveaway": "Bairro litorâneo de Santa Cruz, famoso pelo porto e pela colônia de pescadores na orla da grande baía homônima."
+  },
+  "151": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, pertencente à região de planejamento mais a sudoeste da cidade.",
+    "character": "Área rural com manguezais, restingas e sítios, conhecida pela produção agrícola e paisagens naturais preservadas.",
+    "giveaway": "Vizinho à uma Barra e próximo à APA de Pedra Branca, é ponto de partida para trilhas e pesca artesanal."
+  },
+  "152": {
+    "region": "Bairro da zona oeste do Rio, na região de planejamento mais afastada do centro, próximo à Restinga de Marambaia.",
+    "character": "Tem costão rochoso, manguezal e é ponto de partida para passeios de barco à Ilha de Itacuruçá.",
+    "giveaway": "Pequena comunidade pesqueira carioca cujo nome homenageia um acidente geográfico litorâneo na Zona Oeste."
+  },
+  "153": {
+    "region": "Bairro da zona oeste do Rio, na próximo a uma ilha, próximo à Baía de Sepetiba.",
+    "character": "Tem costão rochoso famoso, pesca artesanal e restaurantes de frutos do mar à beira-mar.",
+    "giveaway": "Seu nome vem de uma formação rochosa que avança pelo mar e é ponto turístico da região oeste carioca."
+  },
+  "154": {
+    "region": "Este bairro fica na Zona Sul do Rio de Janeiro, entre montanhas e próximo a praias famosas.",
+    "character": "É a maior favela da América Latina, com vida cultural intensa e vista privilegiada para o mar.",
+    "giveaway": "Localizado entre São Conrado e Gávea, tem teleférico e atrai turistas do mundo inteiro."
+  },
+  "155": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região de planejamento do Méier.",
+    "character": "Conhecido por sua comunidade populosa e pelo complexo de favelas que leva seu nome.",
+    "giveaway": "Este bairro abriga uma das maiores favelas do Rio, famosa por intervenções policiais e projetos sociais."
+  },
+  "156": {
+    "region": "Estou na Zona Norte do Rio de Janeiro, numa região de planejamento chamada Inhaúma.",
+    "character": "Sou um conjunto de favelas interligadas, famoso pelo teleférico inaugurado em 2011.",
+    "giveaway": "Minha região administrativa leva o nome de um conjunto de comunidades com forte identidade cultural no Rio."
+  },
+  "157": {
+    "region": "Fica na zona norte do Rio, na região de planejamento de Ramos, às margens da Baía de Guanabara.",
+    "character": "É um complexo de favelas com forte identidade cultural, museu comunitário e produção artística reconhecida.",
+    "giveaway": "Sua região administrativa leva o nome de Complexo, sendo uma das maiores comunidades do Brasil em população."
+  },
+  "158": {
+    "region": "Bairro da zona central do Rio, na região administrativa de São Cristóvão, próximo ao centro histórico da cidade.",
+    "character": "Abriga o famoso estádio de futebol que é templo de uma das maiores torcidas do Brasil, em área de tradição operária.",
+    "giveaway": "O bairro leva o nome do navegador português que abriu a rota marítima para as Índias, assim como o clube que ali tem seu estádio."
+  },
+  "159": {
+    "region": "Bairro da Zona Norte do Rio, na região administrativa de Pavuna, próximo à divisa com municípios da Baixada Fluminense.",
+    "character": "Área residencial popular com perfil suburbano, marcada por ruas tranquilas e forte presença de comunidade local.",
+    "giveaway": "Vizinho imediato de Acari e Costa Barros, este bairro leva no nome uma referência a um espaço verde e a uma famosa cidade americana."
+  },
+  "160": {
+    "region": "Bairro da Zona Oeste do Rio de Janeiro, na região de planejamento de Bangu, próximo à Serra do Mendanha.",
+    "character": "Abriga um Complexo Penitenciário, importante área de segurança pública do estado do Rio de Janeiro.",
+    "giveaway": "Conhecido pelo grande complexo prisional e pela reserva ambiental na divisa com Bangu, na Zona Oeste carioca."
+  },
+  "161": {
+    "region": "Bairro da região administrativa Centro do Rio de Janeiro, próximo à Zona Portuária e ao centro histórico da cidade.",
+    "character": "Conhecido por sua boemia, bares tradicionais e pelo famoso arco histórico que marca a entrada da região.",
+    "giveaway": "O icônico arco aqueduto do século XVIII, hoje palco de bondes e vida noturna intensa, identifica este bairro carioca."
+  },
+  "162": {
+    "region": "Bairro da Zona Oeste do Rio, pertencente à região administrativa de Bangu, próximo à Serra do Gericinó.",
+    "character": "Criado nos anos 1960 para abrigar famílias removidas de favelas, tem forte identidade popular e histórico de luta comunitária.",
+    "giveaway": "Este bairro homônimo a uma família presidencial americana foi inaugurado durante a ditadura militar brasileira, na década de 60."
+  },
+  "163": {
+    "region": "Bairro da Zona Oeste do Rio, pertencente à região administrativa de Bangu.",
+    "character": "Área residencial tranquila, próxima a indústrias e com forte presença de comunidades tradicionais.",
+    "giveaway": "Vizinho ao complexo industrial de Santa Cruz, este bairro de Bangu tem nome de origem indígena tupi."
+  },
+  "164": {
+    "region": "Bairro da zona oeste do Rio, na região de planejamento ampla, próximo à Baía de Sepetiba.",
+    "character": "Área com manguezais preservados, restingas e sítios arqueológicos sambaquis de grande valor histórico.",
+    "giveaway": "Bairro litorâneo com nome de arquipélago fluvial famoso por sambaquis, cercado por manguezais na zona oeste carioca."
+  },
+  "165": {
+    "region": "Bairro da zona oeste carioca, na região de planejamento de Jacarepaguá, próximo à vila Vila Pan-americana.",
+    "character": "Criado para os Jogos de 2016, abriga um parque famoso e instalações esportivas de alto nível.",
+    "giveaway": "Legado dos Jogos do Rio, concentra arenas e a Vila dos Atletas, hoje área residencial moderna."
+  },
+  "166": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa da Penha, próximo à Leopoldina.",
+    "character": "Área residencial tranquila, com forte presença de descendentes de imigrantes europeus e tradição de bairro operário.",
+    "giveaway": "Seu nome homenageia a nação sul-americana vizinha ao Brasil, cujo gentílico também identifica este recanto carioca."
+  },
+  "013": {
+    "region": "Ilha localizada na Baía de Guanabara, pertencente à região administrativa homônima e à região de planejamento Centro do Rio de Janeiro.",
+    "character": "Proibida a circulação de carros, a ilha encanta com casarios coloniais, bondes históricos e tranquilidade típica do interior.",
+    "giveaway": "Acessível apenas por barcas, essa ilha carioca foi cenário de romances de José de Alencar e inspira paz a cada visita."
+  },
+  "098": {
+    "region": "Este bairro possui uma praia, zona norte do Rio, rodeado de baía e com vista para o continente.",
+    "character": "Área residencial tranquila, com igrejas históricas e comércio local, típica da vida pacata do distante subúrbio carioca.",
+    "giveaway": "Possui um polo comercial, com a famosa Estrada do Dendê cortando seu centro."
+  },
+  "097": {
+    "region": "Este bairro fica na Ilha do Governador, zona norte do Rio, cercado por água e com vista para a Baía de Guanabara.",
+    "character": "Área residencial tranquila, com perfil de servidores públicos e funcionários de instituições financeiras estatais próximas.",
+    "giveaway": "Vizinho ao campus da UNIRIO na ilha e próximo à sede do Banco do Brasil na região, seu nome homenageia essa ligação histórica."
+  },
+  "048": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Penha, próximo à Baixada Fluminense.",
+    "character": "Conhecido por sua história operária e pela tragédia de 1993, que marcou profundamente a memória carioca.",
+    "giveaway": "Este bairro da AP3 tem estação de trem e foi palco de um dos massacres mais trágicos da história do Rio."
+  },
+  "096": {
+    "region": "Fica na Ilha do Governador, zona norte do Rio, cercado de natureza e longe do agito do centro da cidade.",
+    "character": "Bairro residencial tranquilo, com ruas arborizadas e forte identidade comunitária, típico da vida na ilha.",
+    "giveaway": "Vizinho ao Jardim Guanabara e próximo à orla da baía, é um dos bairros mais calmos da grande ilha carioca."
+  },
+  "049": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Penha, próximo à Vigário Geral.",
+    "character": "Área residencial tranquila, marcada por ruas arborizadas e perfil popular, típico subúrbio carioca.",
+    "giveaway": "Vizinho de Vigário Geral, este bairro tem nome que remete a um espaço verde sofisticado, mas é suburbano."
+  },
+  "099": {
+    "region": "Fica na Ilha do Governador, zona norte do Rio, cercado por água e com vista privilegiada para uma Baía.",
+    "character": "Bairro residencial tranquilo, com ruas arborizadas e clima de subúrbio afastado do agito do centro carioca.",
+    "giveaway": "Localizado na parte leste da Ilha do Governador, faz divisa com o canal e tem nome que homenageia a famosa baía ao redor."
+  },
+  "095": {
+    "region": "Bairro da Ilha do Governador, zona norte do Rio, cercado por águas da Baía de Guanabara.",
+    "character": "Área residencial tranquila com orla e vista para o mar, típica da vida insulana carioca.",
+    "giveaway": "Fica próximo ao Dendê e ao Zumbi, na parte litorânea da ilha, com acesso à beira-mar."
+  },
+  "044": {
+    "region": "Bairro da Zona Norte do Rio, na XI Região, próximo à Leopoldina.",
+    "character": "Bairro residencial com forte comércio local, cortado por importantes vias de acesso à Baixada Fluminense.",
+    "giveaway": "Seu nome faz referência ao formato geográfico de um trajeto que retorna ao ponto de origem, como um anel."
+  },
+  "093": {
+    "region": "Estou em um bairro da Ilha do Governador, zona norte do Rio, cercado por baías e com vista para o continente.",
+    "character": "Bairro residencial e tranquilo, com orla à beira da Baía de Guanabara e clima de subúrbio afastado do agito carioca.",
+    "giveaway": "Fico na ponta nordeste da ilha, próximo ao Canal do Fundão, com acesso pela Estrada do Galeão."
+  },
+  "094": {
+    "region": "Fica na Ilha do Governador, zona norte do Rio, rodeado de mar e natureza preservada.",
+    "character": "Bairro residencial tranquilo, com orla arbustiva e clima de subúrbio praiano carioca.",
+    "giveaway": "Vizinho de Bancários e Zumbi, tem ruas calmas e acesso à Baía de Guanabara."
+  },
+  "043": {
+    "region": "Bairro da Zona Norte do Rio, próximo à Leopoldina e à Ilha do Governador, com forte presença industrial e residencial.",
+    "character": "Conhecido por sua tradicional feira e pela Igreja Nossa Senhora da Conceição, um marco histórico e religioso local.",
+    "giveaway": "Bairro que dá nome à sua própria região administrativa e de planejamento, com estação de trem movimentada na Leopoldina."
+  },
+  "092": {
+    "region": "Estou em uma ilha da Baía de Guanabara, na zona norte do Rio, em região de planejamento insular.",
+    "character": "Meu nome homenageia um líder quilombola histórico do Brasil, símbolo de resistência e liberdade.",
+    "giveaway": "Sou um bairro da Ilha do Governador cujo nome remete ao rei de Palmares, o mais famoso quilombo brasileiro."
+  },
+  "091": {
+    "region": "Estou em uma ilha da zona norte do Rio de Janeiro, cercada pela Baía de Guanabara.",
+    "character": "Meu entorno tem vista para o mar e fica próximo a áreas históricas da Ilha do Governador.",
+    "giveaway": "Sou um bairro costeiro da Ilha do Governador, vizinho ao Zumbi e com orla voltada para a baía."
+  },
+  "077": {
+    "region": "Fica na zona norte do Rio, na região de planejamento de Madureira, próximo a Irajá.",
+    "character": "Bairro residencial tranquilo, com forte presença de igrejas e comunidade religiosa ativa.",
+    "giveaway": "Vizinho de Irajá, leva o nome de uma instituição de ensino histórica que marcou a região."
+  },
+  "087": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com fácil acesso por grandes vias.",
+    "character": "Área residencial e comercial, com forte presença de igrejas evangélicas e comércio popular animado.",
+    "giveaway": "Bairro vizinho a Rocha Miranda e Turiaçu, cortado pela Avenida Brasil, perto do viaduto de Madureira."
+  },
+  "042": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Ramos, às margens da Baía de Guanabara.",
+    "character": "Conhecido por sua tradição industrial e portuária, abriga fábricas históricas e comunidades operárias desde o século XX.",
+    "giveaway": "Seu nome remete a um tipo de recipiente de barro usado para armazenar líquidos, comum na cultura popular brasileira."
+  },
+  "086": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com fácil acesso por grandes avenidas.",
+    "character": "Área residencial e comercial com forte presença de igrejas evangélicas e feiras populares animadas.",
+    "giveaway": "Vizinho de Coelho Neto e Honório Gurgel, é cortado pela Estrada Intendente Magalhães."
+  },
+  "041": {
+    "region": "Bairro da Zona Norte carioca, às margens da Baía de Guanabara, próximo à Penha e Bonsucesso.",
+    "character": "Tem forte tradição operária e industrial, com comunidades ribeirinhas e feiras populares animadas.",
+    "giveaway": "Seu canal homônimo liga a Baía de Guanabara ao interior, sendo referência histórica de navegação local."
+  },
+  "072": {
+    "region": "Bairro da zona norte do Rio, pertencente à região administrativa de Irajá e à região de planejamento de Madureira.",
+    "character": "Bairro residencial tranquilo, com ruas arborizadas e forte presença de famílias tradicionais cariocas.",
+    "giveaway": "Vizinho de Irajá e Colégio, este bairro homenageia no nome um antigo sistema planetário estudado na astronomia."
+  },
+  "090": {
+    "region": "Bairro da Zona Norte do Rio, ligado à região de planejamento de Madureira, com forte presença operária e industrial.",
+    "character": "Conhecido por seu comércio popular, feiras e pela proximidade com importantes linhas de trem da SuperVia.",
+    "giveaway": "Leva o nome de um presidente brasileiro que governou no início do século XX, de alta patente e militar de destaque."
+  },
+  "073": {
+    "region": "Bairro da zona norte do Rio, na região de planejamento de Madureira e sob a administração de Irajá.",
+    "character": "Área residencial com forte comércio local, próxima a grandes vias e com tradição popular carioca.",
+    "giveaway": "Bairro vizinho a Irajá e Olaria, cortado pela linha férrea, com estação de trem que leva seu próprio nome."
+  },
+  "055": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Inhaúma, próximo à Leopoldina.",
+    "character": "Marcado por história industrial e ferroviária, tem perfil popular e boa ligação com outros bairros cariocas.",
+    "giveaway": "Seu nome homenageia antigas instalações açucareiras coloniais ligadas à realeza portuguesa no subúrbio carioca."
+  },
+  "084": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento de Madureira, cercado por bairros populosos e bem conectados.",
+    "character": "Área residencial tranquila, com forte presença de comércio local e tradição operária, típica da Zona Norte carioca.",
+    "giveaway": "Vizinho de Irajá e Colégio, este bairro tem nome que homenageia uma família lusitana influente na região."
+  },
+  "089": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com forte presença popular e boa infraestrutura urbana.",
+    "character": "Conhecido pelo comércio local movimentado, igrejas evangélicas e pelo cotidiano trabalhador de seus moradores na Zona Norte carioca.",
+    "giveaway": "Vizinho de Oswaldo Cruz e Rocha Miranda, este bairro homenageia um político brasileiro em seu nome composto por prenome e sobrenome."
+  },
+  "085": {
+    "region": "Bairro da zona norte do Rio, pertencente à região administrativa de Madureira, área de planejamento da Leopoldina.",
+    "character": "Bairro residencial e popular, com forte presença do comércio local e tradição nas comunidades da região de Madureira.",
+    "giveaway": "Vizinho de Rocha Miranda e Honório Gurgel, este bairro leva o nome de um município do Maranhão."
+  },
+  "040": {
+    "region": "Bairro da Zona Norte do Rio, na região administrativa de Ramos, às margens da Baía de Guanabara.",
+    "character": "Conhecido por seu grande complexo hospitalar federal e por intensa atividade comercial e industrial.",
+    "giveaway": "O Hospital Federal de Ramos e a estação de trem são marcos deste bairro vizinho a Manguinhos e Olaria."
+  },
+  "054": {
+    "region": "Bairro da Zona Norte do Rio, que dá nome à sua própria região de planejamento e administrativa municipal.",
+    "character": "Área predominantemente residencial, com forte presença de comércio local e tradição operária na cidade.",
+    "giveaway": "Este bairro empresta seu nome à região administrativa que abriga também os bairros Higienópolis, Tomás Coelho e outros vizinhos."
+  },
+  "056": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Inhaúma, entre Méier e Irajá.",
+    "character": "Área residencial tranquila, com comércio local ativo e forte presença de famílias tradicionais cariocas.",
+    "giveaway": "Homenageia um antigo proprietário de terras do século XIX, cujo sobrenome batiza ruas e referências locais."
+  },
+  "083": {
+    "region": "Bairro da Zona Norte do Rio de Janeiro, pertencente à região de planejamento homônima, bem servido por trem e metrô.",
+    "character": "Famoso pelo seu carnaval animado, tem um dos maiores polos comerciais populares da cidade e rica tradição no samba.",
+    "giveaway": "Abriga o Mercadão e o Portelão, sede de uma das mais tradicionais escolas de samba do Rio de Janeiro."
+  },
+  "088": {
+    "region": "Bairro da zona norte do Rio, na região de planejamento de Madureira, cercado por bairros populares e bem servido de transporte.",
+    "character": "Área residencial e comercial com forte presença popular, próxima ao entroncamento de vias importantes da região de Madureira.",
+    "giveaway": "Bairro vizinho a Rocha Miranda e Honório Gurgel, na RA de Madureira, cujo nome homenageia um político paulista do início do século XX."
+  },
+  "080": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com forte presença popular e boa ligação por trem.",
+    "character": "Área tradicional e movimentada, conhecida pelo comércio local intenso e pela comunidade trabalhadora que habita a região há décadas.",
+    "giveaway": "Bairro vizinho a Pilares e Del Castilho, cortado pela linha férrea, cujo nome homenageia uma família influente do século XIX no Rio."
+  },
+  "050": {
+    "region": "Bairro da zona norte do Rio, pertencente à região administrativa de Inhaúma, entre áreas residenciais afastadas do centro.",
+    "character": "Bairro tranquilo e predominantemente residencial, com perfil popular e pouca presença de comércio de grande porte.",
+    "giveaway": "Localizado próximo a Inhaúma e Del Castilho, é um bairro pequeno e discreto da zona norte carioca."
+  },
+  "039": {
+    "region": "Bairro da zona norte do Rio, pertencente à região administrativa de Ramos, próximo à Baía de Guanabara.",
+    "character": "Conhecido por abrigar a Fiocruz, instituição centenária de pesquisa em saúde pública do Brasil.",
+    "giveaway": "Seu nome é também de um complexo de favelas próximo ao famoso castelo mourisco da Fiocruz."
+  },
+  "081": {
+    "region": "Bairro da zona norte do Rio, na região de planejamento de Madureira, cercado por bairros populares e bem servido por transporte.",
+    "character": "Área residencial tranquila, com perfil operário e comunitário, vizinha a grandes polos comerciais da região norte carioca.",
+    "giveaway": "Fica na RA de Madureira e faz limite com bairros como Rocha Miranda e Honório Gurgel, sendo um enclave residencial discreto da zona norte."
+  },
+  "071": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa do Méier, com fácil acesso por trem.",
+    "character": "Bairro residencial tradicional, com feiras livres animadas e forte comércio local de bairro.",
+    "giveaway": "Vizinho de Engenho de Dentro, este bairro tem nome que remete a colunas ou suportes arquitetônicos."
+  },
+  "053": {
+    "region": "Bairro da Zona Norte do Rio de Janeiro, na região de planejamento de Inhaúma, próximo à Leopoldina.",
+    "character": "Conhecido por seu polo comercial e pela presença de grandes atacadistas e depósitos, é ponto logístico da cidade.",
+    "giveaway": "Seu nome homenageia uma família portuguesa influente no Brasil colonial, evocando nobreza ibérica em plena subúrbia carioca."
+  },
+  "069": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Tradicional e residencial, tem forte comércio local e igrejas históricas que marcam sua identidade católica popular.",
+    "giveaway": "Seu nome remete a devoção religiosa; fica entre Cascadura e Riachuelo, próximo à estação de trem da SuperVia."
+  },
+  "082": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com forte presença popular e boa ligação por trem.",
+    "character": "Possui comércio animado e pela tradição suburbana, abriga uma das estações de trem mais movimentadas da linha que corta o subúrbio.",
+    "giveaway": "O metrô de superfície conecta bairros vizinhos como Rocha Miranda e Eng. Leal, e ponto de referência no subúrbio do Rio."
+  },
+  "052": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Inhaúma, próximo à Leopoldina.",
+    "character": "Área residencial cortada por importantes vias férreas, com forte presença de comunidades tradicionais cariocas.",
+    "giveaway": "Este bairro homenageia um nome feminino muito popular no Brasil, sendo referência em ramal ferroviário do Rio."
+  },
+  "079": {
+    "region": "Bairro da zona norte carioca, pertence à região administrativa de Madureira, com forte presença popular e boa infraestrutura urbana.",
+    "character": "Área residencial tranquila, com comércio local ativo, próxima a importantes vias de transporte e com história operária marcante.",
+    "giveaway": "Homenageia um político e jornalista brasileiro do século XIX, abolicionista e republicano, cujo nome batiza ruas em várias cidades do país."
+  },
+  "078": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa de Madureira, com forte presença popular.",
+    "character": "Área residencial tradicional, marcada por feiras livres, comércio local vibrante e cultura suburbana carioca.",
+    "giveaway": "Vizinho de Madureira, este bairro tem estação de metrô própria na Linha 2, facilitando o acesso ao centro."
+  },
+  "070": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Bairro residencial tranquilo, com comércio local ativo e boa ligação por ônibus e trem urbano.",
+    "giveaway": "Vizinho de Pilares e Del Castilho, seu nome remete ao fim da escravidão no Brasil, em 1888."
+  },
+  "065": {
+    "region": "Bairro da Zona Norte carioca, pertencente à região administrativa do Méier.",
+    "character": "Conhecido por seu comércio popular e feira livre tradicional, tem perfil residencial e agitado.",
+    "giveaway": "Seu nome tem origem indígena e rima com 'bicho do mato'; fica entre Riachuelo e Lins de Vasconcelos."
+  },
+  "012": {
+    "region": "Bairro da região administrativa de São Cristóvão, no Centro do Rio de Janeiro, próximo à Zona Norte carioca.",
+    "character": "Abriga a UFRJ e o Parque Estadual da Pedra Branca, sendo reduto estudantil com bares e vida cultural intensa.",
+    "giveaway": "Famoso pelo estádio do Clube de Regatas do Flamengo e por concentrar campi universitários federais no Rio."
+  },
+  "066": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento do Méier, com fácil acesso por trem e metrô.",
+    "character": "Abriga o estádio Nilton Santos, o Engenhão, casa do Botafogo e palco de grandes eventos esportivos.",
+    "giveaway": "Seu nome remete a antigas instalações industriais do século XIX e fica entre Méier e Del Castilho."
+  },
+  "010": {
+    "region": "Bairro da zona central do Rio, na VII Região Administrativa, próximo à Leopoldina e ao centro histórico.",
+    "character": "Abriga o Museu Nacional e o belo Parque da Quinta da Boa Vista, antigo jardim da família real portuguesa no Brasil.",
+    "giveaway": "Seu nome homenageia a era monárquica brasileira e fica colado ao bairro que guarda o palácio onde viveram os imperadores do país."
+  },
+  "064": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier.",
+    "character": "Bairro residencial tradicional, com igrejas históricas e feiras de rua animadas.",
+    "giveaway": "Fica entre Méier e Engenho de Dentro, próximo à estação de trem do ramal Deodoro."
+  },
+  "051": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e está próximo à Leopoldina.",
+    "character": "Cortado pelo rio Faria-Timbó, tem raízes industriais e é conhecido por sua feira popular e vida de subúrbio.",
+    "giveaway": "Seu nome remete a um réptil típico do Brasil e batiza também uma estação de trem da linha Leopoldina."
+  },
+  "068": {
+    "region": "Bairro da Zona Norte do Rio, na região administrativa do Méier, com fácil acesso por trem e ônibus.",
+    "character": "Bairro residencial tranquilo, com feiras livres animadas e comércio local vibrante no subúrbio carioca.",
+    "giveaway": "Seu nome remete a algo mágico e fascinante, e fica entre Riachuelo e Lins de Vasconcelos."
+  },
+  "058": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Bairro residencial tradicional, com ruas arborizadas, comércio local ativo e forte identidade de subúrbio carioca.",
+    "giveaway": "Vizinho de Riachuelo e Engenho Novo, este bairro tem nome que remete a formação geológica comum em paisagens brasileiras."
+  },
+  "063": {
+    "region": "Bairro da Zona Norte do Rio de Janeiro, pertencente à região de planejamento homônima ao seu nome.",
+    "character": "Tradicional bairro suburbano, conhecido pelo comércio popular e pela Estação ferroviária movimentada.",
+    "giveaway": "Seu nome batiza toda a região administrativa e de planejamento ao redor, sendo polo comercial do subúrbio carioca."
+  },
+  "002": {
+    "region": "Bairro da região administrativa Portuária, no Centro do Rio de Janeiro, próximo ao porto e à Baía de Guanabara.",
+    "character": "Tem raízes históricas ligadas à chegada de africanos escravizados e abriga o Cais do Valongo, Patrimônio Mundial da UNESCO.",
+    "giveaway": "Vizinho à Saúde e ao Saco do Alferes, este bairro portuário carioca foi palco do maior desembarque de africanos nas Américas."
+  },
+  "003": {
+    "region": "Bairro da região administrativa Portuária, no Centro do Rio de Janeiro, próximo ao porto e à Baía de Guanabara.",
+    "character": "Área histórica em revitalização, com galpões antigos, arte urbana e proximidade com a região olímpica do Porto Maravilha.",
+    "giveaway": "Vizinho à Gamboa e ao Caju, abriga o Museu do Amanhã em seu entorno e antigas edificações do século XIX."
+  },
+  "005": {
+    "region": "Bairro na região de planejamento homônima ao coração administrativo do Rio de Janeiro, às margens da Baía de Guanabara.",
+    "character": "Abriga o Paço Imperial, a Candelária e a Cinelândia, misturando história colonial, cultura e intenso movimento comercial.",
+    "giveaway": "É o bairro onde ficam a Praça XV e o Arco do Teles, coração histórico e administrativo carioca desde o período imperial."
+  },
+  "060": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Bairro residencial tradicional, com comércio local ativo e forte identidade de subúrbio ferroviário do Rio.",
+    "giveaway": "Vizinho de Engenho de Dentro e Del Castilho, é cortado pela linha férrea e tem nome de família lusitana ilustre."
+  },
+  "059": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Bairro tradicional com perfil residencial e comercial, cortado por importantes vias e com forte identidade suburbana.",
+    "giveaway": "Leva o nome de uma famosa batalha naval da Guerra do Paraguai, celebrada em 11 de junho de 1865."
+  },
+  "001": {
+    "region": "Bairro da região administrativa Portuária, no Centro do Rio de Janeiro, próximo ao porto e à Baía de Guanabara.",
+    "character": "Área histórica com igrejas coloniais, trapiches antigos e forte ligação com a memória afro-brasileira do Rio.",
+    "giveaway": "Lar do Cemitério dos Pretos Novos e vizinho do Morro da Conceição, guarda séculos de história portuária carioca."
+  },
+  "057": {
+    "region": "Bairro da zona norte carioca, pertence à região administrativa do Méier e à região de planejamento homônima.",
+    "character": "Área residencial tranquila, com perfil suburbano, boa infraestrutura e forte identidade de bairro tradicional do Rio.",
+    "giveaway": "Leva o nome de um santo jesuíta canonizado em 1622, padroeiro de missões, celebrado em dezembro."
+  },
+  "061": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa do Méier, com fácil acesso por trem e metrô.",
+    "character": "Tem forte tradição cultural e musical, sendo berço de sambistas e artistas cariocas de renome histórico.",
+    "giveaway": "Seu nome remete a uma antiga unidade de processamento de cana-de-açúcar, seguida de um adjetivo que indica algo recente."
+  },
+  "011": {
+    "region": "Bairro da região administrativa de São Cristóvão, no Centro do Rio de Janeiro, próximo à zona portuária.",
+    "character": "Famoso pelo carnaval, abriga uma das escolas de samba mais tradicionais e vitoriosas do Brasil.",
+    "giveaway": "Seu famoso morro e quadra verde-e-rosa são símbolos vivos da cultura do samba carioca."
+  },
+  "067": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa do Méier, uma das mais populosas da cidade.",
+    "character": "Bairro residencial e tranquilo, com perfil familiar, comércio local ativo e boa infraestrutura de transporte.",
+    "giveaway": "Vizinho de Piedade e Del Castilho, este bairro tem nome que remete a um elemento natural precioso e sagrado."
+  },
+  "062": {
+    "region": "Bairro da Zona Norte carioca, pertence à região administrativa do Méier, área tradicional e populosa do Rio de Janeiro.",
+    "character": "Bairro residencial tranquilo, com comércio local ativo, igrejas históricas e perfil familiar típico do subúrbio carioca.",
+    "giveaway": "Homenageia um político e jurista português do século XIX, cujo sobrenome composto batiza este bairro suburbano do Rio."
+  },
+  "008": {
+    "region": "Este bairro fica na região de planejamento Centro do Rio de Janeiro, sob a administração regional de Rio Comprido.",
+    "character": "Abriga o sambódromo, palco do famoso desfile de carnaval carioca, e é marcado por grandes avenidas e infraestrutura urbana moderna.",
+    "giveaway": "Seu nome sugere renovação urbana e foi planejado para modernizar uma área próxima ao centro histórico do Rio."
+  },
+  "032": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa da Tijuca, próximo à divisa com o Centro.",
+    "character": "Conhecido pelo intenso fluxo de trens e metrô, é um nó de transporte com viadutos e infraestrutura urbana marcante.",
+    "giveaway": "Seu nome homenageia um símbolo nacional hasteado em espaços públicos, mas aqui virou referência de um entroncamento ferroviário histórico."
+  },
+  "036": {
+    "region": "Bairro da zona norte carioca, na região de planejamento Tijuca, bem servido de transporte e próximo a grandes avenidas.",
+    "character": "Lar do compositor Noel Rosa, tem tradição boêmia, samba raiz e uma das mais queridas escolas de carnaval do Rio.",
+    "giveaway": "A escola de samba local tem como símbolo o tigre e já foi campeã do carnaval carioca diversas vezes."
+  },
+  "035": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento Tijuca, próximo à Vila Isabel e ao Grajaú.",
+    "character": "Famoso por abrigar o maior estádio de futebol do Brasil, palco de histórias épicas do esporte nacional.",
+    "giveaway": "O estádio olímpico que leva o mesmo nome deste bairro carioca já foi o maior do mundo em capacidade."
+  },
+  "016": {
+    "region": "Bairro da Zona Sul carioca, sob a região administrativa de Botafogo, próximo à Baía de Guanabara.",
+    "character": "Abriga uma famosa igreja histórica do século XVIII e um mirante com vista deslumbrante para o centro do Rio.",
+    "giveaway": "Seu nome remete à devoção religiosa e ao morro que conecta o centro ao Flamengo, com a Igreja de Nossa Senhora."
+  },
+  "007": {
+    "region": "Bairro da região de planejamento Centro, vizinho à Zona Norte e próximo ao centro histórico da cidade.",
+    "character": "Lar do Morro dos Prazeres e do Palácio São Joaquim, mistura área residencial tranquila com vias movimentadas de ligação urbana.",
+    "giveaway": "Cortado pela Rua Barão de Bom Retiro, este bairro faz limite com Santa Teresa, Estácio e Tijuca, numa área de transição da cidade."
+  },
+  "014": {
+    "region": "Bairro da região de planejamento Centro do Rio de Janeiro, em área elevada com vista privilegiada para a Baía de Guanabara.",
+    "character": "Conhecido pelo charme boêmio, ateliês de artistas, casarões históricos e bondes que sobem ladeiras sinuosas.",
+    "giveaway": "O famoso bonde amarelo parte da Lapa e sobe até este bairro, lar do Museu Chácara do Céu e da Feira do Lavradio."
+  },
+  "009": {
+    "region": "Bairro da região administrativa Rio Comprido, na área de planejamento Centro do Rio de Janeiro.",
+    "character": "Lar da primeira escola de samba do Brasil, fundada nos anos 1920, com forte tradição no carnaval carioca.",
+    "giveaway": "Deu nome a um famoso complexo penitenciário e fica próximo à Lapa e ao centro histórico carioca."
+  },
+  "033": {
+    "region": "Bairro da Zona Norte do Rio de Janeiro, pertencente à região de planejamento homônima à sua área administrativa.",
+    "character": "Lar do maior parque urbano florestal do mundo, com trilhas e cachoeiras a poucos minutos do centro da cidade.",
+    "giveaway": "O Alto da Boa Vista e o Maracanã são vizinhos deste bairro tradicional, repleto de comércio e vida cultural carioca."
+  },
+  "006": {
+    "region": "Bairro da região administrativa Rio Comprido, na área de planejamento Centro do Rio de Janeiro.",
+    "character": "Tem forte presença histórica e popular, com cortiços antigos e tradição operária no coração carioca.",
+    "giveaway": "Vizinho ao Estácio e ao Maracanã, guarda ruelas e sobrados que remetem ao Rio do século XIX."
+  },
+  "038": {
+    "region": "Este bairro fica na região de planejamento Tijuca, na zona norte do Rio de Janeiro.",
+    "character": "Conhecido por ruas arborizadas, casas antigas e clima tranquilo, tem perfil residencial e familiar.",
+    "giveaway": "Vizinho ao Andaraí e próximo à Serra dos Pretos Forros, integra a RA de Vila Isabel."
+  },
+  "037": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento Tijuca, vizinho a bairros como Grajaú e Maracanã.",
+    "character": "Tem perfil residencial e tranquilo, com feiras livres, comércio local e proximidade com o Parque Nacional da Tijuca.",
+    "giveaway": "Fica na região administrativa de Vila Isabel e faz divisa com o Alto da Boa Vista, perto da entrada da floresta carioca."
+  },
+  "018": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa de Botafogo, próximo à Glória e ao Flamengo.",
+    "character": "Abriga o Museu da República, instalado no antigo palácio onde Getúlio Vargas viveu e morreu em 1954.",
+    "giveaway": "Seu nome vem do tupi e significa 'caminho estreito'; fica entre o Largo do Machado e a Glória."
+  },
+  "015": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa de Botafogo, às margens da Baía de Guanabara.",
+    "character": "Famoso por seu extenso parque à beira-mar, museus e vista privilegiada para o Pão de Açúcar.",
+    "giveaway": "Seu aterro é um dos maiores parques urbanos do Rio, com pista de cooper, quiosques e shows ao ar livre."
+  },
+  "017": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa de Botafogo, entre morros e próximo ao centro histórico do Rio.",
+    "character": "Charmoso e arborizado, abriga o Palácio Guanabara, sede do governo estadual, e ruas com casarões históricos.",
+    "giveaway": "Seu nome vem das antigas fazendas de frutas cítricas que existiam no local no período colonial fluminense."
+  },
+  "034": {
+    "region": "Bairro da zona norte do Rio, na região de planejamento Tijuca, com acesso à Floresta da Tijuca.",
+    "character": "Área residencial nobre e arborizada, famosa pelo contato direto com a maior floresta urbana do mundo.",
+    "giveaway": "Vizinho ao Pico da Tijuca e Tijuca, é um dos bairros mais verdes e tranquilos do município carioca."
+  },
+  "019": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa de Botafogo, encravado entre morros da Mata Atlântica.",
+    "character": "Abriga um famoso trem que sobe até o Cristo Redentor, passando por floresta exuberante e mansões históricas.",
+    "giveaway": "A estação do Trem do Corcovado fica aqui, ponto de partida para visitar o monumento mais icônico do Brasil."
+  },
+  "020": {
+    "region": "Bairro da Zona Sul carioca, às margens da Baía de Guanabara, entre o Flamengo e Humaitá.",
+    "character": "Lar do Colégio Militar e do Espaço Cultural da Marinha, mistura história, cultura e vida urbana agitada.",
+    "giveaway": "A praia local tem vista direta para o Pão de Açúcar e abriga o famoso Clube de Regatas fundado em 1894."
+  },
+  "022": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa de Botafogo, às margens da Baía de Guanabara.",
+    "character": "Tranquilo e charmoso, abriga o Morro do Pão de Açúcar e a famosa praia com vista para o Rio.",
+    "giveaway": "Bairro onde fica o Forte São João e o Clube de Regatas, cercado de água por quase todos os lados."
+  },
+  "021": {
+    "region": "Bairro da Zona Sul carioca, vizinho a Botafogo e ao Flamengo, entre morros e a orla da Baía de Guanabara.",
+    "character": "Tranquilo e arborizado, abriga a PUC-Rio e tem clima de bairro residencial sofisticado com vida cultural ativa.",
+    "giveaway": "Lar da famosa Cobal, mercado gourmet à beira do canal do Jardim Botânico, muito frequentado por jovens e famílias."
+  },
+  "028": {
+    "region": "Estou na Zona Sul do Rio de Janeiro, numa área nobre próxima à Lagoa Rodrigo de Freitas.",
+    "character": "Sou um bairro residencial tranquilo, cercado de verde e famoso por um importante instituto de pesquisa científica.",
+    "giveaway": "Aqui fica o maior acervo vivo de plantas do Brasil, fundado em 1808 por Dom João VI, que dá nome a este bairro."
+  },
+  "024": {
+    "region": "Estou na Zona Sul do Rio de Janeiro, uma das regiões mais famosas da cidade.",
+    "character": "Minha orla com calçadão de ondas pretas e brancas é um ícone mundial do design urbano carioca.",
+    "giveaway": "O Forte e o Leme são meus vizinhos; minha praia de 4 km atrai turistas do mundo inteiro."
+  },
+  "023": {
+    "region": "Bairro da Zona Sul carioca, vizinho de Copacabana e próximo à divisa com Botafogo, com orla voltada para o Atlântico.",
+    "character": "Tem perfil residencial e tranquilo, com forte presença militar, o Forte que guarda a entrada da praia famosa ao lado.",
+    "giveaway": "Seu Forte fica no extremo norte da praia de Copacabana, onde a Avenida Atlântica termina e o morro encontra o mar."
+  },
+  "027": {
+    "region": "Bairro nobre da Zona Sul carioca, cercado por morros e próximo à orla da Zona Sul do Rio de Janeiro.",
+    "character": "Famoso por sua belaza natural, ciclovia e restaurantes sofisticados às margens da água.",
+    "giveaway": "Fica entre Ipanema, Leblon e Jardim Botânico, com vista para o Cristo e o Corcovado ao fundo."
+  },
+  "029": {
+    "region": "Bairro nobre da Zona Sul carioca, na região administrativa da Lagoa, cercado por mata atlântica e próximo à Floresta da Tijuca.",
+    "character": "Abriga o Planetário do Rio, o Jockey Club e a PUC-Rio, misturando cultura, esporte e educação num só lugar.",
+    "giveaway": "Seu traçado sinuoso sobe em direção à Rocinha e tem vista para a Lagoa Rodrigo de Freitas e o Cristo Redentor."
+  },
+  "026": {
+    "region": "Bairro nobre da Zona Sul carioca, na região administrativa da Lagoa, entre o mar e a montanha.",
+    "character": "Famoso por sua orla elegante, bares sofisticados e pela ciclovia à beira-mar, é um dos metros quadrados mais caros do Brasil.",
+    "giveaway": "Vizinho de Ipanema, separado pelo canal do jardim de Alah, tem a praia preferida dos cariocas mais abastados."
+  },
+  "025": {
+    "region": "Bairro da Zona Sul carioca, pertencente à região administrativa da Lagoa, às margens do Atlântico.",
+    "character": "Famoso por sua praia, moda, boemia e a Garota eternizada na canção de Tom Jobim e Vinícius.",
+    "giveaway": "Fica entre Arpoador e Leblon, com a Pedra da Gávea ao fundo e o Posto 9 como ponto icônico."
+  },
+  "031": {
+    "region": "Bairro da Zona Sul carioca, entre a Barra da Tijuca e o Leblon, cercado por morros e com saída para o mar.",
+    "character": "Famoso por sua praia de ondas fortes, pelo Morro da Pedra da Gávea e por condomínios de alto padrão.",
+    "giveaway": "Lar do Fashion Mall e do Hotel Intercontinental, com acesso pelo Túnel Zuzu Angel e pela Estrada da Gávea."
+  },
+  "030": {
+    "region": "Bairro da Zona Sul carioca, na região administrativa da Lagoa, entre morros e o mar.",
+    "character": "Comunidade famosa pela vista deslumbrante, samba e turismo alternativo na encosta.",
+    "giveaway": "Favela entre o Leblon e São Conrado, com hostel icônico e vista para o mar e a cidade."
+  },
+  "004": {
+    "region": "Bairro da Região Administrativa Portuária, no Centro do Rio de Janeiro, próximo à Baía de Guanabara.",
+    "character": "Abriga um importante porto e cemitério histórico, marcado por tradição industrial e cultural afro-brasileira.",
+    "giveaway": "Famoso pelo cemitério São Francisco Xavier e pelo píer onde chegaram navios negreiros no século XIX."
+  },
+  "047": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Penha, próximo à Baixada Fluminense.",
+    "character": "Comunidade operária marcada por forte presença de igrejas evangélicas e comércio local vibrante.",
+    "giveaway": "Bairro vizinho a Vigário Geral, cortado pela Avenida Brasil, conhecido por sua história de resistência popular."
+  },
+  "046": {
+    "region": "Bairro da Zona Norte do Rio, na região de planejamento da Penha, próximo à Baixada Fluminense.",
+    "character": "Área residencial popular com forte presença industrial e boa ligação viária pela Avenida Brasil.",
+    "giveaway": "Bairro da RA de Vigário Geral, vizinho a Parada de Lucas e Vigário Geral, às margens da Avenida Brasil."
+  },
+  "076": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região de planejamento de Madureira.",
+    "character": "Tradicional bairro carioca com forte presença religiosa, conhecido pela Igreja Nossa Senhora da Apresentação.",
+    "giveaway": "Dá nome à sua própria região administrativa na Zona Norte, com estação de metrô e trem homônima."
+  },
+  "045": {
+    "region": "Bairro da Zona Norte do Rio, pertencente à região administrativa da Penha, próximo à Leopoldina.",
+    "character": "Área residencial e comercial com forte presença industrial, cortada por vias importantes da cidade.",
+    "giveaway": "Vizinho a Olaria e Ramos, este bairro da Penha tem nome que remete a um santo português."
+  },
+  "075": {
+    "region": "Bairro da zona norte do Rio, pertencente à região administrativa de Irajá e à região de planejamento de Madureira.",
+    "character": "Área residencial tranquila, com forte presença comunitária e proximidade a importantes vias de transporte da zona norte carioca.",
+    "giveaway": "Vizinho de Irajá e Colégio, este bairro tem nome que evoca panorama feliz, mas sem usar essas palavras exatas."
+  },
+  "074": {
+    "region": "Bairro da Zona Norte do Rio, na região administrativa de Irajá, próximo a grandes vias que ligam a cidade.",
+    "character": "Bairro residencial tranquilo, com feiras livres animadas e forte comércio local no cotidiano carioca.",
+    "giveaway": "Vizinho de Irajá e Brás de Pina, este bairro carrega no nome a ideia de uma pequena comunidade histórica fluminense."
+  }
+}

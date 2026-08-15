@@ -3,5 +3,6 @@ dist/
 coverage/
 .lighthouse/
 data/
+supabase/functions/_shared/data/*.json
 package-lock.json
 rio-bairros-plan.md
