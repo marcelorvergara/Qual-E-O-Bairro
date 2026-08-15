@@ -62,7 +62,7 @@ export function corsHeaders(request: Request): HeadersInit {
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean)
-  if (!origin || !['http://localhost:5173', ...configured].includes(origin)) {
+  if (!origin || !configured.includes(origin)) {
     return { vary: 'Origin' }
   }
   return {

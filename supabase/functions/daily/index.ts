@@ -6,6 +6,7 @@ import {
   dateInSaoPaulo,
   hintText,
   matrixValue,
+  puzzleNumberForDate,
   type Matrix,
 } from '../_shared/daily-logic.ts'
 import {
@@ -36,6 +37,9 @@ Deno.serve(async (request) => {
     if (!answer) return error(request, 'PUZZLE_NOT_FOUND', 404)
 
     if (body.action === 'bootstrap') {
+      if (answer.puzzle_number !== puzzleNumberForDate(answer.puzzle_date)) {
+        return error(request, 'PUZZLE_NUMBER_MISMATCH', 500)
+      }
       return json(request, {
         puzzleNumber: answer.puzzle_number,
         puzzleDate: answer.puzzle_date,
