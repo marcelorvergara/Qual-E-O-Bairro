@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Guess } from '../game/types'
 import { createBairroPaths } from './geometry'
 import { layoutLabels } from './labels'
@@ -23,6 +23,7 @@ function guessText(guess: Guess): string {
 
 export function BairroMap({ guesses, answerCod, pulseCod }: BairroMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const touchLabelTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const [size, setSize] = useState<Size>({ width: 0, height: 0 })
   const [hoveredName, setHoveredName] = useState('')
 
@@ -39,6 +40,16 @@ export function BairroMap({ guesses, answerCod, pulseCod }: BairroMapProps) {
     observer.observe(container)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => () => clearTimeout(touchLabelTimer.current), [])
+
+  const canHover = () => window.matchMedia('(hover: hover)').matches
+  const showTouchedName = (name: string) => {
+    if (canHover()) return
+    clearTimeout(touchLabelTimer.current)
+    setHoveredName(name)
+    touchLabelTimer.current = setTimeout(() => setHoveredName(''), 1500)
+  }
 
   const paths = useMemo(
     () =>
@@ -105,8 +116,13 @@ export function BairroMap({ guesses, answerCod, pulseCod }: BairroMapProps) {
                   d={path}
                   data-cod={cod}
                   key={cod}
-                  onPointerEnter={() => setHoveredName(feature.properties.nome)}
-                  onPointerLeave={() => setHoveredName('')}
+                  onPointerDown={() => showTouchedName(feature.properties.nome)}
+                  onPointerEnter={() => {
+                    if (canHover()) setHoveredName(feature.properties.nome)
+                  }}
+                  onPointerLeave={() => {
+                    if (canHover()) setHoveredName('')
+                  }}
                 />
               )
             })}

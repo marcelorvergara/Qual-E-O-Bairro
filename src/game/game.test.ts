@@ -24,18 +24,21 @@ describe('name matching', () => {
 
 describe('buckets', () => {
   it.each([
-    [0, false, 0],
-    [2, true, 'encosta'],
-    [3, false, 1],
-    [3.1, false, 2],
-    [7, false, 2],
-    [7.1, false, 3],
-    [12, false, 3],
-    [12.1, false, 4],
-    [20, false, 4],
-    [20.1, false, 5],
-  ])('classifies %s km', (km, adjacent, expected) => {
-    expect(bucketFor(km as number, adjacent as boolean)).toBe(expected)
+    [0, false, true, 0],
+    [0, false, false, 1],
+    [0, true, false, 'encosta'],
+    [3, false, false, 1],
+    [3.1, false, false, 2],
+    [7, false, false, 2],
+    [7.1, false, false, 3],
+    [12, false, false, 3],
+    [12.1, false, false, 4],
+    [20, false, false, 4],
+    [20.1, false, false, 5],
+  ])('classifies %s km', (km, adjacent, correct, expected) => {
+    expect(
+      bucketFor(km as number, adjacent as boolean, correct as boolean),
+    ).toBe(expected)
   })
 })
 

@@ -9,10 +9,12 @@
 }
 
 .gamePanel {
+  --input-height: 3rem;
+  --input-gap: 1.25rem;
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 0.65rem 0.75rem 4.25rem;
+  padding: 0.65rem 0.75rem calc(var(--input-height) + var(--input-gap));
   border-top: 1px solid #d7d1c5;
   background: #f6f3ed;
 }
@@ -117,10 +119,34 @@
 
 @media (orientation: landscape) {
   .gamePanel {
-    flex: 0 0 9rem;
+    flex: 0 0 11rem;
   }
 
   .guessStrip {
     display: none;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 499px) {
+  .gamePanel {
+    flex: 0 0 4.25rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .controls {
+    height: 3rem;
+    padding-right: min(48vw, 26rem);
+  }
+
+  .hintPlaceholder {
+    display: none;
+  }
+
+  .winBanner {
+    position: absolute;
+    top: 0.55rem;
+    right: min(49vw, 27rem);
+    bottom: 0.55rem;
+    left: 0.75rem;
   }
 }

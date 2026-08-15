@@ -61,3 +61,13 @@
   opacity: 0.48;
   cursor: default;
 }
+
+@media (orientation: landscape) and (max-height: 499px) {
+  .wrapper {
+    top: 0.55rem;
+    right: 0.75rem;
+    bottom: auto;
+    left: auto;
+    width: min(46vw, 25rem);
+  }
+}
