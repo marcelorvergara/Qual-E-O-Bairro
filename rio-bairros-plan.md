@@ -43,6 +43,7 @@ data/roads.geojson   Linha Vermelha, Linha Amarela, Av. Brasil (optional layer)
 data/landmarks.json  Cristo, Pão de Açúcar, Maracanã, Galeão runway as points/lines
 data/matrix.json     border distances km + adjacency, keyed by codbairro
 data/pool.json       daily pool codes
+data/exclude.json    codes excluded from "todos" and daily modes
 data/hints.json      three tiers per bairro
 scripts/             build:geo, build:matrix, gen:hints, check:hints
 src/                 app

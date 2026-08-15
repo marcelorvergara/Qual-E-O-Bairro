@@ -1,9 +1,23 @@
+import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-const bairros = JSON.parse(readFileSync('data/bairros.geojson', 'utf8')).features
-const hints = JSON.parse(readFileSync('data/hints.json', 'utf8'))
-const tiers = ['region', 'character', 'giveaway']
-const errors = []
+const stopwords = new Set([
+  'de',
+  'da',
+  'do',
+  'das',
+  'dos',
+  'e',
+  'o',
+  'a',
+  'os',
+  'as',
+  'em',
+  'no',
+  'na',
+  'nos',
+  'nas',
+])
 
 const words = (value) =>
   value
@@ -12,6 +26,24 @@ const words = (value) =>
     .toLocaleLowerCase('pt-BR')
     .match(/[\p{L}\p{N}]+/gu) ?? []
 
+const forbiddenNameWords = (name) =>
+  new Set(words(name).filter((word) => !stopwords.has(word)))
+
+const engenhoWords = forbiddenNameWords('Engenho de Dentro')
+assert.equal(engenhoWords.has('de'), false, 'self-check: “de” must be allowed')
+assert.equal(engenhoWords.has('engenho'), true, 'self-check: “engenho” must be forbidden')
+assert.equal(engenhoWords.has('dentro'), true, 'self-check: “dentro” must be forbidden')
+assert.equal(
+  forbiddenNameWords('Freguesia (Ilha)').has('ilha'),
+  true,
+  'self-check: “ilha” must be forbidden',
+)
+
+const bairros = JSON.parse(readFileSync('data/bairros.geojson', 'utf8')).features
+const hints = JSON.parse(readFileSync('data/hints.json', 'utf8'))
+const tiers = ['region', 'character', 'giveaway']
+const errors = []
+
 for (const { properties } of bairros) {
   const entry = hints[properties.codbairro]
   if (!entry) {
@@ -19,7 +51,7 @@ for (const { properties } of bairros) {
     continue
   }
 
-  const forbidden = new Set(words(properties.nome))
+  const forbidden = forbiddenNameWords(properties.nome)
   for (const tier of tiers) {
     const hint = entry[tier]
     if (typeof hint !== 'string' || !hint.trim()) {

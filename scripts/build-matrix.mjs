@@ -109,6 +109,11 @@ const paqueta = indexByName['Paquetá']
 
 assert.equal(km[copa][ipanema], 0, 'Copacabana↔Ipanema distance must be 0')
 assert.equal(adj[copa][ipanema], true, 'Copacabana↔Ipanema must be adjacent')
+// The border check validates the matrix; the centroid span checks city-scale geometry.
+assert.ok(
+  km[copa][santaCruz] >= 38 && km[copa][santaCruz] <= 48,
+  `Copacabana↔Santa Cruz border distance must be 38–48 km; got ${km[copa][santaCruz]}`,
+)
 const copaSantaCruzSpan = distance(
   centroid(features[copa]),
   centroid(features[santaCruz]),
@@ -129,4 +134,14 @@ for (let left = 0; left < size; left += 1) {
 }
 
 writeFileSync('data/matrix.json', `${JSON.stringify({ codes, km, adj })}\n`)
+console.log(
+  `Sanity: Copacabana↔Ipanema km=${km[copa][ipanema].toFixed(1)}, adjacent=${adj[copa][ipanema]}`,
+)
+console.log(
+  `Sanity: Copacabana↔Santa Cruz border_km=${km[copa][santaCruz].toFixed(1)}, centroid_km=${copaSantaCruzSpan.toFixed(1)}`,
+)
+console.log(
+  `Sanity: Paquetá adjacent_count=${adj[paqueta].filter(Boolean).length}`,
+)
+console.log('Sanity: matrix symmetric=true')
 console.log('Built data/matrix.json; all sanity assertions passed')
