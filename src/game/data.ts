@@ -1,8 +1,9 @@
 import bairrosJson from '../../data/bairros.geojson'
 import excludeJson from '../../data/exclude.json'
+import hintsJson from '../../data/hints.json'
 import matrixJson from '../../data/matrix.json'
 import poolJson from '../../data/pool.json'
-import type { Bairro, PoolName } from './types'
+import type { Bairro, Hints, PoolName } from './types'
 
 interface Matrix {
   codes: string[]
@@ -25,6 +26,15 @@ export const allBairros: Bairro[] = features.map(({ properties }) => ({
 }))
 
 const byCode = new Map(allBairros.map((bairro) => [bairro.cod, bairro]))
+const hintsByCode = hintsJson as Record<string, Hints>
+
+export const HINT_ORDER = ['region', 'character', 'giveaway'] as const
+
+export function hintsFor(cod: string): Hints {
+  const hints = hintsByCode[cod]
+  if (!hints) throw new Error(`Dicas não encontradas: ${cod}`)
+  return hints
+}
 
 export function poolFor(pool: PoolName): Bairro[] {
   const codes =

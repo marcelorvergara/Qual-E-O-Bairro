@@ -41,12 +41,17 @@
 
 .suggestion {
   display: flex;
+  width: 100%;
   min-height: 2.6rem;
   align-items: center;
   justify-content: space-between;
   padding: 0.45rem 0.7rem;
   border-radius: 0.3rem;
   cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
 }
 
 .suggestion small {
@@ -57,17 +62,53 @@
 .active {
   background: #ece8df;
 }
-.guessed {
+.suggestion:disabled {
   opacity: 0.48;
   cursor: default;
 }
 
+.overlay {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 20;
+  overflow: hidden;
+  background: #f6f3ed;
+}
+.overlayHeader {
+  display: grid;
+  padding: max(0.65rem, env(safe-area-inset-top)) 0.75rem 0.65rem;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem;
+}
+.overlayHeader button {
+  min-width: 4.75rem;
+  border: 0;
+  background: transparent;
+  color: #403b34;
+  font: inherit;
+  cursor: pointer;
+}
+.overlaySuggestions {
+  height: calc(100% - 4.3rem);
+  margin: 0;
+  padding: 0 0.75rem 0.75rem;
+  overflow-y: auto;
+  list-style: none;
+}
+.overlaySuggestions .suggestion {
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #d7d1c5;
+  border-radius: 0;
+  background: #fff;
+  text-align: left;
+}
+
 @media (orientation: landscape) and (max-height: 499px) {
   .wrapper {
-    top: 0.55rem;
-    right: 0.75rem;
-    bottom: auto;
-    left: auto;
-    width: min(46vw, 25rem);
+    right: 0.6rem;
+    bottom: 0.6rem;
+    left: 0.6rem;
   }
 }

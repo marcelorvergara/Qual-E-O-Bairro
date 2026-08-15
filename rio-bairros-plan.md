@@ -68,27 +68,27 @@ Vite + React + TS scaffold. Full-viewport SVG, `geoMercator().fitExtent` on the 
 
 Acceptance: renders all 166 bairros correctly oriented (Zona Sul at the bottom right, Santa Cruz at far left); no external network calls; Lighthouse performance ≥ 90 on mobile; bundle < 600 KB gzipped including data.
 
-### Phase 2 — Practice mode game loop (agent, ~3h)
+### Phase 2 — Practice mode game loop (done)
 
 In portrait (viewport height greater than width), the map is fitted to full width and takes only the height required by its aspect ratio, capped at 45% of the viewport; everything below it is the game panel (guess strip, hint-area placeholder, and input). In landscape and on desktop the map keeps its Phase 1 behavior, fitted to the available area, with the game panel as a fixed-height bottom bar. The autocomplete input is always anchored to the bottom of the viewport so it remains above the mobile keyboard; use `100dvh` and test iOS-style keyboard opening by shrinking the viewport height.
 
 Autocomplete input, normalization, guess state, color buckets from the matrix, on-map labels (name + km, collision-avoided by nudging along the centroid or falling back to a leader line for tiny bairros), "encosta" state, win state, "novo jogo" button, choice between "conhecidos" and "todos". Pure logic in `src/game/` with Vitest tests. Colorblind check.
 
-Phase 2 is delivered as two stacked PRs: 2a adds the game logic, autocomplete, controls, responsive panel, and map coloring; 2b makes the map the guess log with collision-aware desktop labels and a newest-first portrait chip strip plus recent-guess highlighting.
+Phase 2 was delivered as two stacked PRs: 2a added the game logic, autocomplete, controls, responsive panel, and map coloring; 2b made the map the guess log. A 2c follow-up contains the playtest fixes and is stacked with Phase 2.5 in a second two-PR delivery.
 
 Acceptance: a full practice game is playable on desktop and phone; tests cover normalization edge cases (accents, parentheses, "São" vs "Sao"), color bucketing boundaries, and win detection; no layout shift when labels appear.
 
 ### Phase 2.5 — Hints and explainer (agent, ~1.5h)
 
-Hint button with three tiers, penalties applied in state, hint text shown as a card above the input. Post-win card with the explainer paragraph fetched from Supabase (`bairro_explainers`); if absent, an Edge Function generates and caches it. Graceful failure: if the fetch fails, the card is simply not shown (honest degradation, no spinner forever).
+Hint button with three static tiers, penalties applied in state, hint text shown as a card above the input, and a data-built post-win placeholder. The generated explainer and its Supabase fetch/cache are deferred to Phase 3.
 
-Acceptance: hint penalties visible in the counter; explainer cached after first request; failure path tested by pointing at a bad URL.
+Acceptance: hint order, cap, and score arithmetic are tested; all three tiers remain clear of the input at 360×640; no runtime network request.
 
 ### Phase 3 — Daily mode and leaderboard (agent, ~4h, likely two PRs)
 
-Supabase migrations and the two Edge Functions. Daily puzzle number computed from a fixed epoch date in America/Sao_Paulo. Client flow: fetch `daily`, play against the hash, submit on win, show rank. Nickname prompt at first submission. Local persistence of daily state so a refresh does not reset the game. Share button producing the text above (Web Share API on mobile, clipboard fallback). Streak and simple stats in localStorage.
+Supabase migrations and the two Edge Functions, plus the generated bairro explainer fetch/cache deferred from Phase 2.5. Daily puzzle number computed from a fixed epoch date in America/Sao_Paulo. Client flow: fetch `daily`, play against the hash, submit on win, show rank. Nickname prompt at first submission. Local persistence of daily state so a refresh does not reset the game. Share button producing the text above (Web Share API on mobile, clipboard fallback). Streak and simple stats in localStorage.
 
-Acceptance: two devices see the same daily; the answer is not recoverable from the bundle or the network tab before winning; a submitted result with an impossible guess sequence is rejected; leaderboard shows top 50 and own rank.
+Acceptance: two devices see the same daily; the answer is not recoverable from the bundle or the network tab before winning; a submitted result with an impossible guess sequence is rejected; leaderboard shows top 50 and own rank; explainers are cached after the first request and fail without a permanent spinner.
 
 ### Phase 4 — Polish and ship (agent + human, ~2h)
 

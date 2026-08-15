@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import poolJson from '../../data/pool.json'
 import { bucketFor } from './buckets'
-import { allBairros, poolFor } from './data'
+import { allBairros, HINT_ORDER, hintsFor, poolFor } from './data'
 import { matchBairros } from './normalize'
-import { guess, newGame } from './reducer'
+import { guess, newGame, score, useHint } from './reducer'
 
 describe('name matching', () => {
   it.each([
@@ -54,5 +54,35 @@ describe('game state', () => {
   it('builds the configured pools', () => {
     expect(poolFor('todos').map(({ nome }) => nome)).not.toContain('Argentino')
     expect(poolFor('conhecidos').map(({ cod }) => cod)).toEqual(poolJson.codes)
+  })
+
+  it('reveals hint tiers in region, character, giveaway order', () => {
+    const state = newGame('conhecidos', () => 0)
+    const hints = hintsFor(state.answer.cod)
+    expect(HINT_ORDER).toEqual(['region', 'character', 'giveaway'])
+    expect(HINT_ORDER.map((key) => hints[key])).toEqual([
+      hints.region,
+      hints.character,
+      hints.giveaway,
+    ])
+    expect(useHint(useHint(useHint(state))).hintsUsed).toBe(3)
+  })
+
+  it('caps hints at three', () => {
+    const state = newGame('conhecidos', () => 0)
+    const capped = useHint(useHint(useHint(state)))
+    expect(useHint(capped)).toBe(capped)
+  })
+
+  it('ignores hints after a win', () => {
+    const state = newGame('conhecidos', () => 0)
+    const won = guess(state, state.answer.cod)
+    expect(useHint(won)).toBe(won)
+  })
+
+  it('adds hints to the future ranking score', () => {
+    const state = newGame('conhecidos', () => 0)
+    const guessed = guess(state, poolFor('conhecidos')[1].cod)
+    expect(score(useHint(useHint(guessed)))).toBe(3)
   })
 })

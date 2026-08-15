@@ -1,11 +1,11 @@
 import { bucketFor } from './buckets'
 import { adjacent, distance, poolFor } from './data'
-import type { GameState, PoolName } from './types'
+import type { GameState, HintCount, PoolName } from './types'
 
 export function newGame(pool: PoolName, rng = Math.random): GameState {
   const bairros = poolFor(pool)
   const answer = bairros[Math.floor(rng() * bairros.length)]
-  return { answer, guesses: [], status: 'playing', pool }
+  return { answer, guesses: [], status: 'playing', pool, hintsUsed: 0 }
 }
 
 export function guess(state: GameState, cod: string): GameState {
@@ -33,4 +33,13 @@ export function reset(state: GameState, rng = Math.random): GameState {
 
 export function guessCount(state: GameState): number {
   return state.guesses.length
+}
+
+export function useHint(state: GameState): GameState {
+  if (state.status === 'won' || state.hintsUsed === 3) return state
+  return { ...state, hintsUsed: (state.hintsUsed + 1) as HintCount }
+}
+
+export function score(state: GameState): number {
+  return state.guesses.length + state.hintsUsed
 }

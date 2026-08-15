@@ -1,0 +1,48 @@
+.panel {
+  display: grid;
+  margin-top: 0.35rem;
+  gap: 0.25rem;
+}
+
+.tier,
+.explanation {
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #d5c69e;
+  border-radius: 0.4rem;
+  background: #fff8dc;
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0.5rem;
+}
+
+.explanation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-color: #b9c9d1;
+  background: #edf5f7;
+}
+
+.explanation button {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+@media (orientation: landscape) and (max-height: 499px) {
+  .panel {
+    order: 3;
+    flex: 0 0 auto;
+  }
+}
