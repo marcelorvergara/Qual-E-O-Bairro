@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && npm run typecheck:functions && vite build",
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "typecheck:functions": "tsc -p tsconfig.functions.json",
     "preview": "vite preview",
     "build:geo": "node scripts/build-geo.mjs",
     "build:exclude": "node scripts/build-exclude.mjs",
@@ -17,7 +18,8 @@
     "test:hints-response": "node --test scripts/hints-response.selfcheck.mjs",
     "check:hints": "node scripts/check-hints.mjs",
     "build:shared": "node scripts/build-shared.mjs",
-    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run build:shared && npm run check:hints"
+    "build:data": "npm run build:geo && npm run build:exclude && npm run build:matrix && npm run build:shared && npm run check:hints",
+    "seed:daily": "node --env-file-if-exists=.env scripts/seed-daily.mjs"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",
