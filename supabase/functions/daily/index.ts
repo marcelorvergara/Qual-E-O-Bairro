@@ -20,6 +20,7 @@ import {
   validDeviceId,
 } from '../_shared/server.ts'
 import { validateNickname } from '../_shared/nickname.ts'
+import { fitExplainer } from '../_shared/explainer.ts'
 
 const gameMatrix = matrix as Matrix
 const knownCodes = new Set(gameMatrix.codes)
@@ -41,6 +42,7 @@ async function cachedExplainer(cod: string): Promise<string | null> {
 }
 
 async function generateExplainer(nome: string): Promise<string | null> {
+  if (Deno.env.get('EXPLAINER_ENABLED') !== 'true') return null
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
   if (!apiKey) return null
   try {
@@ -67,10 +69,8 @@ async function generateExplainer(nome: string): Promise<string | null> {
     const payload = (await response.json()) as {
       content?: { type?: string; text?: string }[]
     }
-    const body = payload.content
-      ?.find((block) => block.type === 'text')
-      ?.text?.trim()
-    return body && Array.from(body).length <= 400 ? body : null
+    const body = payload.content?.find((block) => block.type === 'text')?.text
+    return typeof body === 'string' ? fitExplainer(body) : null
   } catch (caught) {
     console.error('Explainer generation failed', caught)
     return null
@@ -82,17 +82,22 @@ async function explainerFor(cod: string, nome: string): Promise<string | null> {
   if (cached) return cached
   const generated = await generateExplainer(nome)
   if (!generated) return null
-  const response = await serviceRequest(
-    'bairro_explainers?on_conflict=cod,lang',
-    {
-      method: 'POST',
-      headers: { prefer: 'resolution=ignore-duplicates,return=minimal' },
-      body: JSON.stringify({ cod, lang: 'pt-BR', body: generated }),
-    },
-  )
-  if (!response.ok)
-    throw new Error(`Explainer insert failed: ${response.status}`)
-  return cachedExplainer(cod)
+  try {
+    const response = await serviceRequest(
+      'bairro_explainers?on_conflict=cod,lang',
+      {
+        method: 'POST',
+        headers: { prefer: 'resolution=ignore-duplicates,return=minimal' },
+        body: JSON.stringify({ cod, lang: 'pt-BR', body: generated }),
+      },
+    )
+    if (!response.ok)
+      throw new Error(`Explainer insert failed: ${response.status}`)
+    return await cachedExplainer(cod)
+  } catch (caught) {
+    console.error('Explainer cache write failed', caught)
+    return null
+  }
 }
 
 Deno.serve(async (request) => {

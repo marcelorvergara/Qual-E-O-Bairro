@@ -22,7 +22,11 @@ export function loadExplainer(
     }
     if (storage.getItem(key) !== null) storage.removeItem(key)
   } catch {
-    storage.removeItem(key)
+    try {
+      storage.removeItem(key)
+    } catch {
+      // Storage can reject reads and cleanup in privacy modes.
+    }
   }
   return null
 }

@@ -42,4 +42,16 @@ describe('explainer cache', () => {
       expect(storage.length).toBe(0)
     },
   )
+
+  it('returns null when storage rejects both reads and cleanup', () => {
+    const storage = {
+      getItem: () => {
+        throw new Error('Storage disabled')
+      },
+      removeItem: () => {
+        throw new Error('Storage disabled')
+      },
+    } as unknown as Storage
+    expect(loadExplainer('001', storage)).toBeNull()
+  })
 })
