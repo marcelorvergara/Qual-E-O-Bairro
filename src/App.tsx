@@ -355,11 +355,14 @@ export default function App() {
                     currentScore={daily.currentScore}
                     stats={daily.stats}
                   />
-                  <ExplainerPlaceholder
-                    bairro={game.answer}
-                    className={styles.explainer}
-                    known={knownCodes.has(game.answer.cod)}
-                  />
+                  {daily.explainer && (
+                    <section
+                      aria-label="Sobre o bairro"
+                      className={styles.explainer}
+                    >
+                      {daily.explainer}
+                    </section>
+                  )}
                 </div>
               ) : (
                 <ExplainerPlaceholder

@@ -19,5 +19,6 @@ This command executes the SQL but does not add the file to the remote migration 
 | `202608150001_phase_3_daily.sql`        | Present       | Applied                             |
 | `202608150002_harden_daily_access.sql`  | Present       | Applied                             |
 | `202608160001_phase_3c_leaderboard.sql` | Absent        | Applied out of band with `db query` |
+| `202608160002_phase_3d_explainer.sql`   | Absent        | Applied out of band with `db query` |
 
 Update this table whenever a new migration is applied.

@@ -22,6 +22,9 @@ export interface Leaderboard {
   total: number
 }
 
+export type ExplainerResponse =
+  { available: true; body: string } | { available: false }
+
 const messages: Record<string, string> = {
   PUZZLE_NOT_FOUND: 'O desafio de hoje ainda não está disponível.',
   PUZZLE_NUMBER_MISMATCH: 'O desafio de hoje está com dados inconsistentes.',
@@ -191,6 +194,18 @@ export function updateNickname(
     if (data.ok !== true || typeof data.nickname !== 'string')
       throw new Error('O servidor não respondeu como esperado.')
     return data.nickname
+  })
+}
+
+export function explainer(deviceId: string): Promise<ExplainerResponse> {
+  return call<Record<string, unknown>>('daily', {
+    action: 'explainer',
+    deviceId,
+  }).then((data) => {
+    if (data.available === false) return { available: false }
+    if (data.available !== true || typeof data.body !== 'string')
+      throw new Error('O servidor não respondeu como esperado.')
+    return { available: true, body: data.body }
   })
 }
 
