@@ -14,8 +14,10 @@ import {
   newGame,
   resolveGuess,
   resolveHint,
+  score,
 } from '../game/reducer'
 import { shareText } from '../game/share'
+import { loadStats, recordWin, saveStats } from '../game/stats'
 import type { Bairro, GameState, Oracle } from '../game/types'
 
 const NICKNAME_KEY = 'qeb:nickname:v1'
@@ -43,6 +45,7 @@ export function useDaily() {
   const [nickname, setNickname] = useState(storedNickname)
   const [nicknamePending, setNicknamePending] = useState(false)
   const [nicknameError, setNicknameError] = useState<string | null>(null)
+  const [stats, setStats] = useState(loadStats)
   const oracle = useRef<Oracle | null>(null)
   const progress = useRef<DailyProgress | null>(null)
   const gameRef = useRef(game)
@@ -223,6 +226,14 @@ export function useDaily() {
     }
   }, [game.status, loadLeaderboard, meta])
 
+  useEffect(() => {
+    if (!meta || game.status !== 'won') return
+    const stored = loadStats()
+    const next = recordWin(stored, meta.puzzleNumber, score(game))
+    if (next !== stored) saveStats(next)
+    setStats(next)
+  }, [game, meta])
+
   const saveNickname = async () => {
     if (nicknamePending) return
     setNicknamePending(true)
@@ -351,5 +362,7 @@ export function useDaily() {
     nicknamePending,
     nicknameError,
     saveNickname,
+    stats,
+    currentScore: score(game),
   }
 }
