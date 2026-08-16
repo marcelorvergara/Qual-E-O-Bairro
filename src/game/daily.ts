@@ -73,6 +73,22 @@ export function restoreProgress(
   }
 }
 
+export async function restoreVerifiedProgress(
+  puzzleNumber: number,
+  puzzleDate: string,
+  salt: string,
+  answerHash: string,
+  storage: Storage = localStorage,
+) {
+  const restored = restoreProgress(puzzleNumber, puzzleDate, storage)
+  const answer = restored?.state.answer
+  if (answer && !(await verifyAnswer(salt, answer.cod, answerHash))) {
+    storage.removeItem(DAILY_KEY)
+    return null
+  }
+  return restored
+}
+
 export async function verifyAnswer(
   salt: string,
   cod: string,

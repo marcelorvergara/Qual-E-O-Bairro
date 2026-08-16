@@ -18,12 +18,15 @@ interface BairroFeature {
 const features = (bairrosJson as { features: BairroFeature[] }).features
 const matrix = matrixJson as Matrix
 const indexes = new Map(matrix.codes.map((cod, index) => [cod, index]))
+const excludedTodos = new Set(excludeJson.todos)
 
-export const allBairros: Bairro[] = features.map(({ properties }) => ({
-  cod: properties.codbairro,
-  nome: properties.nome,
-  rp: properties.rp,
-}))
+export const allBairros: Bairro[] = features
+  .map(({ properties }) => ({
+    cod: properties.codbairro,
+    nome: properties.nome,
+    rp: properties.rp,
+  }))
+  .filter(({ cod }) => !excludedTodos.has(cod))
 
 const byCode = new Map(allBairros.map((bairro) => [bairro.cod, bairro]))
 const hintsByCode = hintsJson as Record<string, Hints>
@@ -42,7 +45,7 @@ export function poolFor(pool: PoolName): Bairro[] {
       ? new Set(poolJson.codes)
       : new Set(allBairros.map(({ cod }) => cod))
   if (pool === 'todos') {
-    for (const cod of excludeJson.todos) codes.delete(cod)
+    for (const cod of excludedTodos) codes.delete(cod)
   }
   return [...codes].map((cod) => byCode.get(cod)).filter(Boolean) as Bairro[]
 }

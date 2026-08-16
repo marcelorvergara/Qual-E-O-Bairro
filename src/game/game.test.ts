@@ -89,6 +89,7 @@ describe('game state', () => {
   })
 
   it('builds the configured pools', () => {
+    expect(allBairros.map(({ nome }) => nome)).not.toContain('Argentino')
     expect(poolFor('todos').map(({ nome }) => nome)).not.toContain('Argentino')
     expect(poolFor('conhecidos').map(({ cod }) => cod)).toEqual(poolJson.codes)
   })
