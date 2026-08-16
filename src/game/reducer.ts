@@ -1,43 +1,68 @@
 import { bucketFor } from './buckets'
-import { adjacent, distance, poolFor } from './data'
-import type { GameState, HintCount, PoolName } from './types'
+import type { Evaluation, GameState, HintCount, PoolName } from './types'
 
-export function newGame(pool: PoolName, rng = Math.random): GameState {
-  const bairros = poolFor(pool)
-  const answer = bairros[Math.floor(rng() * bairros.length)]
-  return { answer, guesses: [], status: 'playing', pool, hintsUsed: 0 }
+export function newGame(pool: PoolName): GameState {
+  return {
+    answer: null,
+    guesses: [],
+    status: 'playing',
+    pool,
+    hintsUsed: 0,
+    hintTexts: [],
+    pending: false,
+    error: null,
+  }
 }
 
-export function guess(state: GameState, cod: string): GameState {
+export function beginRequest(state: GameState): GameState {
+  return state.pending ? state : { ...state, pending: true, error: null }
+}
+
+export function resolveGuess(
+  state: GameState,
+  cod: string,
+  result: Evaluation,
+): GameState {
   if (
     state.status === 'won' ||
     state.guesses.some((previous) => previous.cod === cod)
   ) {
-    return state
+    return { ...state, pending: false }
   }
 
-  const won = cod === state.answer.cod
-  const km = distance(cod, state.answer.cod)
-  const isAdjacent = !won && adjacent(cod, state.answer.cod)
-  const bucket = bucketFor(km, isAdjacent, won)
+  const bucket = bucketFor(result.km, result.adjacent, result.correct)
   return {
     ...state,
-    guesses: [...state.guesses, { cod, km, adjacent: isAdjacent, bucket }],
-    status: won ? 'won' : 'playing',
+    answer: result.correct ? (result.answer ?? null) : state.answer,
+    guesses: [
+      ...state.guesses,
+      { cod, km: result.km, adjacent: result.adjacent, bucket },
+    ],
+    status: result.correct ? 'won' : 'playing',
+    pending: false,
+    error: null,
   }
 }
 
-export function reset(state: GameState, rng = Math.random): GameState {
-  return newGame(state.pool, rng)
+export function failRequest(state: GameState, message: string): GameState {
+  return { ...state, pending: false, error: message }
 }
 
 export function guessCount(state: GameState): number {
   return state.guesses.length
 }
 
-export function useHint(state: GameState): GameState {
-  if (state.status === 'won' || state.hintsUsed === 3) return state
-  return { ...state, hintsUsed: (state.hintsUsed + 1) as HintCount }
+export function resolveHint(state: GameState, text: string): GameState {
+  if (state.status === 'won' || state.hintsUsed === 3) {
+    return { ...state, pending: false }
+  }
+  return {
+    ...state,
+    hintsUsed: (state.hintsUsed + 1) as HintCount,
+    hintTexts: [...state.hintTexts, text],
+    pending: false,
+    error: null,
+  }
 }
 
 export function score(state: GameState): number {

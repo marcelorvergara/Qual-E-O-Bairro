@@ -8,17 +8,17 @@ import styles from './GuessInput.module.css'
 
 interface GuessInputProps {
   guesses: Guess[]
-  answerCod: string
   pulseCod?: string
   status: GameState['status']
+  disabled?: boolean
   onGuess: (bairro: Bairro) => void
 }
 
 export function GuessInput({
   guesses,
-  answerCod,
   pulseCod,
   status,
+  disabled = false,
   onGuess,
 }: GuessInputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -172,7 +172,7 @@ export function GuessInput({
       autoComplete="off"
       autoFocus={!touchDevice && !fromOverlay}
       className={styles.input}
-      disabled={won}
+      disabled={won || disabled}
       onChange={(event) => {
         setQuery(event.target.value)
         setOpen(true)
@@ -183,7 +183,9 @@ export function GuessInput({
         if (!fromOverlay) startOverlay()
       }}
       onKeyDown={(event) => keyDown(event, fromOverlay)}
-      placeholder={won ? 'Você acertou!' : 'Digite um bairro'}
+      placeholder={
+        won ? 'Você acertou!' : disabled ? 'Aguarde…' : 'Digite um bairro'
+      }
       ref={ref}
       role="combobox"
       type="text"
@@ -213,7 +215,6 @@ export function GuessInput({
             {matches.length > 0 && rows(true)}
             <div className={styles.overlayMap}>
               <BairroMap
-                answerCod={answerCod}
                 compact
                 guesses={guesses}
                 pulseCod={pulseCod}
