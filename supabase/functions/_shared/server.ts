@@ -39,7 +39,7 @@ export async function dailyAnswer(date: string): Promise<DailyAnswer | null> {
 export async function consumeAction(
   date: string,
   deviceId: string,
-  action: 'guess' | 'hint' | 'leaderboard',
+  action: 'guess' | 'hint' | 'leaderboard' | 'nickname',
   limit: number,
 ): Promise<boolean> {
   const response = await serviceRequest('rpc/consume_daily_action', {

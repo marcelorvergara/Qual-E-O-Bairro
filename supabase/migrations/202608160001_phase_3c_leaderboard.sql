@@ -43,7 +43,7 @@ alter table public.daily_action_counts
   drop constraint daily_action_counts_action_check;
 alter table public.daily_action_counts
   add constraint daily_action_counts_action_check
-  check (action in ('guess', 'hint', 'leaderboard'));
+  check (action in ('guess', 'hint', 'leaderboard', 'nickname'));
 
 create or replace function public.consume_daily_action(
   requested_date date,

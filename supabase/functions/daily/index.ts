@@ -81,6 +81,9 @@ Deno.serve(async (request) => {
     if (body.action === 'nickname') {
       const nickname = validateNickname(body.nickname)
       if (!nickname.ok) return error(request, 'INVALID_NICKNAME', 400)
+      if (!(await consumeAction(today, body.deviceId, 'nickname', 20))) {
+        return error(request, 'RATE_LIMITED', 429)
+      }
       const response = await serviceRequest(
         `daily_results?puzzle_date=eq.${encodeURIComponent(today)}&device_id=eq.${encodeURIComponent(body.deviceId)}&select=id`,
         {
