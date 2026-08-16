@@ -18,19 +18,44 @@ import {
 import { shareText } from '../game/share'
 import type { Bairro, GameState, Oracle } from '../game/types'
 
+const NICKNAME_KEY = 'qeb:nickname:v1'
+
+function storedNickname(): string {
+  try {
+    return localStorage.getItem(NICKNAME_KEY)?.slice(0, 20) ?? ''
+  } catch {
+    return ''
+  }
+}
+
 export function useDaily() {
   const [game, setGame] = useState(() => newGame('conhecidos'))
   const [meta, setMeta] = useState<api.Bootstrap | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState('')
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0)
+  const [leaderboard, setLeaderboard] = useState<
+    api.Leaderboard & {
+      loading: boolean
+      error: string | null
+    }
+  >({ entries: [], total: 0, loading: false, error: null })
+  const [nickname, setNickname] = useState(storedNickname)
+  const [nicknamePending, setNicknamePending] = useState(false)
+  const [nicknameError, setNicknameError] = useState<string | null>(null)
   const oracle = useRef<Oracle | null>(null)
   const progress = useRef<DailyProgress | null>(null)
   const gameRef = useRef(game)
   const requestPending = useRef(false)
   const submitPending = useRef(false)
   const bootstrapStarted = useRef(false)
+  const metaRef = useRef(meta)
+  const nicknameRef = useRef(nickname)
+  const leaderboardPending = useRef(false)
+  const leaderboardLoadedFor = useRef<string | null>(null)
   gameRef.current = game
+  metaRef.current = meta
+  nicknameRef.current = nickname
 
   const restore = useCallback(async (currentMeta: api.Bootstrap) => {
     const restored = await restoreVerifiedProgress(
@@ -58,6 +83,7 @@ export function useDaily() {
     api
       .bootstrap()
       .then(async (currentMeta) => {
+        metaRef.current = currentMeta
         await restore(currentMeta)
         setMeta(currentMeta)
       })
@@ -82,6 +108,8 @@ export function useDaily() {
     setMeta(null)
     setError(null)
     setGame(newGame('conhecidos'))
+    setLeaderboard({ entries: [], total: 0, loading: false, error: null })
+    leaderboardLoadedFor.current = null
     setBootstrapAttempt((attempt) => attempt + 1)
   }
   const resume = async () => {
@@ -105,50 +133,121 @@ export function useDaily() {
     }
     saveProgress(progress.current)
   }
-  const submitResult = useCallback(async (next: GameState) => {
-    const saved = progress.current
-    if (!saved || saved.submitted || submitPending.current) return
-    submitPending.current = true
+
+  const loadLeaderboard = useCallback(async (force = false) => {
+    const currentMeta = metaRef.current
+    if (!currentMeta || leaderboardPending.current) return
+    if (!force && leaderboardLoadedFor.current === currentMeta.puzzleDate)
+      return
+    leaderboardLoadedFor.current = currentMeta.puzzleDate
+    leaderboardPending.current = true
+    setLeaderboard((current) => ({
+      ...current,
+      loading: true,
+      error: null,
+    }))
     try {
-      await api.submit({
-        puzzleDate: saved.puzzleDate,
-        deviceId: deviceId(),
-        guesses: next.guesses.map(({ cod, km, adjacent }) => ({
-          cod,
-          km,
-          adjacent,
-        })),
-        hints: next.hintsUsed,
-        elapsedSeconds: Math.max(
-          1,
-          Math.floor((Date.now() - (saved.firstGuessAt ?? Date.now())) / 1000),
-        ),
-      })
-      saved.submitted = true
-      saveProgress(saved)
-      setNotice('Resultado enviado.')
+      const result = await api.leaderboard(deviceId())
+      setLeaderboard({ ...result, loading: false, error: null })
     } catch (caught) {
-      if (api.isAlreadySubmitted(caught)) {
-        saved.submitted = true
-        saveProgress(saved)
-        setNotice('Resultado já enviado.')
-      } else {
-        const message =
+      setLeaderboard((current) => ({
+        ...current,
+        loading: false,
+        error:
           caught instanceof Error
             ? caught.message
-            : 'Falha ao enviar resultado.'
-        setNotice(`${message} Tentaremos novamente na próxima visita.`)
-      }
+            : 'Não foi possível carregar a classificação.',
+      }))
     } finally {
-      submitPending.current = false
+      leaderboardPending.current = false
     }
   }, [])
+
+  const submitResult = useCallback(
+    async (next: GameState) => {
+      const saved = progress.current
+      if (!saved || saved.submitted || submitPending.current) return
+      submitPending.current = true
+      try {
+        await api.submit({
+          puzzleDate: saved.puzzleDate,
+          deviceId: deviceId(),
+          guesses: next.guesses.map(({ cod, km, adjacent }) => ({
+            cod,
+            km,
+            adjacent,
+          })),
+          hints: next.hintsUsed,
+          elapsedSeconds: Math.max(
+            1,
+            Math.floor(
+              (Date.now() - (saved.firstGuessAt ?? Date.now())) / 1000,
+            ),
+          ),
+          ...(nicknameRef.current.trim()
+            ? { nickname: nicknameRef.current.trim() }
+            : {}),
+        })
+        saved.submitted = true
+        saveProgress(saved)
+        setNotice('Resultado enviado.')
+      } catch (caught) {
+        if (api.isAlreadySubmitted(caught)) {
+          saved.submitted = true
+          saveProgress(saved)
+          setNotice('Resultado já enviado.')
+        } else {
+          const message =
+            caught instanceof Error
+              ? caught.message
+              : 'Falha ao enviar resultado.'
+          setNotice(`${message} Tentaremos novamente na próxima visita.`)
+        }
+      } finally {
+        submitPending.current = false
+        void loadLeaderboard()
+      }
+    },
+    [loadLeaderboard],
+  )
 
   useEffect(() => {
     if (meta && game.status === 'won' && !progress.current?.submitted) {
       void submitResult(game)
     }
   }, [game, meta, submitResult])
+
+  useEffect(() => {
+    if (meta && game.status === 'won' && progress.current?.submitted) {
+      void loadLeaderboard()
+    }
+  }, [game.status, loadLeaderboard, meta])
+
+  const saveNickname = async () => {
+    if (nicknamePending) return
+    setNicknamePending(true)
+    setNicknameError(null)
+    try {
+      const saved = await api.updateNickname(deviceId(), nickname)
+      setNickname(saved)
+      nicknameRef.current = saved
+      try {
+        localStorage.setItem(NICKNAME_KEY, saved)
+      } catch {
+        // The server update still succeeds when storage is unavailable.
+      }
+      setNotice('Apelido salvo.')
+      await loadLeaderboard(true)
+    } catch (caught) {
+      setNicknameError(
+        caught instanceof Error
+          ? caught.message
+          : 'Não foi possível salvar o apelido.',
+      )
+    } finally {
+      setNicknamePending(false)
+    }
+  }
 
   const submitGuess = async (bairro: Bairro) => {
     const current = gameRef.current
@@ -245,5 +344,12 @@ export function useDaily() {
     submitGuess,
     revealHint,
     share,
+    leaderboard,
+    refreshLeaderboard: () => loadLeaderboard(true),
+    nickname,
+    setNickname,
+    nicknamePending,
+    nicknameError,
+    saveNickname,
   }
 }
