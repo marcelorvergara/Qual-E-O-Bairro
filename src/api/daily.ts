@@ -25,6 +25,30 @@ export interface Leaderboard {
 export type ExplainerResponse =
   { available: true; body: string } | { available: false }
 
+const serverErrorCodes = new Set([
+  'PUZZLE_NOT_FOUND',
+  'PUZZLE_NUMBER_MISMATCH',
+  'INVALID_PUZZLE_DATE',
+  'INVALID_DEVICE_ID',
+  'INVALID_ACTION',
+  'UNKNOWN_CODE',
+  'EXCLUDED_CODE',
+  'INVALID_HINT_TIER',
+  'RATE_LIMITED',
+  'ALREADY_SUBMITTED',
+  'MATRIX_MISMATCH',
+  'DUPLICATE_CODE',
+  'ANSWER_BEFORE_FINAL',
+  'FINAL_ANSWER_INCORRECT',
+  'INVALID_HINTS',
+  'INVALID_ELAPSED_SECONDS',
+  'INVALID_SCORE',
+  'INVALID_NICKNAME',
+  'NO_RESULT',
+  'METHOD_NOT_ALLOWED',
+  'INTERNAL_ERROR',
+])
+
 function codedError(code: string) {
   const error = new Error(code)
   error.name = code
@@ -63,7 +87,7 @@ async function call<T>(name: 'daily' | 'submit', body: unknown): Promise<T> {
   if (!response.ok) {
     const detail = data?.error as Record<string, unknown> | undefined
     const code = typeof detail?.code === 'string' ? detail.code : ''
-    throw codedError(code || 'CLIENT_RESPONSE')
+    throw codedError(serverErrorCodes.has(code) ? code : 'CLIENT_RESPONSE')
   }
   if (!data) throw codedError('CLIENT_RESPONSE')
   return data as T
