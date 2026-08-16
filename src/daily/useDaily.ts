@@ -16,6 +16,7 @@ import {
   resolveHint,
   score,
 } from '../game/reducer'
+import { loadExplainer, saveExplainer } from '../game/explainer'
 import { shareText } from '../game/share'
 import { loadStats, recordWin, saveStats } from '../game/stats'
 import type { Bairro, GameState, Oracle } from '../game/types'
@@ -46,6 +47,8 @@ export function useDaily() {
   const [nicknamePending, setNicknamePending] = useState(false)
   const [nicknameError, setNicknameError] = useState<string | null>(null)
   const [stats, setStats] = useState(loadStats)
+  const [explainer, setExplainer] = useState<string | null>(null)
+  const [submittedPuzzle, setSubmittedPuzzle] = useState<string | null>(null)
   const oracle = useRef<Oracle | null>(null)
   const progress = useRef<DailyProgress | null>(null)
   const gameRef = useRef(game)
@@ -56,6 +59,7 @@ export function useDaily() {
   const nicknameRef = useRef(nickname)
   const leaderboardPending = useRef(false)
   const leaderboardLoadedFor = useRef<string | null>(null)
+  const explainerLoadedFor = useRef<string | null>(null)
   gameRef.current = game
   metaRef.current = meta
   nicknameRef.current = nickname
@@ -75,6 +79,9 @@ export function useDaily() {
       firstGuessAt: null,
       submitted: false,
     }
+    setSubmittedPuzzle(
+      progress.current.submitted ? currentMeta.puzzleDate : null,
+    )
     oracle.current = dailyOracle(deviceId())
     setGame(restored?.state ?? newGame('conhecidos'))
   }, [])
@@ -113,6 +120,9 @@ export function useDaily() {
     setGame(newGame('conhecidos'))
     setLeaderboard({ entries: [], total: 0, loading: false, error: null })
     leaderboardLoadedFor.current = null
+    explainerLoadedFor.current = null
+    setExplainer(null)
+    setSubmittedPuzzle(null)
     setBootstrapAttempt((attempt) => attempt + 1)
   }
   const resume = async () => {
@@ -193,11 +203,13 @@ export function useDaily() {
         })
         saved.submitted = true
         saveProgress(saved)
+        setSubmittedPuzzle(saved.puzzleDate)
         setNotice('Resultado enviado.')
       } catch (caught) {
         if (api.isAlreadySubmitted(caught)) {
           saved.submitted = true
           saveProgress(saved)
+          setSubmittedPuzzle(saved.puzzleDate)
           setNotice('Resultado já enviado.')
         } else {
           const message =
@@ -225,6 +237,35 @@ export function useDaily() {
       void loadLeaderboard()
     }
   }, [game.status, loadLeaderboard, meta])
+
+  useEffect(() => {
+    const answer = game.answer
+    if (
+      !meta ||
+      !answer ||
+      game.status !== 'won' ||
+      submittedPuzzle !== meta.puzzleDate ||
+      explainerLoadedFor.current === answer.cod
+    ) {
+      return
+    }
+    explainerLoadedFor.current = answer.cod
+    const cached = loadExplainer(answer.cod)
+    if (cached) {
+      setExplainer(cached)
+      return
+    }
+    api
+      .explainer(deviceId())
+      .then((result) => {
+        if (!result.available) return
+        saveExplainer(answer.cod, result.body)
+        setExplainer(result.body)
+      })
+      .catch(() => {
+        // The post-win explainer is optional and fails invisibly.
+      })
+  }, [game.answer, game.status, meta, submittedPuzzle])
 
   useEffect(() => {
     if (!meta || game.status !== 'won') return
@@ -364,5 +405,6 @@ export function useDaily() {
     saveNickname,
     stats,
     currentScore: score(game),
+    explainer,
   }
 }
