@@ -39,7 +39,7 @@ export async function dailyAnswer(date: string): Promise<DailyAnswer | null> {
 export async function consumeAction(
   date: string,
   deviceId: string,
-  action: 'guess' | 'hint',
+  action: 'guess' | 'hint' | 'leaderboard' | 'nickname',
   limit: number,
 ): Promise<boolean> {
   const response = await serviceRequest('rpc/consume_daily_action', {
@@ -54,6 +54,36 @@ export async function consumeAction(
   if (!response.ok)
     throw new Error(`Rate limit query failed: ${response.status}`)
   return (await response.json()) === true
+}
+
+export interface LeaderboardRow {
+  position: number
+  nickname: string | null
+  score: number
+  elapsed_seconds: number
+  is_self: boolean
+}
+
+export async function dailyLeaderboard(date: string, deviceId: string) {
+  const response = await serviceRequest('rpc/daily_leaderboard', {
+    method: 'POST',
+    body: JSON.stringify({ p_date: date, p_device: deviceId }),
+  })
+  if (!response.ok)
+    throw new Error(`Leaderboard query failed: ${response.status}`)
+  const entries = (await response.json()) as LeaderboardRow[]
+
+  const countResponse = await serviceRequest(
+    `daily_results?puzzle_date=eq.${encodeURIComponent(date)}&select=id`,
+    { headers: { prefer: 'count=exact', range: '0-0' } },
+  )
+  if (!countResponse.ok)
+    throw new Error(`Leaderboard count failed: ${countResponse.status}`)
+  const total = Number(
+    countResponse.headers.get('content-range')?.split('/')[1],
+  )
+  if (!Number.isInteger(total)) throw new Error('Leaderboard count is invalid')
+  return { entries, total }
 }
 
 export function corsHeaders(request: Request): HeadersInit {

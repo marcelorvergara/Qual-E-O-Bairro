@@ -1,4 +1,5 @@
 import type { Evaluation } from '../game/types'
+import type { LeaderboardEntry } from '../game/leaderboard'
 
 export interface Bootstrap {
   puzzleNumber: number
@@ -13,6 +14,12 @@ export interface SubmitPayload {
   guesses: { cod: string; km: number; adjacent: boolean }[]
   hints: number
   elapsedSeconds: number
+  nickname?: string
+}
+
+export interface Leaderboard {
+  entries: LeaderboardEntry[]
+  total: number
 }
 
 const messages: Record<string, string> = {
@@ -33,6 +40,8 @@ const messages: Record<string, string> = {
   INVALID_HINTS: 'A quantidade de dicas é inválida.',
   INVALID_ELAPSED_SECONDS: 'O tempo da partida é inválido.',
   INVALID_SCORE: 'A pontuação não pôde ser validada.',
+  INVALID_NICKNAME: 'Esse apelido não pode ser usado.',
+  NO_RESULT: 'Envie o resultado antes de salvar o apelido.',
   METHOD_NOT_ALLOWED: 'O servidor recusou a solicitação.',
   INTERNAL_ERROR: 'O servidor encontrou um erro.',
 }
@@ -131,11 +140,57 @@ export function hint(deviceId: string, tier: 1 | 2 | 3) {
   })
 }
 
-export function submit(payload: SubmitPayload): Promise<{ ok: true }> {
+export function submit(
+  payload: SubmitPayload,
+): Promise<{ ok: true; position?: number; total?: number }> {
   return call<Record<string, unknown>>('submit', payload).then((data) => {
     if (data.ok !== true)
       throw new Error('O servidor não respondeu como esperado.')
-    return { ok: true }
+    if (
+      (data.position !== undefined && typeof data.position !== 'number') ||
+      (data.total !== undefined && typeof data.total !== 'number')
+    )
+      throw new Error('O servidor não respondeu como esperado.')
+    return data as { ok: true; position?: number; total?: number }
+  })
+}
+
+export function leaderboard(deviceId: string): Promise<Leaderboard> {
+  return call<Record<string, unknown>>('daily', {
+    action: 'leaderboard',
+    deviceId,
+  }).then((data) => {
+    if (!Array.isArray(data.entries) || typeof data.total !== 'number')
+      throw new Error('O servidor não respondeu como esperado.')
+    const valid = data.entries.every((value) => {
+      const entry = value as Record<string, unknown>
+      return (
+        typeof entry.position === 'number' &&
+        (entry.nickname === null || typeof entry.nickname === 'string') &&
+        typeof entry.score === 'number' &&
+        typeof entry.elapsedSeconds === 'number' &&
+        typeof entry.isSelf === 'boolean' &&
+        !('deviceId' in entry) &&
+        !('device_id' in entry)
+      )
+    })
+    if (!valid) throw new Error('O servidor não respondeu como esperado.')
+    return data as unknown as Leaderboard
+  })
+}
+
+export function updateNickname(
+  deviceId: string,
+  nickname: string,
+): Promise<string> {
+  return call<Record<string, unknown>>('daily', {
+    action: 'nickname',
+    deviceId,
+    nickname,
+  }).then((data) => {
+    if (data.ok !== true || typeof data.nickname !== 'string')
+      throw new Error('O servidor não respondeu como esperado.')
+    return data.nickname
   })
 }
 

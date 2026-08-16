@@ -13,10 +13,13 @@ import {
   consumeAction,
   corsHeaders,
   dailyAnswer,
+  dailyLeaderboard,
   error,
   json,
+  serviceRequest,
   validDeviceId,
 } from '../_shared/server.ts'
+import { validateNickname } from '../_shared/nickname.ts'
 
 const gameMatrix = matrix as Matrix
 const knownCodes = new Set(gameMatrix.codes)
@@ -47,11 +50,54 @@ Deno.serve(async (request) => {
         answerHash: answer.answer_hash,
       })
     }
-    if (body.action !== 'guess' && body.action !== 'hint') {
+    if (
+      body.action !== 'guess' &&
+      body.action !== 'hint' &&
+      body.action !== 'leaderboard' &&
+      body.action !== 'nickname'
+    ) {
       return error(request, 'INVALID_ACTION', 400)
     }
     if (!validDeviceId(body.deviceId))
       return error(request, 'INVALID_DEVICE_ID', 400)
+
+    if (body.action === 'leaderboard') {
+      if (!(await consumeAction(today, body.deviceId, 'leaderboard', 60))) {
+        return error(request, 'RATE_LIMITED', 429)
+      }
+      const leaderboard = await dailyLeaderboard(today, body.deviceId)
+      return json(request, {
+        entries: leaderboard.entries.map((entry) => ({
+          position: entry.position,
+          nickname: entry.nickname,
+          score: entry.score,
+          elapsedSeconds: entry.elapsed_seconds,
+          isSelf: entry.is_self,
+        })),
+        total: leaderboard.total,
+      })
+    }
+
+    if (body.action === 'nickname') {
+      const nickname = validateNickname(body.nickname)
+      if (!nickname.ok) return error(request, 'INVALID_NICKNAME', 400)
+      if (!(await consumeAction(today, body.deviceId, 'nickname', 20))) {
+        return error(request, 'RATE_LIMITED', 429)
+      }
+      const response = await serviceRequest(
+        `daily_results?puzzle_date=eq.${encodeURIComponent(today)}&device_id=eq.${encodeURIComponent(body.deviceId)}&select=id`,
+        {
+          method: 'PATCH',
+          headers: { prefer: 'return=representation' },
+          body: JSON.stringify({ nickname: nickname.value }),
+        },
+      )
+      if (!response.ok)
+        throw new Error(`Nickname update failed: ${response.status}`)
+      const rows = (await response.json()) as { id: string }[]
+      if (rows.length === 0) return error(request, 'NO_RESULT', 404)
+      return json(request, { ok: true, nickname: nickname.value })
+    }
 
     if (body.action === 'guess') {
       if (typeof body.cod !== 'string' || !knownCodes.has(body.cod)) {

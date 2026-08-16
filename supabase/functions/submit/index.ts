@@ -1,6 +1,7 @@
 import exclude from '../_shared/data/exclude.json' with { type: 'json' }
 import matrix from '../_shared/data/matrix.json' with { type: 'json' }
 import { type Matrix } from '../_shared/daily-logic.ts'
+import { validateNickname } from '../_shared/nickname.ts'
 import {
   type Submission,
   insertErrorCode,
@@ -9,6 +10,7 @@ import {
 import {
   corsHeaders,
   dailyAnswer,
+  dailyLeaderboard,
   error,
   json,
   serviceRequest,
@@ -44,10 +46,12 @@ Deno.serve(async (request) => {
     )
     if (!validation.ok) return error(request, validation.code, 400)
 
-    const nickname =
-      typeof body.nickname === 'string'
-        ? body.nickname.trim().slice(0, 20) || null
-        : null
+    let nickname: string | null = null
+    if (body.nickname !== undefined) {
+      const nicknameValidation = validateNickname(body.nickname)
+      if (!nicknameValidation.ok) return error(request, 'INVALID_NICKNAME', 400)
+      nickname = nicknameValidation.value
+    }
     const response = await serviceRequest('daily_results', {
       method: 'POST',
       headers: { prefer: 'return=minimal' },
@@ -66,7 +70,20 @@ Deno.serve(async (request) => {
     if (insertCode) return error(request, insertCode, 409)
     if (!response.ok)
       throw new Error(`Result insert failed: ${response.status}`)
-    return json(request, { ok: true })
+    try {
+      const leaderboard = await dailyLeaderboard(
+        answer.puzzle_date,
+        body.deviceId,
+      )
+      const own = leaderboard.entries.find((entry) => entry.is_self)
+      return json(request, {
+        ok: true,
+        ...(own ? { position: own.position, total: leaderboard.total } : {}),
+      })
+    } catch (caught) {
+      console.error('Result inserted but rank lookup failed', caught)
+      return json(request, { ok: true })
+    }
   } catch (caught) {
     console.error(caught)
     return error(request, 'INTERNAL_ERROR', 500)
