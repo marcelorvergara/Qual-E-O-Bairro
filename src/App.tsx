@@ -1,17 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import * as api from './api/daily'
+import { useEffect, useRef, useState } from 'react'
 import { ExplainerPlaceholder } from './components/ExplainerPlaceholder'
 import { GuessInput } from './components/GuessInput'
 import { HintPanel } from './components/HintPanel'
+import { useDaily } from './daily/useDaily'
 import { allBairros, poolFor } from './game/data'
-import {
-  dailyOracle,
-  deviceId,
-  restoreVerifiedProgress,
-  saveProgress,
-  verifyAnswer,
-  type DailyProgress,
-} from './game/daily'
 import { practiceOracle } from './game/oracle'
 import {
   beginRequest,
@@ -21,8 +13,7 @@ import {
   resolveGuess,
   resolveHint,
 } from './game/reducer'
-import { shareText } from './game/share'
-import type { Bairro, GameState, Oracle, PoolName } from './game/types'
+import type { Bairro, Oracle, PoolName } from './game/types'
 import { BairroMap } from './map/BairroMap'
 import styles from './App.module.css'
 
@@ -32,231 +23,105 @@ const hintExplanationKey = 'hint-ranking-explanation-seen'
 
 export default function App() {
   const [mode, setMode] = useState<'daily' | 'practice'>('daily')
-  const [game, setGame] = useState(() => newGame('conhecidos'))
-  const [dailyMeta, setDailyMeta] = useState<api.Bootstrap | null>(null)
-  const [dailyError, setDailyError] = useState<string | null>(null)
-  const [bootstrapAttempt, setBootstrapAttempt] = useState(0)
-  const [notice, setNotice] = useState('')
+  const daily = useDaily()
+  const [practiceGame, setPracticeGame] = useState(() => newGame('conhecidos'))
+  const [practiceNotice, setPracticeNotice] = useState('')
   const [pulseCod, setPulseCod] = useState<string>()
   const [showHintExplanation, setShowHintExplanation] = useState(false)
-  const oracle = useRef<Oracle | null>(null)
-  const progress = useRef<DailyProgress | null>(null)
-  const gameRef = useRef(game)
-  const requestPending = useRef(false)
-  const submitPending = useRef(false)
-  const bootstrapStarted = useRef(false)
+  const practice = useRef<Oracle>(practiceOracle('conhecidos'))
+  const practiceGameRef = useRef(practiceGame)
+  const practicePending = useRef(false)
   const pulseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  gameRef.current = game
-
-  useEffect(() => {
-    if (mode !== 'daily' || bootstrapStarted.current) return
-    bootstrapStarted.current = true
-    setDailyError(null)
-    api
-      .bootstrap()
-      .then(async (meta) => {
-        const id = deviceId()
-        const restored = await restoreVerifiedProgress(
-          meta.puzzleNumber,
-          meta.puzzleDate,
-          meta.salt,
-          meta.answerHash,
-        )
-        progress.current = restored?.progress ?? {
-          puzzleNumber: meta.puzzleNumber,
-          puzzleDate: meta.puzzleDate,
-          guesses: [],
-          hints: [],
-          firstGuessAt: null,
-          submitted: false,
-        }
-        oracle.current = dailyOracle(id)
-        setGame(restored?.state ?? newGame('conhecidos'))
-        setDailyMeta(meta)
-      })
-      .catch((error: unknown) =>
-        setDailyError(
-          error instanceof Error ? error.message : 'Modo diário indisponível.',
-        ),
-      )
-  }, [mode, bootstrapAttempt])
+  const game = mode === 'daily' ? daily.game : practiceGame
+  const notice = mode === 'daily' ? daily.notice : practiceNotice
+  practiceGameRef.current = practiceGame
 
   useEffect(() => () => clearTimeout(pulseTimer.current), [])
   useEffect(() => {
-    if (!notice) return
-    const timer = setTimeout(() => setNotice(''), 4000)
+    if (!practiceNotice) return
+    const timer = setTimeout(() => setPracticeNotice(''), 4000)
     return () => clearTimeout(timer)
-  }, [notice])
+  }, [practiceNotice])
 
   const startPractice = (pool: PoolName = 'conhecidos') => {
-    oracle.current = practiceOracle(pool)
+    practice.current = practiceOracle(pool)
     setMode('practice')
-    setGame(newGame(pool))
-    setNotice('')
-  }
-  const retryDaily = () => {
-    bootstrapStarted.current = false
-    oracle.current = null
-    setDailyMeta(null)
-    setDailyError(null)
-    setGame(newGame('conhecidos'))
-    setBootstrapAttempt((attempt) => attempt + 1)
+    setPracticeGame(newGame(pool))
+    setPracticeNotice('')
   }
   const returnToDaily = () => {
-    if (!dailyMeta) return
+    if (!daily.meta) return
     setMode('daily')
-    setNotice('')
-    retryDaily()
+    void daily.resume()
   }
-  const persist = (next: GameState, changes: Partial<DailyProgress> = {}) => {
-    if (mode !== 'daily' || !progress.current) return
-    progress.current = {
-      ...progress.current,
-      guesses: next.guesses,
-      hints: next.hintTexts,
-      answer: next.answer ?? undefined,
-      ...changes,
-    }
-    saveProgress(progress.current)
-  }
-  const submitResult = useCallback(async (next: GameState) => {
-    const saved = progress.current
-    if (!saved || saved.submitted || submitPending.current) return
-    submitPending.current = true
-    try {
-      await api.submit({
-        puzzleDate: saved.puzzleDate,
-        deviceId: deviceId(),
-        guesses: next.guesses.map(({ cod, km, adjacent }) => ({
-          cod,
-          km,
-          adjacent,
-        })),
-        hints: next.hintsUsed,
-        elapsedSeconds: Math.max(
-          1,
-          Math.floor((Date.now() - (saved.firstGuessAt ?? Date.now())) / 1000),
-        ),
-      })
-      saved.submitted = true
-      saveProgress(saved)
-      setNotice('Resultado enviado.')
-    } catch (error) {
-      if (api.isAlreadySubmitted(error)) {
-        saved.submitted = true
-        saveProgress(saved)
-        setNotice('Resultado já enviado.')
-      } else {
-        const message =
-          error instanceof Error ? error.message : 'Falha ao enviar resultado.'
-        setNotice(`${message} Tentaremos novamente na próxima visita.`)
-      }
-    } finally {
-      submitPending.current = false
-    }
-  }, [])
-  useEffect(() => {
-    if (
-      mode === 'daily' &&
-      dailyMeta &&
-      game.status === 'won' &&
-      !progress.current?.submitted
-    ) {
-      void submitResult(game)
-    }
-  }, [dailyMeta, game, mode, submitResult])
-  const submitGuess = async (bairro: Bairro) => {
-    const current = gameRef.current
-    if (!oracle.current || requestPending.current || current.status === 'won')
-      return
+  const submitPracticeGuess = async (bairro: Bairro) => {
+    const current = practiceGameRef.current
+    if (practicePending.current || current.status === 'won') return
     if (current.guesses.some(({ cod }) => cod === bairro.cod)) {
-      setNotice('Você já tentou esse bairro.')
+      setPracticeNotice('Você já tentou esse bairro.')
       return
     }
-    requestPending.current = true
+    practicePending.current = true
     const waiting = beginRequest(current)
-    gameRef.current = waiting
-    setGame(waiting)
-    const firstGuessAt = progress.current?.firstGuessAt ?? Date.now()
+    practiceGameRef.current = waiting
+    setPracticeGame(waiting)
     try {
-      const result = await oracle.current.evaluate(bairro.cod)
-      if (
-        mode === 'daily' &&
-        result.correct &&
-        dailyMeta &&
-        !(await verifyAnswer(dailyMeta.salt, bairro.cod, dailyMeta.answerHash))
-      ) {
-        throw new Error('A resposta recebida não passou pela verificação.')
-      }
+      const result = await practice.current.evaluate(bairro.cod)
       if (result.correct && !result.answer)
         throw new Error('Resposta incompleta do servidor.')
       const next = resolveGuess(waiting, bairro.cod, result)
-      gameRef.current = next
-      setGame(next)
-      persist(next, { firstGuessAt })
+      practiceGameRef.current = next
+      setPracticeGame(next)
     } catch (error) {
       const failed = failRequest(
         waiting,
         error instanceof Error ? error.message : 'Palpite não registrado.',
       )
-      gameRef.current = failed
-      setGame(failed)
+      practiceGameRef.current = failed
+      setPracticeGame(failed)
     } finally {
-      requestPending.current = false
+      practicePending.current = false
     }
   }
-  const revealHint = async () => {
-    const current = gameRef.current
-    if (!oracle.current || requestPending.current || current.hintsUsed === 3)
-      return
-    requestPending.current = true
+  const revealPracticeHint = async (): Promise<boolean> => {
+    const current = practiceGameRef.current
+    if (practicePending.current || current.hintsUsed === 3) return false
+    practicePending.current = true
     const waiting = beginRequest(current)
-    gameRef.current = waiting
-    setGame(waiting)
+    practiceGameRef.current = waiting
+    setPracticeGame(waiting)
     try {
-      const text = await oracle.current.hint(
+      const text = await practice.current.hint(
         (current.hintsUsed + 1) as 1 | 2 | 3,
       )
       const next = resolveHint(waiting, text)
-      gameRef.current = next
-      setGame(next)
-      persist(next)
-      let seen = false
-      try {
-        seen = Boolean(sessionStorage.getItem(hintExplanationKey))
-        if (!seen) sessionStorage.setItem(hintExplanationKey, '1')
-      } catch {
-        // Storage can be unavailable in privacy modes; the hint still succeeds.
-      }
-      if (!seen) {
-        setShowHintExplanation(true)
-      }
+      practiceGameRef.current = next
+      setPracticeGame(next)
+      return true
     } catch (error) {
       const failed = failRequest(
         waiting,
         error instanceof Error ? error.message : 'Dica não revelada.',
       )
-      gameRef.current = failed
-      setGame(failed)
+      practiceGameRef.current = failed
+      setPracticeGame(failed)
+      return false
     } finally {
-      requestPending.current = false
+      practicePending.current = false
     }
   }
-  const share = async () => {
-    if (!dailyMeta) return
-    const text = shareText(dailyMeta.puzzleNumber, game.guesses, game.hintsUsed)
-    const shareApi = (
-      navigator as unknown as {
-        share?: (data: { text: string }) => Promise<void>
-      }
-    ).share
+  const revealHint = async () => {
+    const revealed =
+      mode === 'daily' ? await daily.revealHint() : await revealPracticeHint()
+    if (!revealed) return
+    let seen = false
     try {
-      if (shareApi) await shareApi.call(navigator, { text })
-      else await navigator.clipboard.writeText(text)
-      setNotice(shareApi ? 'Compartilhado!' : 'Resultado copiado!')
+      seen = Boolean(sessionStorage.getItem(hintExplanationKey))
+      if (!seen) sessionStorage.setItem(hintExplanationKey, '1')
     } catch {
-      setNotice('Não foi possível compartilhar.')
+      // Storage can be unavailable in privacy modes; the hint still succeeds.
     }
+    if (!seen) setShowHintExplanation(true)
   }
   const pulse = (cod: string) => {
     clearTimeout(pulseTimer.current)
@@ -267,7 +132,7 @@ export default function App() {
     })
   }
 
-  const dailyUnavailable = mode === 'daily' && dailyError
+  const dailyUnavailable = mode === 'daily' && daily.error
   return (
     <main className={styles.app}>
       <BairroMap
@@ -298,7 +163,7 @@ export default function App() {
             <div className={styles.segmented} aria-label="Modo de jogo">
               <button
                 aria-pressed={mode === 'daily'}
-                disabled={!dailyMeta || game.pending}
+                disabled={!daily.meta || game.pending}
                 onClick={returnToDaily}
                 type="button"
               >
@@ -314,8 +179,8 @@ export default function App() {
               </button>
             </div>
             <span className={styles.scoreCount}>
-              {dailyMeta && mode === 'daily'
-                ? `#${dailyMeta.puzzleNumber} · `
+              {daily.meta && mode === 'daily'
+                ? `#${daily.meta.puzzleNumber} · `
                 : ''}
               {guessCount(game)} palpites
               {game.hintsUsed > 0 && ` · ${game.hintsUsed} dicas`}
@@ -365,14 +230,14 @@ export default function App() {
             className={styles.feedback}
             role={dailyUnavailable || game.error ? 'alert' : 'status'}
           >
-            {!dailyMeta &&
-              !dailyError &&
+            {!daily.meta &&
+              !daily.error &&
               mode === 'daily' &&
               'Carregando desafio diário…'}
             {dailyUnavailable && (
               <>
-                <span>{dailyError}</span>
-                <button onClick={retryDaily} type="button">
+                <span>{daily.error}</span>
+                <button onClick={daily.retry} type="button">
                   Tentar novamente
                 </button>
                 <button onClick={() => startPractice()} type="button">
@@ -396,7 +261,7 @@ export default function App() {
                   {guessCount(game)} palpites
                 </span>
                 {mode === 'daily' ? (
-                  <button onClick={share} type="button">
+                  <button onClick={daily.share} type="button">
                     Compartilhar
                   </button>
                 ) : (
@@ -420,10 +285,10 @@ export default function App() {
           disabled={
             game.pending ||
             Boolean(dailyUnavailable) ||
-            (mode === 'daily' && !dailyMeta)
+            (mode === 'daily' && !daily.meta)
           }
           guesses={game.guesses}
-          onGuess={submitGuess}
+          onGuess={mode === 'daily' ? daily.submitGuess : submitPracticeGuess}
           pulseCod={pulseCod}
           status={game.status}
         />
