@@ -1,4 +1,5 @@
 .app {
+  position: relative;
   display: flex;
   width: 100%;
   height: 100vh;
@@ -6,6 +7,43 @@
   min-height: 0;
   flex-direction: column;
   background: #f6f3ed;
+}
+
+.languageToggle {
+  position: fixed;
+  z-index: 4;
+  top: max(0.6rem, env(safe-area-inset-top));
+  left: 0.75rem;
+  min-width: 2.6rem;
+  min-height: 2.1rem;
+  border: 1px solid rgb(37 35 31 / 28%);
+  border-radius: 0.4rem;
+  background: rgb(255 255 255 / 90%);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.attribution {
+  position: fixed;
+  z-index: 2;
+  top: min(33.333vw, 45dvh);
+  left: 0.75rem;
+  display: flex;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.22rem 0.4rem;
+  gap: 0.2rem 0.65rem;
+  transform: translateY(-100%);
+  border-radius: 0.25rem 0.25rem 0 0;
+  background: rgb(246 243 237 / 88%);
+  color: #4d4942;
+  font-size: 0.62rem;
+}
+
+.attribution a {
+  color: inherit;
 }
 
 .gamePanel {
@@ -239,6 +277,12 @@
 }
 
 @media (orientation: landscape) {
+  .attribution {
+    top: auto;
+    bottom: 11rem;
+    transform: none;
+  }
+
   .gamePanel {
     min-height: 11rem;
     flex: 0 0 auto;
@@ -250,6 +294,11 @@
 }
 
 @media (orientation: landscape) and (max-height: 499px) {
+  .attribution {
+    bottom: 0.45rem;
+    max-width: calc(60% - 1.5rem);
+  }
+
   .app {
     flex-direction: row;
   }

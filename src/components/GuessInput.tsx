@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { allBairros } from '../game/data'
 import { matchBairros, normalizeName } from '../game/normalize'
 import type { Bairro, GameState, Guess } from '../game/types'
+import { useLanguage } from '../i18n'
 import { BairroMap } from '../map/BairroMap'
 import styles from './GuessInput.module.css'
 
@@ -21,6 +22,7 @@ export function GuessInput({
   disabled = false,
   onGuess,
 }: GuessInputProps) {
+  const { text } = useLanguage()
   const inputRef = useRef<HTMLInputElement>(null)
   const overlayInputRef = useRef<HTMLInputElement>(null)
   const pushedHistory = useRef(false)
@@ -184,7 +186,7 @@ export function GuessInput({
       }}
       onKeyDown={(event) => keyDown(event, fromOverlay)}
       placeholder={
-        won ? 'Você acertou!' : disabled ? 'Aguarde…' : 'Digite um bairro'
+        won ? text.correctInput : disabled ? text.wait : text.typeBairro
       }
       ref={ref}
       role="combobox"
@@ -200,7 +202,7 @@ export function GuessInput({
       {overlay &&
         createPortal(
           <div
-            aria-label="Buscar bairro"
+            aria-label={text.searchBairro}
             aria-modal="true"
             className={styles.overlay}
             role="dialog"
@@ -209,7 +211,7 @@ export function GuessInput({
             <div className={styles.overlayHeader}>
               {input(overlayInputRef, true)}
               <button onClick={() => closeOverlay()} type="button">
-                Cancelar
+                {text.cancel}
               </button>
             </div>
             {matches.length > 0 && rows(true)}

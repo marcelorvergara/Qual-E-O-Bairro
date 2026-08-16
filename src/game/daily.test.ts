@@ -108,6 +108,10 @@ describe('share text', () => {
       '🟪🎯 2 palpites, 1 dica',
     )
   })
+
+  it('localizes shared results in English', () => {
+    expect(shareText(9, [guess(0)], 1, 'en')).toContain('🎯 1 guess, 1 hint')
+  })
   it('reproduces the plan example', () => {
     const buckets: Bucket[] = [4, 3, 2, 1, 1, 1, 0]
     expect(

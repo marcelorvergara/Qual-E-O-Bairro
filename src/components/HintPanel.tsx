@@ -1,12 +1,7 @@
 import { HINT_ORDER } from '../game/data'
 import type { HintCount } from '../game/types'
+import { useLanguage } from '../i18n'
 import styles from './HintPanel.module.css'
-
-const tierLabels: Record<(typeof HINT_ORDER)[number], string> = {
-  region: 'Região',
-  character: 'Característica',
-  giveaway: 'Quase lá',
-}
 
 interface HintPanelProps {
   texts: string[]
@@ -21,20 +16,21 @@ export function HintPanel({
   showExplanation,
   onDismissExplanation,
 }: HintPanelProps) {
+  const { text } = useLanguage()
   const visibleTiers = HINT_ORDER.slice(0, used).reverse()
   if (visibleTiers.length === 0 && !showExplanation) return null
 
   return (
     <section
       className={styles.panel}
-      aria-label="Dicas reveladas"
+      aria-label={text.revealedHints}
       aria-live="polite"
     >
       {showExplanation && (
         <div className={styles.explanation}>
-          <span>Cada dica vale um palpite no ranking diário</span>
+          <span>{text.hintExplanation}</span>
           <button
-            aria-label="Dispensar explicação sobre dicas"
+            aria-label={text.dismissHintExplanation}
             onClick={onDismissExplanation}
             type="button"
           >
@@ -44,7 +40,7 @@ export function HintPanel({
       )}
       {visibleTiers.map((tier, index) => (
         <p className={styles.tier} key={tier}>
-          <strong>{tierLabels[tier]}</strong>
+          <strong>{text.hintTiers[tier]}</strong>
           <span>{texts[used - index - 1]}</span>
         </p>
       ))}

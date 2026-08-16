@@ -16,6 +16,7 @@ import {
   resolveHint,
 } from './game/reducer'
 import type { Bairro, Oracle, PoolName } from './game/types'
+import { localizedError, useLanguage } from './i18n'
 import { BairroMap } from './map/BairroMap'
 import styles from './App.module.css'
 
@@ -24,6 +25,7 @@ const bairrosByCode = new Map(allBairros.map((bairro) => [bairro.cod, bairro]))
 const hintExplanationKey = 'hint-ranking-explanation-seen'
 
 export default function App() {
+  const { language, setLanguage, text } = useLanguage()
   const [mode, setMode] = useState<'daily' | 'practice'>('daily')
   const daily = useDaily()
   const [practiceGame, setPracticeGame] = useState(() => newGame('conhecidos'))
@@ -60,7 +62,7 @@ export default function App() {
     const current = practiceGameRef.current
     if (practicePending.current || current.status === 'won') return
     if (current.guesses.some(({ cod }) => cod === bairro.cod)) {
-      setPracticeNotice('Você já tentou esse bairro.')
+      setPracticeNotice(text.alreadyGuessed)
       return
     }
     practicePending.current = true
@@ -69,15 +71,18 @@ export default function App() {
     setPracticeGame(waiting)
     try {
       const result = await practice.current.evaluate(bairro.cod)
-      if (result.correct && !result.answer)
-        throw new Error('Resposta incompleta do servidor.')
+      if (result.correct && !result.answer) {
+        const error = new Error('ANSWER_INCOMPLETE')
+        error.name = 'ANSWER_INCOMPLETE'
+        throw error
+      }
       const next = resolveGuess(waiting, bairro.cod, result)
       practiceGameRef.current = next
       setPracticeGame(next)
     } catch (error) {
       const failed = failRequest(
         waiting,
-        error instanceof Error ? error.message : 'Palpite não registrado.',
+        localizedError(error, text, text.errors.GUESS_FAILED),
       )
       practiceGameRef.current = failed
       setPracticeGame(failed)
@@ -103,7 +108,7 @@ export default function App() {
     } catch (error) {
       const failed = failRequest(
         waiting,
-        error instanceof Error ? error.message : 'Dica não revelada.',
+        localizedError(error, text, text.errors.HINT_FAILED),
       )
       practiceGameRef.current = failed
       setPracticeGame(failed)
@@ -141,14 +146,28 @@ export default function App() {
     : ranking.top
   return (
     <main className={styles.app}>
+      <button
+        aria-label={text.languageLabel}
+        className={styles.languageToggle}
+        onClick={() => setLanguage(language === 'pt-BR' ? 'en' : 'pt-BR')}
+        type="button"
+      >
+        {text.languageButton}
+      </button>
       <BairroMap
         guesses={game.guesses}
         pulseCod={pulseCod}
         status={game.status}
       />
-      <section className={styles.gamePanel} aria-label="Área de palpites">
+      <footer className={styles.attribution}>
+        <span>{text.attribution}</span>
+        <a href="https://mvergara.net" rel="noreferrer" target="_blank">
+          {text.portfolio}
+        </a>
+      </footer>
+      <section className={styles.gamePanel} aria-label={text.guessesArea}>
         <div className={styles.panelContent}>
-          <div className={styles.guessStrip} aria-label="Histórico de palpites">
+          <div className={styles.guessStrip} aria-label={text.guessHistory}>
             {[...game.guesses].reverse().map((item) => (
               <button
                 className={`${styles.chip} ${item.bucket === 'encosta' ? styles.encosta : styles[`bucket${item.bucket}`]}`}
@@ -160,20 +179,20 @@ export default function App() {
                 {item.bucket === 0
                   ? '✓'
                   : item.bucket === 'encosta'
-                    ? 'encosta'
+                    ? text.adjacent
                     : `${item.km.toFixed(1)} km`}
               </button>
             ))}
           </div>
           <div className={styles.controls}>
-            <div className={styles.segmented} aria-label="Modo de jogo">
+            <div className={styles.segmented} aria-label={text.gameMode}>
               <button
                 aria-pressed={mode === 'daily'}
                 disabled={!daily.meta || game.pending}
                 onClick={returnToDaily}
                 type="button"
               >
-                Diário
+                {text.daily}
               </button>
               <button
                 aria-pressed={mode === 'practice'}
@@ -181,21 +200,18 @@ export default function App() {
                 onClick={() => startPractice()}
                 type="button"
               >
-                Prática
+                {text.practice}
               </button>
             </div>
             <span className={styles.scoreCount}>
               {daily.meta && mode === 'daily'
                 ? `#${daily.meta.puzzleNumber} · `
                 : ''}
-              {guessCount(game)} palpites
-              {game.hintsUsed > 0 && ` · ${game.hintsUsed} dicas`}
+              {text.guessCount(guessCount(game))}
+              {game.hintsUsed > 0 && ` · ${text.hintCount(game.hintsUsed)}`}
             </span>
             {mode === 'practice' && (
-              <div
-                className={styles.segmented}
-                aria-label="Seleção de conjunto"
-              >
+              <div className={styles.segmented} aria-label={text.poolSelection}>
                 {(['conhecidos', 'todos'] as const).map((pool) => (
                   <button
                     aria-pressed={game.pool === pool}
@@ -204,7 +220,7 @@ export default function App() {
                     onClick={() => startPractice(pool)}
                     type="button"
                   >
-                    {pool === 'conhecidos' ? 'Conhecidos' : 'Todos'}
+                    {pool === 'conhecidos' ? text.known : text.all}
                   </button>
                 ))}
               </div>
@@ -219,7 +235,7 @@ export default function App() {
               onClick={revealHint}
               type="button"
             >
-              Dica ({3 - game.hintsUsed})
+              {text.hint} ({3 - game.hintsUsed})
             </button>
             {mode === 'practice' && (
               <button
@@ -227,7 +243,7 @@ export default function App() {
                 onClick={() => startPractice(game.pool)}
                 type="button"
               >
-                Novo jogo
+                {text.newGame}
               </button>
             )}
           </div>
@@ -239,15 +255,15 @@ export default function App() {
             {!daily.meta &&
               !daily.error &&
               mode === 'daily' &&
-              'Carregando desafio diário…'}
+              text.loadingDaily}
             {dailyUnavailable && (
               <>
                 <span>{daily.error}</span>
                 <button onClick={daily.retry} type="button">
-                  Tentar novamente
+                  {text.retry}
                 </button>
                 <button onClick={() => startPractice()} type="button">
-                  Jogar na prática
+                  {text.playPractice}
                 </button>
               </>
             )}
@@ -264,25 +280,25 @@ export default function App() {
               <div className={styles.winBanner} role="status">
                 <span>
                   <strong>{game.answer.nome}</strong> · {game.answer.rp} ·{' '}
-                  {guessCount(game)} palpites
+                  {text.guessCount(guessCount(game))}
                 </span>
                 {mode === 'daily' ? (
                   <button onClick={daily.share} type="button">
-                    Compartilhar
+                    {text.share}
                   </button>
                 ) : (
                   <button
                     onClick={() => startPractice(game.pool)}
                     type="button"
                   >
-                    Jogar de novo
+                    {text.playAgain}
                   </button>
                 )}
               </div>
               {mode === 'daily' ? (
                 <div className={styles.winDetails}>
                   <section
-                    aria-label="Classificação de hoje"
+                    aria-label={text.todayRanking}
                     className={styles.leaderboard}
                   >
                     <form
@@ -292,18 +308,18 @@ export default function App() {
                         void daily.saveNickname()
                       }}
                     >
-                      <label htmlFor="daily-nickname">Seu apelido</label>
+                      <label htmlFor="daily-nickname">{text.nickname}</label>
                       <input
                         id="daily-nickname"
                         maxLength={20}
                         onChange={(event) =>
                           daily.setNickname(event.target.value)
                         }
-                        placeholder="Opcional"
+                        placeholder={text.optional}
                         value={daily.nickname}
                       />
                       <button disabled={daily.nicknamePending} type="submit">
-                        {daily.nicknamePending ? 'Salvando…' : 'Salvar'}
+                        {daily.nicknamePending ? text.saving : text.save}
                       </button>
                     </form>
                     {daily.nicknameError && (
@@ -312,19 +328,19 @@ export default function App() {
                       </p>
                     )}
                     <div className={styles.leaderboardHeading}>
-                      <strong>Classificação</strong>
-                      <span>{daily.leaderboard.total} participantes</span>
+                      <strong>{text.ranking}</strong>
+                      <span>
+                        {text.participantCount(daily.leaderboard.total)}
+                      </span>
                       <button
                         disabled={daily.leaderboard.loading}
                         onClick={daily.refreshLeaderboard}
                         type="button"
                       >
-                        Atualizar
+                        {text.refresh}
                       </button>
                     </div>
-                    {daily.leaderboard.loading && (
-                      <p>Carregando classificação…</p>
-                    )}
+                    {daily.leaderboard.loading && <p>{text.loadingRanking}</p>}
                     {daily.leaderboard.error && (
                       <p className={styles.leaderboardError} role="alert">
                         {daily.leaderboard.error}
@@ -332,9 +348,7 @@ export default function App() {
                     )}
                     {!daily.leaderboard.loading &&
                       !daily.leaderboard.error &&
-                      rankingRows.length === 0 && (
-                        <p>A classificação ainda está vazia.</p>
-                      )}
+                      rankingRows.length === 0 && <p>{text.emptyRanking}</p>}
                     {rankingRows.length > 0 && (
                       <ol className={styles.rankingList}>
                         {rankingRows.map((entry) => (
@@ -343,8 +357,10 @@ export default function App() {
                             key={`${entry.position}-${entry.nickname}-${entry.elapsedSeconds}`}
                           >
                             <strong>#{entry.position}</strong>
-                            <span>{entry.nickname || 'anônimo'}</span>
-                            <span>{entry.score} pts</span>
+                            <span>{entry.nickname || text.anonymous}</span>
+                            <span>
+                              {entry.score} {text.points}
+                            </span>
                             <time>{formatElapsed(entry.elapsedSeconds)}</time>
                           </li>
                         ))}
@@ -357,7 +373,7 @@ export default function App() {
                   />
                   {daily.explainer && (
                     <section
-                      aria-label="Sobre o bairro"
+                      aria-label={text.aboutBairro}
                       className={styles.explainer}
                     >
                       {daily.explainer}
