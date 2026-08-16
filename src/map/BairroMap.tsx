@@ -16,7 +16,6 @@ interface ActiveBairro {
 
 interface BairroMapProps {
   guesses: Guess[]
-  answerCod: string
   pulseCod?: string
   status: GameState['status']
   compact?: boolean
@@ -30,7 +29,6 @@ function guessText(guess: Guess): string {
 
 export function BairroMap({
   guesses,
-  answerCod,
   pulseCod,
   status,
   compact = false,
@@ -144,7 +142,7 @@ export function BairroMap({
               const cod = feature.properties.codbairro
               const item = guessesByCode.get(cod)
               const stateClass = item
-                ? cod === answerCod
+                ? item.bucket === 0
                   ? styles.correct
                   : item.bucket === 'encosta'
                     ? styles.encosta

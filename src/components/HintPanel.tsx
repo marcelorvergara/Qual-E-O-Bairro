@@ -1,5 +1,5 @@
 import { HINT_ORDER } from '../game/data'
-import type { HintCount, Hints } from '../game/types'
+import type { HintCount } from '../game/types'
 import styles from './HintPanel.module.css'
 
 const tierLabels: Record<(typeof HINT_ORDER)[number], string> = {
@@ -9,14 +9,14 @@ const tierLabels: Record<(typeof HINT_ORDER)[number], string> = {
 }
 
 interface HintPanelProps {
-  hints: Hints
+  texts: string[]
   used: HintCount
   showExplanation: boolean
   onDismissExplanation: () => void
 }
 
 export function HintPanel({
-  hints,
+  texts,
   used,
   showExplanation,
   onDismissExplanation,
@@ -42,10 +42,10 @@ export function HintPanel({
           </button>
         </div>
       )}
-      {visibleTiers.map((tier) => (
+      {visibleTiers.map((tier, index) => (
         <p className={styles.tier} key={tier}>
           <strong>{tierLabels[tier]}</strong>
-          <span>{hints[tier]}</span>
+          <span>{texts[used - index - 1]}</span>
         </p>
       ))}
     </section>

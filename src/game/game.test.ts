@@ -1,9 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import poolJson from '../../data/pool.json'
 import { bucketFor } from './buckets'
 import { allBairros, HINT_ORDER, hintsFor, poolFor } from './data'
 import { matchBairros } from './normalize'
-import { guess, newGame, score, useHint } from './reducer'
+import { practiceOracle } from './oracle'
+import {
+  beginRequest,
+  failRequest,
+  newGame,
+  resolveGuess,
+  resolveHint,
+  score,
+} from './reducer'
 
 describe('name matching', () => {
   it.each([
@@ -43,12 +51,41 @@ describe('buckets', () => {
 })
 
 describe('game state', () => {
-  it('ignores repeated guesses and detects a win', () => {
-    const started = newGame('conhecidos', () => 0)
+  it('ignores repeated resolved guesses and detects a win', async () => {
+    const oracle = practiceOracle('conhecidos', () => 0)
+    const started = newGame('conhecidos')
     const wrongCod = poolFor('conhecidos')[1].cod
-    const once = guess(started, wrongCod)
-    expect(guess(once, wrongCod)).toBe(once)
-    expect(guess(once, started.answer.cod).status).toBe('won')
+    const once = resolveGuess(
+      started,
+      wrongCod,
+      await oracle.evaluate(wrongCod),
+    )
+    expect(
+      resolveGuess(once, wrongCod, await oracle.evaluate(wrongCod)).guesses,
+    ).toEqual(once.guesses)
+    const answerCod = poolFor('conhecidos')[0].cod
+    const won = resolveGuess(once, answerCod, await oracle.evaluate(answerCod))
+    expect(won.status).toBe('won')
+    expect(won.answer?.cod).toBe(answerCod)
+  })
+
+  it('keeps practice evaluation fully offline', async () => {
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    const oracle = practiceOracle('conhecidos', () => 0)
+    await oracle.evaluate(poolFor('conhecidos')[1].cod)
+    await oracle.hint(1)
+    expect(fetch).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('recovers after a failed request', () => {
+    const failed = failRequest(beginRequest(newGame('conhecidos')), 'sem rede')
+    expect(failed).toMatchObject({
+      pending: false,
+      error: 'sem rede',
+      guesses: [],
+    })
   })
 
   it('builds the configured pools', () => {
@@ -56,33 +93,35 @@ describe('game state', () => {
     expect(poolFor('conhecidos').map(({ cod }) => cod)).toEqual(poolJson.codes)
   })
 
-  it('reveals hint tiers in region, character, giveaway order', () => {
-    const state = newGame('conhecidos', () => 0)
-    const hints = hintsFor(state.answer.cod)
+  it('reveals hint tiers in region, character, giveaway order', async () => {
+    const oracle = practiceOracle('conhecidos', () => 0)
+    const hints = hintsFor(poolFor('conhecidos')[0].cod)
     expect(HINT_ORDER).toEqual(['region', 'character', 'giveaway'])
     expect(HINT_ORDER.map((key) => hints[key])).toEqual([
       hints.region,
       hints.character,
       hints.giveaway,
     ])
-    expect(useHint(useHint(useHint(state))).hintsUsed).toBe(3)
+    let state = newGame('conhecidos')
+    for (const tier of [1, 2, 3] as const)
+      state = resolveHint(state, await oracle.hint(tier))
+    expect(state.hintsUsed).toBe(3)
+    expect(state.hintTexts).toEqual([
+      hints.region,
+      hints.character,
+      hints.giveaway,
+    ])
+    expect(resolveHint(state, 'extra').hintsUsed).toBe(3)
   })
 
-  it('caps hints at three', () => {
-    const state = newGame('conhecidos', () => 0)
-    const capped = useHint(useHint(useHint(state)))
-    expect(useHint(capped)).toBe(capped)
-  })
-
-  it('ignores hints after a win', () => {
-    const state = newGame('conhecidos', () => 0)
-    const won = guess(state, state.answer.cod)
-    expect(useHint(won)).toBe(won)
-  })
-
-  it('adds hints to the future ranking score', () => {
-    const state = newGame('conhecidos', () => 0)
-    const guessed = guess(state, poolFor('conhecidos')[1].cod)
-    expect(score(useHint(useHint(guessed)))).toBe(3)
+  it('adds hints to the future ranking score', async () => {
+    const oracle = practiceOracle('conhecidos', () => 0)
+    const cod = poolFor('conhecidos')[1].cod
+    const guessed = resolveGuess(
+      newGame('conhecidos'),
+      cod,
+      await oracle.evaluate(cod),
+    )
+    expect(score(resolveHint(resolveHint(guessed, 'a'), 'b'))).toBe(3)
   })
 })
