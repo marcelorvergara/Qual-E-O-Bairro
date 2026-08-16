@@ -24,13 +24,6 @@ import { localizedError, useLanguage } from '../i18n'
 
 const NICKNAME_KEY = 'qeb:nickname:v1'
 
-function errorWithFallback(error: unknown, code: string): Error {
-  if (error instanceof Error) return error
-  const fallback = new Error(code)
-  fallback.name = code
-  return fallback
-}
-
 function storedNickname(): string {
   try {
     return localStorage.getItem(NICKNAME_KEY)?.slice(0, 20) ?? ''
@@ -40,21 +33,21 @@ function storedNickname(): string {
 }
 
 export function useDaily() {
-  const { language, text } = useLanguage()
+  const { text } = useLanguage()
   const [game, setGame] = useState(() => newGame('conhecidos'))
   const [meta, setMeta] = useState<api.Bootstrap | null>(null)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState('')
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0)
   const [leaderboard, setLeaderboard] = useState<
     api.Leaderboard & {
       loading: boolean
-      error: Error | null
+      error: string | null
     }
   >({ entries: [], total: 0, loading: false, error: null })
   const [nickname, setNickname] = useState(storedNickname)
   const [nicknamePending, setNicknamePending] = useState(false)
-  const [nicknameError, setNicknameError] = useState<Error | null>(null)
+  const [nicknameError, setNicknameError] = useState<string | null>(null)
   const [stats, setStats] = useState(loadStats)
   const [explainer, setExplainer] = useState<string | null>(null)
   const [submittedPuzzle, setSubmittedPuzzle] = useState<string | null>(null)
@@ -69,9 +62,11 @@ export function useDaily() {
   const leaderboardPending = useRef(false)
   const leaderboardLoadedFor = useRef<string | null>(null)
   const explainerLoadedFor = useRef<string | null>(null)
+  const textRef = useRef(text)
   gameRef.current = game
   metaRef.current = meta
   nicknameRef.current = nickname
+  textRef.current = text
 
   const restore = useCallback(async (currentMeta: api.Bootstrap) => {
     const restored = await restoreVerifiedProgress(
@@ -106,9 +101,10 @@ export function useDaily() {
         await restore(currentMeta)
         setMeta(currentMeta)
       })
-      .catch((caught: unknown) =>
-        setError(errorWithFallback(caught, 'DAILY_UNAVAILABLE')),
-      )
+      .catch((caught: unknown) => {
+        const copy = textRef.current
+        setError(localizedError(caught, copy, copy.errors.DAILY_UNAVAILABLE))
+      })
   }, [bootstrapAttempt, restore])
 
   useEffect(() => {
@@ -135,7 +131,7 @@ export function useDaily() {
     try {
       await restore(meta)
     } catch (caught) {
-      setError(errorWithFallback(caught, 'DAILY_UNAVAILABLE'))
+      setError(localizedError(caught, text, text.errors.DAILY_UNAVAILABLE))
     }
   }
   const persist = (next: GameState, changes: Partial<DailyProgress> = {}) => {
@@ -169,7 +165,11 @@ export function useDaily() {
       setLeaderboard((current) => ({
         ...current,
         loading: false,
-        error: errorWithFallback(caught, 'LEADERBOARD_LOAD'),
+        error: localizedError(
+          caught,
+          textRef.current,
+          textRef.current.errors.LEADERBOARD_LOAD,
+        ),
       }))
     } finally {
       leaderboardPending.current = false
@@ -204,23 +204,24 @@ export function useDaily() {
         saved.submitted = true
         saveProgress(saved)
         setSubmittedPuzzle(saved.puzzleDate)
-        setNotice(text.resultSent)
+        setNotice(textRef.current.resultSent)
       } catch (caught) {
         if (api.isAlreadySubmitted(caught)) {
           saved.submitted = true
           saveProgress(saved)
           setSubmittedPuzzle(saved.puzzleDate)
-          setNotice(text.resultAlreadySent)
+          setNotice(textRef.current.resultAlreadySent)
         } else {
-          const message = localizedError(caught, text, text.errors.RESULT_SEND)
-          setNotice(`${message} ${text.retryNextVisit}`)
+          const copy = textRef.current
+          const message = localizedError(caught, copy, copy.errors.RESULT_SEND)
+          setNotice(`${message} ${copy.retryNextVisit}`)
         }
       } finally {
         submitPending.current = false
         void loadLeaderboard()
       }
     },
-    [loadLeaderboard, text],
+    [loadLeaderboard],
   )
 
   useEffect(() => {
@@ -288,7 +289,7 @@ export function useDaily() {
       setNotice(text.nicknameSaved)
       await loadLeaderboard(true)
     } catch (caught) {
-      setNicknameError(errorWithFallback(caught, 'NICKNAME_SAVE'))
+      setNicknameError(localizedError(caught, text, text.errors.NICKNAME_SAVE))
     } finally {
       setNicknamePending(false)
     }
@@ -314,15 +315,10 @@ export function useDaily() {
         meta &&
         !(await verifyAnswer(meta.salt, bairro.cod, meta.answerHash))
       ) {
-        const error = new Error('ANSWER_VERIFY')
-        error.name = 'ANSWER_VERIFY'
-        throw error
+        throw new Error(text.errors.ANSWER_VERIFY)
       }
-      if (result.correct && !result.answer) {
-        const error = new Error('ANSWER_INCOMPLETE')
-        error.name = 'ANSWER_INCOMPLETE'
-        throw error
-      }
+      if (result.correct && !result.answer)
+        throw new Error(text.errors.ANSWER_INCOMPLETE)
       const next = resolveGuess(waiting, bairro.cod, result)
       gameRef.current = next
       setGame(next)
@@ -369,12 +365,7 @@ export function useDaily() {
   }
   const share = async () => {
     if (!meta) return
-    const shareCopy = shareText(
-      meta.puzzleNumber,
-      game.guesses,
-      game.hintsUsed,
-      language,
-    )
+    const shareCopy = shareText(meta.puzzleNumber, game.guesses, game.hintsUsed)
     const shareApi = (
       navigator as unknown as {
         share?: (data: { text: string }) => Promise<void>
@@ -392,28 +383,19 @@ export function useDaily() {
   return {
     game,
     meta,
-    error: error
-      ? localizedError(error, text, text.errors.DAILY_UNAVAILABLE)
-      : null,
+    error,
     notice,
     retry,
     resume,
     submitGuess,
     revealHint,
     share,
-    leaderboard: {
-      ...leaderboard,
-      error: leaderboard.error
-        ? localizedError(leaderboard.error, text, text.errors.LEADERBOARD_LOAD)
-        : null,
-    },
+    leaderboard,
     refreshLeaderboard: () => loadLeaderboard(true),
     nickname,
     setNickname,
     nicknamePending,
-    nicknameError: nicknameError
-      ? localizedError(nicknameError, text, text.errors.NICKNAME_SAVE)
-      : null,
+    nicknameError,
     saveNickname,
     stats,
     currentScore: score(game),

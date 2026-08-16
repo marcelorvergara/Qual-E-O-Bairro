@@ -223,18 +223,27 @@ export const strings = { 'pt-BR': ptBR, en }
 export type Strings = typeof ptBR
 
 interface LanguageContextValue {
+  englishEnabled: boolean
   language: Language
   setLanguage: (language: Language) => void
   text: Strings
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
+  englishEnabled: false,
   language: 'pt-BR',
   setLanguage: () => undefined,
   text: ptBR,
 })
 
-function initialLanguage(): Language {
+export function englishFeatureEnabled(
+  value = import.meta.env.VITE_ENABLE_EN,
+): boolean {
+  return value === 'true'
+}
+
+function initialLanguage(englishEnabled: boolean): Language {
+  if (!englishEnabled) return 'pt-BR'
   try {
     return localStorage.getItem(STORAGE_KEY) === 'en' ? 'en' : 'pt-BR'
   } catch {
@@ -242,8 +251,19 @@ function initialLanguage(): Language {
   }
 }
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(initialLanguage)
+export function LanguageProvider({
+  children,
+  enableEnglish = englishFeatureEnabled(),
+}: {
+  children?: ReactNode
+  enableEnglish?: boolean
+}) {
+  const [storedLanguage, setStoredLanguage] = useState<Language>(() =>
+    initialLanguage(enableEnglish),
+  )
+  const language = enableEnglish ? storedLanguage : 'pt-BR'
+  const setLanguage = (next: Language) =>
+    setStoredLanguage(enableEnglish ? next : 'pt-BR')
   const text = strings[language]
 
   useEffect(() => {
@@ -260,7 +280,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language, text])
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, text }}>
+    <LanguageContext.Provider
+      value={{ englishEnabled: enableEnglish, language, setLanguage, text }}
+    >
       {children}
     </LanguageContext.Provider>
   )
@@ -270,11 +292,29 @@ export function useLanguage() {
   return useContext(LanguageContext)
 }
 
+export function LanguageToggle({ className }: { className?: string }) {
+  const { englishEnabled, language, setLanguage, text } = useLanguage()
+  if (!englishEnabled) return null
+  return (
+    <button
+      aria-label={text.languageLabel}
+      className={className}
+      onClick={() => setLanguage(language === 'pt-BR' ? 'en' : 'pt-BR')}
+      type="button"
+    >
+      {text.languageButton}
+    </button>
+  )
+}
+
 export function localizedError(
   error: unknown,
   text: Strings,
   fallback: string,
 ) {
   if (!(error instanceof Error)) return fallback
-  return text.errors[error.name as keyof Strings['errors']] ?? fallback
+  return (
+    text.errors[error.name as keyof Strings['errors']] ??
+    (error.name === 'Error' ? error.message : fallback)
+  )
 }

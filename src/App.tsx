@@ -16,7 +16,7 @@ import {
   resolveHint,
 } from './game/reducer'
 import type { Bairro, Oracle, PoolName } from './game/types'
-import { localizedError, useLanguage } from './i18n'
+import { LanguageToggle, localizedError, useLanguage } from './i18n'
 import { BairroMap } from './map/BairroMap'
 import styles from './App.module.css'
 
@@ -25,7 +25,7 @@ const bairrosByCode = new Map(allBairros.map((bairro) => [bairro.cod, bairro]))
 const hintExplanationKey = 'hint-ranking-explanation-seen'
 
 export default function App() {
-  const { language, setLanguage, text } = useLanguage()
+  const { text } = useLanguage()
   const [mode, setMode] = useState<'daily' | 'practice'>('daily')
   const daily = useDaily()
   const [practiceGame, setPracticeGame] = useState(() => newGame('conhecidos'))
@@ -71,11 +71,8 @@ export default function App() {
     setPracticeGame(waiting)
     try {
       const result = await practice.current.evaluate(bairro.cod)
-      if (result.correct && !result.answer) {
-        const error = new Error('ANSWER_INCOMPLETE')
-        error.name = 'ANSWER_INCOMPLETE'
-        throw error
-      }
+      if (result.correct && !result.answer)
+        throw new Error(text.errors.ANSWER_INCOMPLETE)
       const next = resolveGuess(waiting, bairro.cod, result)
       practiceGameRef.current = next
       setPracticeGame(next)
@@ -146,14 +143,7 @@ export default function App() {
     : ranking.top
   return (
     <main className={styles.app}>
-      <button
-        aria-label={text.languageLabel}
-        className={styles.languageToggle}
-        onClick={() => setLanguage(language === 'pt-BR' ? 'en' : 'pt-BR')}
-        type="button"
-      >
-        {text.languageButton}
-      </button>
+      <LanguageToggle className={styles.languageToggle} />
       <BairroMap
         guesses={game.guesses}
         pulseCod={pulseCod}
