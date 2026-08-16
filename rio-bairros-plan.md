@@ -100,6 +100,7 @@ Pre-launch epoch reset (human-run): the development epoch is `2026-08-15`, and p
 2. Run `delete from daily_results;` and then `delete from daily_answers;` (results first because of the foreign key).
 3. Run `npm run seed:daily -- --from=<launch date> --days=120`.
 4. Confirm `bootstrap` returns puzzle #1 on launch day.
+5. Bump `qeb:stats:v1` and `qeb:daily:v1` to `v2` so development streaks and answer-specific restored guesses cannot cross into the launch schedule.
 
 Acceptance: production URL live; share preview renders correctly on WhatsApp; Consent Mode v2 verified in GA4 DebugView.
 
