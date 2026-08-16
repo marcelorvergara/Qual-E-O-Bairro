@@ -94,6 +94,13 @@ Acceptance: two devices see the same daily; the answer is not recoverable from t
 
 EN toggle (strings file, two languages), consent banner and GA4 events (game_start, guess, hint_used, win, share), favicon and OG image, footer with attribution and link to mvergara.net, domain, deploy. Cross-check on iOS Safari for input focus and viewport height quirks.
 
+Pre-launch epoch reset (human-run): the development epoch is `2026-08-15`, and puzzles #2 and #3 are seeded for development only.
+
+1. Set the epoch to the launch date in `supabase/functions/_shared/daily-logic.ts` and `scripts/seed-daily.mjs`, and update the epoch test.
+2. Run `delete from daily_results;` and then `delete from daily_answers;` (results first because of the foreign key).
+3. Run `npm run seed:daily -- --from=<launch date> --days=120`.
+4. Confirm `bootstrap` returns puzzle #1 on launch day.
+
 Acceptance: production URL live; share preview renders correctly on WhatsApp; Consent Mode v2 verified in GA4 DebugView.
 
 ### Phase 5 — Portfolio wrap (human, ~1h)

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ExplainerPlaceholder } from './components/ExplainerPlaceholder'
 import { GuessInput } from './components/GuessInput'
 import { HintPanel } from './components/HintPanel'
+import { StatsPanel } from './components/StatsPanel'
 import { useDaily } from './daily/useDaily'
 import { allBairros, poolFor } from './game/data'
 import { formatElapsed, partitionEntries } from './game/leaderboard'
@@ -278,83 +279,95 @@ export default function App() {
                   </button>
                 )}
               </div>
-              {mode === 'daily' && (
-                <section
-                  aria-label="Classificação de hoje"
-                  className={styles.leaderboard}
-                >
-                  <form
-                    className={styles.nickname}
-                    onSubmit={(event) => {
-                      event.preventDefault()
-                      void daily.saveNickname()
-                    }}
+              {mode === 'daily' ? (
+                <div className={styles.winDetails}>
+                  <section
+                    aria-label="Classificação de hoje"
+                    className={styles.leaderboard}
                   >
-                    <label htmlFor="daily-nickname">Seu apelido</label>
-                    <input
-                      id="daily-nickname"
-                      maxLength={20}
-                      onChange={(event) =>
-                        daily.setNickname(event.target.value)
-                      }
-                      placeholder="Opcional"
-                      value={daily.nickname}
-                    />
-                    <button disabled={daily.nicknamePending} type="submit">
-                      {daily.nicknamePending ? 'Salvando…' : 'Salvar'}
-                    </button>
-                  </form>
-                  {daily.nicknameError && (
-                    <p className={styles.leaderboardError} role="alert">
-                      {daily.nicknameError}
-                    </p>
-                  )}
-                  <div className={styles.leaderboardHeading}>
-                    <strong>Classificação</strong>
-                    <span>{daily.leaderboard.total} participantes</span>
-                    <button
-                      disabled={daily.leaderboard.loading}
-                      onClick={daily.refreshLeaderboard}
-                      type="button"
+                    <form
+                      className={styles.nickname}
+                      onSubmit={(event) => {
+                        event.preventDefault()
+                        void daily.saveNickname()
+                      }}
                     >
-                      Atualizar
-                    </button>
-                  </div>
-                  {daily.leaderboard.loading && (
-                    <p>Carregando classificação…</p>
-                  )}
-                  {daily.leaderboard.error && (
-                    <p className={styles.leaderboardError} role="alert">
-                      {daily.leaderboard.error}
-                    </p>
-                  )}
-                  {!daily.leaderboard.loading &&
-                    !daily.leaderboard.error &&
-                    rankingRows.length === 0 && (
-                      <p>A classificação ainda está vazia.</p>
+                      <label htmlFor="daily-nickname">Seu apelido</label>
+                      <input
+                        id="daily-nickname"
+                        maxLength={20}
+                        onChange={(event) =>
+                          daily.setNickname(event.target.value)
+                        }
+                        placeholder="Opcional"
+                        value={daily.nickname}
+                      />
+                      <button disabled={daily.nicknamePending} type="submit">
+                        {daily.nicknamePending ? 'Salvando…' : 'Salvar'}
+                      </button>
+                    </form>
+                    {daily.nicknameError && (
+                      <p className={styles.leaderboardError} role="alert">
+                        {daily.nicknameError}
+                      </p>
                     )}
-                  {rankingRows.length > 0 && (
-                    <ol className={styles.rankingList}>
-                      {rankingRows.map((entry) => (
-                        <li
-                          className={`${entry.isSelf ? styles.selfRank : ''} ${entry.position > 50 ? styles.outsideRank : ''}`}
-                          key={`${entry.position}-${entry.nickname}-${entry.elapsedSeconds}`}
-                        >
-                          <strong>#{entry.position}</strong>
-                          <span>{entry.nickname || 'anônimo'}</span>
-                          <span>{entry.score} pts</span>
-                          <time>{formatElapsed(entry.elapsedSeconds)}</time>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
-                </section>
+                    <div className={styles.leaderboardHeading}>
+                      <strong>Classificação</strong>
+                      <span>{daily.leaderboard.total} participantes</span>
+                      <button
+                        disabled={daily.leaderboard.loading}
+                        onClick={daily.refreshLeaderboard}
+                        type="button"
+                      >
+                        Atualizar
+                      </button>
+                    </div>
+                    {daily.leaderboard.loading && (
+                      <p>Carregando classificação…</p>
+                    )}
+                    {daily.leaderboard.error && (
+                      <p className={styles.leaderboardError} role="alert">
+                        {daily.leaderboard.error}
+                      </p>
+                    )}
+                    {!daily.leaderboard.loading &&
+                      !daily.leaderboard.error &&
+                      rankingRows.length === 0 && (
+                        <p>A classificação ainda está vazia.</p>
+                      )}
+                    {rankingRows.length > 0 && (
+                      <ol className={styles.rankingList}>
+                        {rankingRows.map((entry) => (
+                          <li
+                            className={`${entry.isSelf ? styles.selfRank : ''} ${entry.position > 50 ? styles.outsideRank : ''}`}
+                            key={`${entry.position}-${entry.nickname}-${entry.elapsedSeconds}`}
+                          >
+                            <strong>#{entry.position}</strong>
+                            <span>{entry.nickname || 'anônimo'}</span>
+                            <span>{entry.score} pts</span>
+                            <time>{formatElapsed(entry.elapsedSeconds)}</time>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </section>
+                  <StatsPanel
+                    currentScore={daily.currentScore}
+                    stats={daily.stats}
+                  />
+                  <ExplainerPlaceholder
+                    bairro={game.answer}
+                    className={styles.explainer}
+                    known={knownCodes.has(game.answer.cod)}
+                  />
+                </div>
+              ) : (
+                <ExplainerPlaceholder
+                  bairro={game.answer}
+                  className={styles.explainer}
+                  known={knownCodes.has(game.answer.cod)}
+                />
               )}
-              <ExplainerPlaceholder
-                bairro={game.answer}
-                className={styles.explainer}
-                known={knownCodes.has(game.answer.cod)}
-              />
             </>
           )}
         </div>
