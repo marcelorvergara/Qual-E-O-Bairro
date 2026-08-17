@@ -6,6 +6,7 @@ type EventParams = {
   mode: GameMode
   guess_count?: number
   puzzle_number?: number
+  traffic_type?: 'internal'
 }
 
 export type AnalyticsTransport = (name: EventName, params: EventParams) => void
@@ -19,6 +20,7 @@ declare global {
 
 const CONSENT_KEY = 'qeb:consent:v1'
 const SCRIPT_ID = 'qeb-ga4'
+const PRODUCTION_HOST = 'qualeobairro.com.br'
 const denied = {
   ad_storage: 'denied',
   ad_user_data: 'denied',
@@ -37,6 +39,20 @@ let currentConsent: ConsentChoice = null
 
 function measurementId() {
   return import.meta.env.VITE_GA_MEASUREMENT_ID?.trim() ?? ''
+}
+
+export function trafficTypeParams(hostname: string): {
+  traffic_type?: 'internal'
+} {
+  return hostname.toLowerCase() === PRODUCTION_HOST
+    ? {}
+    : { traffic_type: 'internal' }
+}
+
+function currentTrafficTypeParams() {
+  return trafficTypeParams(
+    typeof window === 'undefined' ? '' : window.location.hostname,
+  )
 }
 
 function storedConsent(): ConsentChoice {
@@ -63,7 +79,10 @@ function loadGtag() {
   if (!id || document.getElementById(SCRIPT_ID)) return
   const gtag = ensureGtag()
   gtag('js', new Date())
-  gtag('config', id, { send_page_view: false })
+  gtag('config', id, {
+    send_page_view: false,
+    ...currentTrafficTypeParams(),
+  })
   const script = document.createElement('script')
   script.async = true
   script.id = SCRIPT_ID
@@ -105,13 +124,17 @@ const browserTransport: AnalyticsTransport = (name, params) => {
 }
 
 function puzzleParams(mode: GameMode, puzzleNumber?: number) {
-  return mode === 'daily' && puzzleNumber !== undefined
-    ? { mode, puzzle_number: puzzleNumber }
-    : { mode }
+  return {
+    mode,
+    ...(mode === 'daily' && puzzleNumber !== undefined
+      ? { puzzle_number: puzzleNumber }
+      : {}),
+    ...currentTrafficTypeParams(),
+  }
 }
 
 export function trackGameStart(mode: GameMode, transport = browserTransport) {
-  transport('game_start', { mode })
+  transport('game_start', { mode, ...currentTrafficTypeParams() })
 }
 
 export function trackGuess(
