@@ -36,6 +36,7 @@ class MemoryStorage implements Storage {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   vi.resetModules()
 })
 
@@ -108,17 +109,19 @@ describe('analytics event contract', () => {
 })
 
 describe('consent initialization', () => {
-  it('queues denied defaults before applying stored acceptance', async () => {
-    const dataLayer: unknown[][] = []
-    const storage = new MemoryStorage()
-    storage.setItem('qeb:consent:v1', 'granted')
+  it('queues canonical arguments objects rather than plain arrays', async () => {
+    const dataLayer: (IArguments | unknown[])[] = []
     vi.stubGlobal('window', { dataLayer })
-    vi.stubGlobal('localStorage', storage)
+    vi.stubGlobal('localStorage', new MemoryStorage())
     const { initializeAnalytics } = await import('./analytics')
 
     initializeAnalytics()
 
-    expect(dataLayer[0]).toEqual([
+    expect(Array.isArray(dataLayer[0])).toBe(false)
+    expect(Object.prototype.toString.call(dataLayer[0])).toBe(
+      '[object Arguments]',
+    )
+    expect(Array.from(dataLayer[0])).toEqual([
       'consent',
       'default',
       {
@@ -128,7 +131,30 @@ describe('consent initialization', () => {
         analytics_storage: 'denied',
       },
     ])
-    expect(dataLayer[1]).toEqual([
+  })
+
+  it('queues denied defaults before applying stored acceptance', async () => {
+    const dataLayer: (IArguments | unknown[])[] = []
+    const storage = new MemoryStorage()
+    storage.setItem('qeb:consent:v1', 'granted')
+    vi.stubEnv('VITE_GA_MEASUREMENT_ID', '')
+    vi.stubGlobal('window', { dataLayer })
+    vi.stubGlobal('localStorage', storage)
+    const { initializeAnalytics } = await import('./analytics')
+
+    initializeAnalytics()
+
+    expect(Array.from(dataLayer[0])).toEqual([
+      'consent',
+      'default',
+      {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      },
+    ])
+    expect(Array.from(dataLayer[1])).toEqual([
       'consent',
       'update',
       {
@@ -141,7 +167,7 @@ describe('consent initialization', () => {
   })
 
   it('persists rejection and keeps every consent signal denied', async () => {
-    const dataLayer: unknown[][] = []
+    const dataLayer: (IArguments | unknown[])[] = []
     const storage = new MemoryStorage()
     vi.stubGlobal('window', { dataLayer })
     vi.stubGlobal('localStorage', storage)
@@ -153,7 +179,7 @@ describe('consent initialization', () => {
 
     expect(storage.getItem('qeb:consent:v1')).toBe('denied')
     expect(dataLayer).toHaveLength(2)
-    expect(dataLayer[1]).toEqual([
+    expect(Array.from(dataLayer[1])).toEqual([
       'consent',
       'update',
       {

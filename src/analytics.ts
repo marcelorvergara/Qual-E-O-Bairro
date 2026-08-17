@@ -12,7 +12,7 @@ export type AnalyticsTransport = (name: EventName, params: EventParams) => void
 
 declare global {
   interface Window {
-    dataLayer?: unknown[][]
+    dataLayer?: (IArguments | unknown[])[]
     gtag?: (...args: unknown[]) => void
   }
 }
@@ -50,7 +50,11 @@ function storedConsent(): ConsentChoice {
 
 function ensureGtag() {
   window.dataLayer ??= []
-  window.gtag ??= (...args: unknown[]) => window.dataLayer?.push(args)
+  // gtag.js recognizes queued commands by their Arguments object shape.
+  window.gtag ??= function () {
+    // eslint-disable-next-line prefer-rest-params -- A rest array is ignored by gtag.js.
+    window.dataLayer?.push(arguments)
+  }
   return window.gtag
 }
 
