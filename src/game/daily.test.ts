@@ -108,6 +108,7 @@ describe('share text', () => {
       '🟪🎯 2 palpites, 1 dica',
     )
   })
+
   it('reproduces the plan example', () => {
     const buckets: Bucket[] = [4, 3, 2, 1, 1, 1, 0]
     expect(

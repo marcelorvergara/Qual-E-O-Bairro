@@ -20,6 +20,7 @@ import { loadExplainer, saveExplainer } from '../game/explainer'
 import { shareText } from '../game/share'
 import { loadStats, recordWin, saveStats } from '../game/stats'
 import type { Bairro, GameState, Oracle } from '../game/types'
+import { localizedError, useLanguage } from '../i18n'
 
 const NICKNAME_KEY = 'qeb:nickname:v1'
 
@@ -32,6 +33,7 @@ function storedNickname(): string {
 }
 
 export function useDaily() {
+  const { text } = useLanguage()
   const [game, setGame] = useState(() => newGame('conhecidos'))
   const [meta, setMeta] = useState<api.Bootstrap | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -60,9 +62,11 @@ export function useDaily() {
   const leaderboardPending = useRef(false)
   const leaderboardLoadedFor = useRef<string | null>(null)
   const explainerLoadedFor = useRef<string | null>(null)
+  const textRef = useRef(text)
   gameRef.current = game
   metaRef.current = meta
   nicknameRef.current = nickname
+  textRef.current = text
 
   const restore = useCallback(async (currentMeta: api.Bootstrap) => {
     const restored = await restoreVerifiedProgress(
@@ -97,13 +101,10 @@ export function useDaily() {
         await restore(currentMeta)
         setMeta(currentMeta)
       })
-      .catch((caught: unknown) =>
-        setError(
-          caught instanceof Error
-            ? caught.message
-            : 'Modo diário indisponível.',
-        ),
-      )
+      .catch((caught: unknown) => {
+        const copy = textRef.current
+        setError(localizedError(caught, copy, copy.errors.DAILY_UNAVAILABLE))
+      })
   }, [bootstrapAttempt, restore])
 
   useEffect(() => {
@@ -130,9 +131,7 @@ export function useDaily() {
     try {
       await restore(meta)
     } catch (caught) {
-      setError(
-        caught instanceof Error ? caught.message : 'Modo diário indisponível.',
-      )
+      setError(localizedError(caught, text, text.errors.DAILY_UNAVAILABLE))
     }
   }
   const persist = (next: GameState, changes: Partial<DailyProgress> = {}) => {
@@ -166,10 +165,11 @@ export function useDaily() {
       setLeaderboard((current) => ({
         ...current,
         loading: false,
-        error:
-          caught instanceof Error
-            ? caught.message
-            : 'Não foi possível carregar a classificação.',
+        error: localizedError(
+          caught,
+          textRef.current,
+          textRef.current.errors.LEADERBOARD_LOAD,
+        ),
       }))
     } finally {
       leaderboardPending.current = false
@@ -204,19 +204,17 @@ export function useDaily() {
         saved.submitted = true
         saveProgress(saved)
         setSubmittedPuzzle(saved.puzzleDate)
-        setNotice('Resultado enviado.')
+        setNotice(textRef.current.resultSent)
       } catch (caught) {
         if (api.isAlreadySubmitted(caught)) {
           saved.submitted = true
           saveProgress(saved)
           setSubmittedPuzzle(saved.puzzleDate)
-          setNotice('Resultado já enviado.')
+          setNotice(textRef.current.resultAlreadySent)
         } else {
-          const message =
-            caught instanceof Error
-              ? caught.message
-              : 'Falha ao enviar resultado.'
-          setNotice(`${message} Tentaremos novamente na próxima visita.`)
+          const copy = textRef.current
+          const message = localizedError(caught, copy, copy.errors.RESULT_SEND)
+          setNotice(`${message} ${copy.retryNextVisit}`)
         }
       } finally {
         submitPending.current = false
@@ -288,14 +286,10 @@ export function useDaily() {
       } catch {
         // The server update still succeeds when storage is unavailable.
       }
-      setNotice('Apelido salvo.')
+      setNotice(text.nicknameSaved)
       await loadLeaderboard(true)
     } catch (caught) {
-      setNicknameError(
-        caught instanceof Error
-          ? caught.message
-          : 'Não foi possível salvar o apelido.',
-      )
+      setNicknameError(localizedError(caught, text, text.errors.NICKNAME_SAVE))
     } finally {
       setNicknamePending(false)
     }
@@ -306,7 +300,7 @@ export function useDaily() {
     if (!oracle.current || requestPending.current || current.status === 'won')
       return
     if (current.guesses.some(({ cod }) => cod === bairro.cod)) {
-      setNotice('Você já tentou esse bairro.')
+      setNotice(text.alreadyGuessed)
       return
     }
     requestPending.current = true
@@ -321,10 +315,10 @@ export function useDaily() {
         meta &&
         !(await verifyAnswer(meta.salt, bairro.cod, meta.answerHash))
       ) {
-        throw new Error('A resposta recebida não passou pela verificação.')
+        throw new Error(text.errors.ANSWER_VERIFY)
       }
       if (result.correct && !result.answer)
-        throw new Error('Resposta incompleta do servidor.')
+        throw new Error(text.errors.ANSWER_INCOMPLETE)
       const next = resolveGuess(waiting, bairro.cod, result)
       gameRef.current = next
       setGame(next)
@@ -332,7 +326,7 @@ export function useDaily() {
     } catch (caught) {
       const failed = failRequest(
         waiting,
-        caught instanceof Error ? caught.message : 'Palpite não registrado.',
+        localizedError(caught, text, text.errors.GUESS_FAILED),
       )
       gameRef.current = failed
       setGame(failed)
@@ -360,7 +354,7 @@ export function useDaily() {
     } catch (caught) {
       const failed = failRequest(
         waiting,
-        caught instanceof Error ? caught.message : 'Dica não revelada.',
+        localizedError(caught, text, text.errors.HINT_FAILED),
       )
       gameRef.current = failed
       setGame(failed)
@@ -371,18 +365,18 @@ export function useDaily() {
   }
   const share = async () => {
     if (!meta) return
-    const text = shareText(meta.puzzleNumber, game.guesses, game.hintsUsed)
+    const shareCopy = shareText(meta.puzzleNumber, game.guesses, game.hintsUsed)
     const shareApi = (
       navigator as unknown as {
         share?: (data: { text: string }) => Promise<void>
       }
     ).share
     try {
-      if (shareApi) await shareApi.call(navigator, { text })
-      else await navigator.clipboard.writeText(text)
-      setNotice(shareApi ? 'Compartilhado!' : 'Resultado copiado!')
+      if (shareApi) await shareApi.call(navigator, { text: shareCopy })
+      else await navigator.clipboard.writeText(shareCopy)
+      setNotice(shareApi ? text.shared : text.copied)
     } catch {
-      setNotice('Não foi possível compartilhar.')
+      setNotice(text.shareFailed)
     }
   }
 

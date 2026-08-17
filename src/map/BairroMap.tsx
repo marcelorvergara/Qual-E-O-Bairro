@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { GameState, Guess } from '../game/types'
+import { useLanguage } from '../i18n'
 import { createBairroPaths } from './geometry'
 import { layoutLabels } from './labels'
 import styles from './BairroMap.module.css'
@@ -21,9 +22,9 @@ interface BairroMapProps {
   compact?: boolean
 }
 
-function guessText(guess: Guess): string {
+function guessText(guess: Guess, adjacent: string): string {
   if (guess.bucket === 0) return '✓'
-  if (guess.bucket === 'encosta') return 'encosta'
+  if (guess.bucket === 'encosta') return adjacent
   return `${guess.km.toFixed(1)} km`
 }
 
@@ -33,6 +34,7 @@ export function BairroMap({
   status,
   compact = false,
 }: BairroMapProps) {
+  const { text } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
   const touchLabelTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const tapPulseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -66,7 +68,7 @@ export function BairroMap({
   const interactionText = (cod: string, name: string) => {
     if (status === 'won') return name
     const item = guesses.find((guess) => guess.cod === cod)
-    return item ? `${name} · ${guessText(item)}` : ''
+    return item ? `${name} · ${guessText(item, text.adjacent)}` : ''
   }
   // Names stay hidden for unguessed paths during play to avoid leaking the answer space.
   const handleTouch = (cod: string, name: string) => {
@@ -98,7 +100,10 @@ export function BairroMap({
   const labelContent = new Map(
     guesses.map((item) => {
       const bairro = pathByCode.get(item.cod)?.feature.properties
-      return [item.cod, `${bairro?.nome ?? ''} · ${guessText(item)}`]
+      return [
+        item.cod,
+        `${bairro?.nome ?? ''} · ${guessText(item, text.adjacent)}`,
+      ]
     }),
   )
   const labels = layoutLabels(
@@ -135,7 +140,7 @@ export function BairroMap({
           className={styles.map}
           viewBox={`0 0 ${size.width} ${size.height}`}
           role="img"
-          aria-label="Mapa dos bairros do Rio de Janeiro"
+          aria-label={text.mapLabel}
         >
           <g>
             {paths.map(({ feature, path }) => {

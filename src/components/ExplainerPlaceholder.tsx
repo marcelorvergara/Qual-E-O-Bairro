@@ -1,4 +1,5 @@
 import type { Bairro } from '../game/types'
+import { useLanguage } from '../i18n'
 
 interface ExplainerPlaceholderProps {
   bairro: Bairro
@@ -12,10 +13,11 @@ export function ExplainerPlaceholder({
   known,
   className,
 }: ExplainerPlaceholderProps) {
+  const { text } = useLanguage()
   return (
-    <section className={className} aria-label="Sobre o bairro">
-      {bairro.nome} fica na RP {bairro.rp}
-      {known ? ' e é um bairro conhecido.' : '.'}
+    <section className={className} aria-label={text.aboutBairro}>
+      {text.bairroLocation(bairro.nome, bairro.rp)}
+      {known ? text.knownBairro : '.'}
     </section>
   )
 }
