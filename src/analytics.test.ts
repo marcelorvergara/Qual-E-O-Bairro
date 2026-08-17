@@ -5,6 +5,7 @@ import {
   trackHintUsed,
   trackShare,
   trackWin,
+  trafficTypeParams,
   type AnalyticsTransport,
 } from './analytics'
 
@@ -41,10 +42,13 @@ afterEach(() => {
 })
 
 describe('analytics event contract', () => {
-  it('sends game_start with only the mode', () => {
+  it('marks game_start as internal outside production', () => {
     const send = transport()
     trackGameStart('daily', send)
-    expect(send).toHaveBeenCalledWith('game_start', { mode: 'daily' })
+    expect(send).toHaveBeenCalledWith('game_start', {
+      mode: 'daily',
+      traffic_type: 'internal',
+    })
   })
 
   it('sends daily guess parameters with exact names', () => {
@@ -54,6 +58,7 @@ describe('analytics event contract', () => {
       mode: 'daily',
       guess_count: 4,
       puzzle_number: 12,
+      traffic_type: 'internal',
     })
   })
 
@@ -63,6 +68,7 @@ describe('analytics event contract', () => {
     expect(send).toHaveBeenCalledWith('guess', {
       mode: 'practice',
       guess_count: 2,
+      traffic_type: 'internal',
     })
   })
 
@@ -73,9 +79,11 @@ describe('analytics event contract', () => {
     expect(send).toHaveBeenNthCalledWith(1, 'hint_used', {
       mode: 'daily',
       puzzle_number: 8,
+      traffic_type: 'internal',
     })
     expect(send).toHaveBeenNthCalledWith(2, 'hint_used', {
       mode: 'practice',
+      traffic_type: 'internal',
     })
   })
 
@@ -87,10 +95,12 @@ describe('analytics event contract', () => {
       mode: 'daily',
       guess_count: 7,
       puzzle_number: 3,
+      traffic_type: 'internal',
     })
     expect(send).toHaveBeenNthCalledWith(2, 'win', {
       mode: 'practice',
       guess_count: 5,
+      traffic_type: 'internal',
     })
   })
 
@@ -101,14 +111,100 @@ describe('analytics event contract', () => {
     expect(send).toHaveBeenNthCalledWith(1, 'share', {
       mode: 'daily',
       puzzle_number: 15,
+      traffic_type: 'internal',
     })
     expect(send).toHaveBeenNthCalledWith(2, 'share', {
       mode: 'practice',
+      traffic_type: 'internal',
+    })
+  })
+
+  it('reads the hostname at call time and omits traffic_type on production', () => {
+    const send = transport()
+    vi.stubGlobal('window', { location: { hostname: 'qualeobairro.com.br' } })
+
+    trackGameStart('daily', send)
+    window.location.hostname = 'preview.example.workers.dev'
+    trackGameStart('practice', send)
+
+    expect(send).toHaveBeenNthCalledWith(1, 'game_start', { mode: 'daily' })
+    expect(send).toHaveBeenNthCalledWith(2, 'game_start', {
+      mode: 'practice',
+      traffic_type: 'internal',
+    })
+  })
+})
+
+describe('analytics traffic classification', () => {
+  it('only treats the exact production hostname as external', () => {
+    expect(trafficTypeParams('qualeobairro.com.br')).toEqual({})
+    expect(trafficTypeParams('localhost')).toEqual({ traffic_type: 'internal' })
+    expect(trafficTypeParams('127.0.0.1')).toEqual({ traffic_type: 'internal' })
+    expect(trafficTypeParams('branch.qualeobairro.workers.dev')).toEqual({
+      traffic_type: 'internal',
+    })
+    expect(trafficTypeParams('www.qualeobairro.com.br')).toEqual({
+      traffic_type: 'internal',
+    })
+    expect(trafficTypeParams('example.com')).toEqual({
+      traffic_type: 'internal',
     })
   })
 })
 
 describe('consent initialization', () => {
+  it('marks the initial config as internal outside production', async () => {
+    const dataLayer: (IArguments | unknown[])[] = []
+    const storage = new MemoryStorage()
+    storage.setItem('qeb:consent:v1', 'granted')
+    vi.stubEnv('VITE_GA_MEASUREMENT_ID', 'G-TEST')
+    vi.stubGlobal('window', {
+      dataLayer,
+      location: { hostname: 'preview.example.workers.dev' },
+    })
+    vi.stubGlobal('localStorage', storage)
+    vi.stubGlobal('document', {
+      getElementById: () => null,
+      createElement: () => ({}),
+      head: { append: vi.fn() },
+    })
+    const { initializeAnalytics } = await import('./analytics')
+
+    initializeAnalytics()
+
+    expect(Array.from(dataLayer[3])).toEqual([
+      'config',
+      'G-TEST',
+      { send_page_view: false, traffic_type: 'internal' },
+    ])
+  })
+
+  it('omits traffic_type from the initial production config', async () => {
+    const dataLayer: (IArguments | unknown[])[] = []
+    const storage = new MemoryStorage()
+    storage.setItem('qeb:consent:v1', 'granted')
+    vi.stubEnv('VITE_GA_MEASUREMENT_ID', 'G-TEST')
+    vi.stubGlobal('window', {
+      dataLayer,
+      location: { hostname: 'qualeobairro.com.br' },
+    })
+    vi.stubGlobal('localStorage', storage)
+    vi.stubGlobal('document', {
+      getElementById: () => null,
+      createElement: () => ({}),
+      head: { append: vi.fn() },
+    })
+    const { initializeAnalytics } = await import('./analytics')
+
+    initializeAnalytics()
+
+    expect(Array.from(dataLayer[3])).toEqual([
+      'config',
+      'G-TEST',
+      { send_page_view: false },
+    ])
+  })
+
   it('queues canonical arguments objects rather than plain arrays', async () => {
     const dataLayer: (IArguments | unknown[])[] = []
     vi.stubGlobal('window', { dataLayer })
