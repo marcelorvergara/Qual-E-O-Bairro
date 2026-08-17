@@ -28,6 +28,16 @@ Qual é o Bairro? #123
 https://qualeobairro.com.br
 ```
 
+Daily share uses the canonical format above unchanged. Because practice mode has no puzzle number, it uses this distinct format:
+
+```
+Qual é o Bairro? — Prática
+🟪🎯 2 palpites, 2 dicas
+https://qualeobairro.com.br
+```
+
+Both daily and practice share formats are PT-BR only, regardless of the interface language.
+
 Attribution: "Dados: Instituto Pereira Passos / data.rio" in the footer.
 
 ## 3. Stack
