@@ -194,6 +194,11 @@
   font-size: 0.82rem;
 }
 
+.winActions {
+  display: flex;
+  gap: 0.4rem;
+}
+
 .explainer {
   margin-top: 0.4rem;
   padding: 0.4rem 0.7rem;

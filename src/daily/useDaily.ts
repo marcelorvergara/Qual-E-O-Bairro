@@ -1,4 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  trackGameStart,
+  trackGuess,
+  trackHintUsed,
+  trackShare,
+  trackWin,
+} from '../analytics'
 import * as api from '../api/daily'
 import {
   dailyOracle,
@@ -11,6 +18,7 @@ import {
 import {
   beginRequest,
   failRequest,
+  guessCount,
   newGame,
   resolveGuess,
   resolveHint,
@@ -63,6 +71,7 @@ export function useDaily() {
   const leaderboardLoadedFor = useRef<string | null>(null)
   const explainerLoadedFor = useRef<string | null>(null)
   const textRef = useRef(text)
+  const trackedStart = useRef<number | null>(null)
   gameRef.current = game
   metaRef.current = meta
   nicknameRef.current = nickname
@@ -106,6 +115,17 @@ export function useDaily() {
         setError(localizedError(caught, copy, copy.errors.DAILY_UNAVAILABLE))
       })
   }, [bootstrapAttempt, restore])
+
+  useEffect(() => {
+    if (
+      !meta ||
+      game.status === 'won' ||
+      trackedStart.current === meta.puzzleNumber
+    )
+      return
+    trackedStart.current = meta.puzzleNumber
+    trackGameStart('daily')
+  }, [game.status, meta])
 
   useEffect(() => {
     if (!notice) return
@@ -323,6 +343,10 @@ export function useDaily() {
       gameRef.current = next
       setGame(next)
       persist(next, { firstGuessAt })
+      const count = guessCount(next)
+      trackGuess('daily', count, metaRef.current?.puzzleNumber)
+      if (next.status === 'won')
+        trackWin('daily', count, metaRef.current?.puzzleNumber)
     } catch (caught) {
       const failed = failRequest(
         waiting,
@@ -350,6 +374,7 @@ export function useDaily() {
       gameRef.current = next
       setGame(next)
       persist(next)
+      trackHintUsed('daily', metaRef.current?.puzzleNumber)
       return true
     } catch (caught) {
       const failed = failRequest(
@@ -365,6 +390,7 @@ export function useDaily() {
   }
   const share = async () => {
     if (!meta) return
+    trackShare('daily', meta.puzzleNumber)
     const shareCopy = shareText(meta.puzzleNumber, game.guesses, game.hintsUsed)
     const shareApi = (
       navigator as unknown as {
