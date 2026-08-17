@@ -16,6 +16,11 @@ const ptBR = {
   description: 'Um jogo sobre os bairros do Rio de Janeiro.',
   languageLabel: 'Idioma',
   languageButton: 'EN',
+  analyticsConsentLabel: 'Preferências de privacidade',
+  analyticsConsentMessage:
+    'Podemos usar dados anônimos de uso para melhorar o jogo. Você pode aceitar ou recusar.',
+  rejectAnalytics: 'Recusar',
+  acceptAnalytics: 'Aceitar',
   attribution: 'Dados: Instituto Pereira Passos / data.rio',
   portfolio: 'Um jogo de Marcelo Vergara',
   guessesArea: 'Área de palpites',
@@ -121,6 +126,11 @@ const en: typeof ptBR = {
   description: 'A game about the neighborhoods of Rio de Janeiro.',
   languageLabel: 'Language',
   languageButton: 'PT',
+  analyticsConsentLabel: 'Privacy preferences',
+  analyticsConsentMessage:
+    'We can use anonymous usage data to improve the game. You can accept or reject.',
+  rejectAnalytics: 'Reject',
+  acceptAnalytics: 'Accept',
   attribution: 'Data: Instituto Pereira Passos / data.rio',
   portfolio: 'A game by Marcelo Vergara',
   guessesArea: 'Guess area',

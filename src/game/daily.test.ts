@@ -6,7 +6,7 @@ import {
   type DailyProgress,
 } from './daily'
 import type { Bucket } from './types'
-import { shareText } from './share'
+import { practiceShareText, shareText } from './share'
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>()
@@ -119,6 +119,12 @@ describe('share text', () => {
       ),
     ).toBe(
       'Qual é o Bairro? #123\n🟥🟧🟨🟩🟩🟩🎯 7 palpites, 1 dica\nhttps://qualeobairro.com.br',
+    )
+  })
+
+  it('formats a practice result without a puzzle placeholder', () => {
+    expect(practiceShareText([guess('encosta'), guess(0)], 2)).toBe(
+      'Qual é o Bairro? — Prática\n🟪🎯 2 palpites, 2 dicas\nhttps://qualeobairro.com.br',
     )
   })
 })

@@ -1,4 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import {
+  trackGameStart,
+  trackGuess,
+  trackHintUsed,
+  trackShare,
+  trackWin,
+} from './analytics'
+import { ConsentBanner } from './components/ConsentBanner'
 import { ExplainerPlaceholder } from './components/ExplainerPlaceholder'
 import { GuessInput } from './components/GuessInput'
 import { HintPanel } from './components/HintPanel'
@@ -7,6 +15,7 @@ import { useDaily } from './daily/useDaily'
 import { allBairros, poolFor } from './game/data'
 import { formatElapsed, partitionEntries } from './game/leaderboard'
 import { practiceOracle } from './game/oracle'
+import { practiceShareText } from './game/share'
 import {
   beginRequest,
   failRequest,
@@ -52,6 +61,7 @@ export default function App() {
     setMode('practice')
     setPracticeGame(newGame(pool))
     setPracticeNotice('')
+    trackGameStart('practice')
   }
   const returnToDaily = () => {
     if (!daily.meta) return
@@ -76,6 +86,9 @@ export default function App() {
       const next = resolveGuess(waiting, bairro.cod, result)
       practiceGameRef.current = next
       setPracticeGame(next)
+      const count = guessCount(next)
+      trackGuess('practice', count)
+      if (next.status === 'won') trackWin('practice', count)
     } catch (error) {
       const failed = failRequest(
         waiting,
@@ -101,6 +114,7 @@ export default function App() {
       const next = resolveHint(waiting, text)
       practiceGameRef.current = next
       setPracticeGame(next)
+      trackHintUsed('practice')
       return true
     } catch (error) {
       const failed = failRequest(
@@ -135,6 +149,25 @@ export default function App() {
       pulseTimer.current = setTimeout(() => setPulseCod(undefined), 600)
     })
   }
+  const sharePractice = async () => {
+    const shareCopy = practiceShareText(
+      practiceGame.guesses,
+      practiceGame.hintsUsed,
+    )
+    const shareApi = (
+      navigator as unknown as {
+        share?: (data: { text: string }) => Promise<void>
+      }
+    ).share
+    trackShare('practice')
+    try {
+      if (shareApi) await shareApi.call(navigator, { text: shareCopy })
+      else await navigator.clipboard.writeText(shareCopy)
+      setPracticeNotice(shareApi ? text.shared : text.copied)
+    } catch {
+      setPracticeNotice(text.shareFailed)
+    }
+  }
 
   const dailyUnavailable = mode === 'daily' && daily.error
   const ranking = partitionEntries(daily.leaderboard.entries)
@@ -143,6 +176,7 @@ export default function App() {
     : ranking.top
   return (
     <main className={styles.app}>
+      <ConsentBanner />
       <LanguageToggle className={styles.languageToggle} />
       <BairroMap
         guesses={game.guesses}
@@ -277,12 +311,17 @@ export default function App() {
                     {text.share}
                   </button>
                 ) : (
-                  <button
-                    onClick={() => startPractice(game.pool)}
-                    type="button"
-                  >
-                    {text.playAgain}
-                  </button>
+                  <div className={styles.winActions}>
+                    <button onClick={sharePractice} type="button">
+                      {text.share}
+                    </button>
+                    <button
+                      onClick={() => startPractice(game.pool)}
+                      type="button"
+                    >
+                      {text.playAgain}
+                    </button>
+                  </div>
                 )}
               </div>
               {mode === 'daily' ? (

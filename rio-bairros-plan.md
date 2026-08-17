@@ -76,13 +76,13 @@ Autocomplete input, normalization, guess state, color buckets from the matrix, o
 
 Phase 2 was delivered as two stacked PRs: 2a added the game logic, autocomplete, controls, responsive panel, and map coloring; 2b made the map the guess log. A 2c follow-up contains the playtest fixes and is stacked with Phase 2.5 in a second two-PR delivery.
 
-Acceptance: a full practice game is playable on desktop and phone; tests cover normalization edge cases (accents, parentheses, "São" vs "Sao"), color bucketing boundaries, and win detection; no layout shift when labels appear.
+Acceptance: a full practice game is playable on desktop and phone; tests cover normalization edge cases (accents, parentheses, "São" vs "Sao"), color bucketing boundaries, and win detection; no layout shift when labels appear. Analytics is the sole runtime network exception in practice mode, and only after consent is granted.
 
 ### Phase 2.5 — Hints and explainer (agent, ~1.5h)
 
 Hint button with three static tiers, penalties applied in state, hint text shown as a card above the input, and a data-built post-win placeholder. The generated explainer and its Supabase fetch/cache are deferred to Phase 3.
 
-Acceptance: hint order, cap, and score arithmetic are tested; all three tiers remain clear of the input at 360×640; no runtime network request.
+Acceptance: hint order, cap, and score arithmetic are tested; all three tiers remain clear of the input at 360×640; no runtime network request except analytics, gated on granted consent.
 
 ### Phase 3 — Daily mode and leaderboard (agent, ~4h, likely two PRs)
 
