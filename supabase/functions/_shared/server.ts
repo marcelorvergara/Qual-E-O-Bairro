@@ -99,6 +99,7 @@ export function corsHeaders(request: Request): HeadersInit {
     'access-control-allow-origin': origin,
     'access-control-allow-headers': 'authorization, apikey, content-type',
     'access-control-allow-methods': 'POST, OPTIONS',
+    'access-control-max-age': '7200',
     vary: 'Origin',
   }
 }

@@ -12,6 +12,7 @@ interface GuessInputProps {
   pulseCod?: string
   status: GameState['status']
   disabled?: boolean
+  unavailable?: boolean
   onGuess: (bairro: Bairro) => void
 }
 
@@ -20,6 +21,7 @@ export function GuessInput({
   pulseCod,
   status,
   disabled = false,
+  unavailable = false,
   onGuess,
 }: GuessInputProps) {
   const { text } = useLanguage()
@@ -186,7 +188,13 @@ export function GuessInput({
       }}
       onKeyDown={(event) => keyDown(event, fromOverlay)}
       placeholder={
-        won ? text.correctInput : disabled ? text.wait : text.typeBairro
+        won
+          ? text.correctInput
+          : unavailable
+            ? text.dailyUnavailableInput
+            : disabled
+              ? text.wait
+              : text.typeBairro
       }
       ref={ref}
       role="combobox"

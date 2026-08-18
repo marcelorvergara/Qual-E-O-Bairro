@@ -429,6 +429,7 @@ export default function App() {
           onGuess={mode === 'daily' ? daily.submitGuess : submitPracticeGuess}
           pulseCod={pulseCod}
           status={game.status}
+          unavailable={Boolean(dailyUnavailable)}
         />
       </section>
     </main>
