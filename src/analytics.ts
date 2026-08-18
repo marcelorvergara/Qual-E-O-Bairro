@@ -80,7 +80,6 @@ function loadGtag() {
   const gtag = ensureGtag()
   gtag('js', new Date())
   gtag('config', id, {
-    send_page_view: false,
     ...currentTrafficTypeParams(),
   })
   const script = document.createElement('script')

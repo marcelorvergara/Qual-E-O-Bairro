@@ -175,7 +175,7 @@ describe('consent initialization', () => {
     expect(Array.from(dataLayer[3])).toEqual([
       'config',
       'G-TEST',
-      { send_page_view: false, traffic_type: 'internal' },
+      { traffic_type: 'internal' },
     ])
   })
 
@@ -198,11 +198,7 @@ describe('consent initialization', () => {
 
     initializeAnalytics()
 
-    expect(Array.from(dataLayer[3])).toEqual([
-      'config',
-      'G-TEST',
-      { send_page_view: false },
-    ])
+    expect(Array.from(dataLayer[3])).toEqual(['config', 'G-TEST', {}])
   })
 
   it('queues canonical arguments objects rather than plain arrays', async () => {
