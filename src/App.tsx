@@ -296,6 +296,7 @@ export default function App() {
             {!dailyUnavailable && (game.error || notice)}
           </div>
           <HintPanel
+            className={styles.hintViewport}
             texts={game.hintTexts}
             onDismissExplanation={() => setShowHintExplanation(false)}
             showExplanation={shouldShowHintExplanation(

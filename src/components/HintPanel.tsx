@@ -4,6 +4,7 @@ import { useLanguage } from '../i18n'
 import styles from './HintPanel.module.css'
 
 interface HintPanelProps {
+  className?: string
   texts: string[]
   used: HintCount
   showExplanation: boolean
@@ -11,6 +12,7 @@ interface HintPanelProps {
 }
 
 export function HintPanel({
+  className,
   texts,
   used,
   showExplanation,
@@ -22,7 +24,7 @@ export function HintPanel({
 
   return (
     <section
-      className={styles.panel}
+      className={`${styles.panel} ${className ?? ''}`}
       aria-label={text.revealedHints}
       aria-live="polite"
     >

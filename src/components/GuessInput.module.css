@@ -14,7 +14,7 @@
   background: #fff;
   color: inherit;
   font: inherit;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .input:focus {
@@ -32,6 +32,7 @@
   margin: 0;
   padding: 0.25rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid #bcb5a9;
   border-radius: 0.5rem;
   background: #fff;
@@ -109,6 +110,7 @@
   margin: 0;
   padding: 0 0.75rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   list-style: none;
 }
 .overlaySuggestions .suggestion {
