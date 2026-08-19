@@ -6,6 +6,7 @@
   --bucket-5: #fed976;
   --encosta: #67000d;
   --correct: #009e73;
+  --map-band: min(54.8vw, 45dvh);
   color: #25231f;
   font-family:
     Inter,

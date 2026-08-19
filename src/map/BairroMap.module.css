@@ -1,8 +1,8 @@
 .mapPanel {
   position: relative;
   width: 100%;
-  height: min(33.333vw, 45dvh);
-  flex: 0 0 min(33.333vw, 45dvh);
+  height: var(--map-band);
+  flex: 0 0 var(--map-band);
   min-height: 0;
   overflow: hidden;
 }
