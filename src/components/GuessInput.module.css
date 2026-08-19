@@ -86,7 +86,7 @@
   display: grid;
   flex: 0 0 auto;
   padding: max(0.65rem, env(safe-area-inset-top)) 0.75rem 0.65rem;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.55rem;
 }
 .overlayHeader button {
@@ -121,7 +121,8 @@
 }
 .overlayMap {
   min-height: 0;
-  flex: 1 1 auto;
+  height: var(--map-band);
+  flex: 0 0 auto;
 }
 
 @media (orientation: landscape) and (max-height: 499px) {

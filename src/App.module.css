@@ -29,7 +29,7 @@
 .attribution {
   position: fixed;
   z-index: 2;
-  top: min(33.333vw, 45dvh);
+  top: var(--map-band);
   left: 0.75rem;
   display: flex;
   max-width: calc(100% - 1.5rem);
@@ -279,6 +279,13 @@
 .leaderboardError {
   margin: 0.3rem 0 0;
   color: #8c2f25;
+}
+
+@media (orientation: portrait) {
+  .attribution {
+    position: static;
+    transform: none;
+  }
 }
 
 @media (orientation: landscape) {
