@@ -1,8 +1,8 @@
 .wrapper {
   position: absolute;
-  right: 0.75rem;
+  right: max(0.75rem, env(safe-area-inset-right));
   bottom: max(0.75rem, env(safe-area-inset-bottom));
-  left: 0.75rem;
+  left: max(0.75rem, env(safe-area-inset-left));
 }
 
 .input {
@@ -14,7 +14,7 @@
   background: #fff;
   color: inherit;
   font: inherit;
-  font-size: 1rem;
+  font-size: max(16px, 1rem);
 }
 
 .input:focus {
@@ -32,6 +32,7 @@
   margin: 0;
   padding: 0.25rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid #bcb5a9;
   border-radius: 0.5rem;
   background: #fff;
@@ -85,7 +86,9 @@
 .overlayHeader {
   display: grid;
   flex: 0 0 auto;
-  padding: max(0.65rem, env(safe-area-inset-top)) 0.75rem 0.65rem;
+  padding: max(0.65rem, env(safe-area-inset-top))
+    max(0.75rem, env(safe-area-inset-right)) 0.65rem
+    max(0.75rem, env(safe-area-inset-left));
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.55rem;
 }
@@ -100,15 +103,18 @@
 .overlayNotice {
   flex: 0 0 auto;
   margin: 0;
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem max(0.75rem, env(safe-area-inset-right)) 0.35rem
+    max(0.75rem, env(safe-area-inset-left));
   color: #4d4942;
 }
 .overlaySuggestions {
   max-height: 176px;
   flex: 0 0 auto;
   margin: 0;
-  padding: 0 0.75rem;
+  padding: 0 max(0.75rem, env(safe-area-inset-right)) 0
+    max(0.75rem, env(safe-area-inset-left));
   overflow-y: auto;
+  overscroll-behavior: contain;
   list-style: none;
 }
 .overlaySuggestions .suggestion {
@@ -122,13 +128,15 @@
 .overlayMap {
   min-height: 0;
   height: var(--map-band);
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
   flex: 0 0 auto;
 }
 
 @media (orientation: landscape) and (max-height: 499px) {
   .wrapper {
-    right: 0.6rem;
-    bottom: 0.6rem;
+    right: max(0.6rem, env(safe-area-inset-right));
+    bottom: max(0.6rem, env(safe-area-inset-bottom));
     left: 0.6rem;
   }
 }
