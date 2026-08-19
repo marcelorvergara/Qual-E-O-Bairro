@@ -43,6 +43,5 @@
 @media (orientation: landscape) and (max-height: 499px) {
   .panel {
     order: 3;
-    flex: 0 0 auto;
   }
 }

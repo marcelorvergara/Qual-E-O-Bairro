@@ -122,6 +122,7 @@
   .mapPanel {
     width: 60%;
     height: 100%;
+    padding-left: env(safe-area-inset-left);
     flex: 0 0 60%;
   }
 }
