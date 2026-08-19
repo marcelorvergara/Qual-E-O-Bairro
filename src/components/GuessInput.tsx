@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { allBairros } from '../game/data'
 import { matchBairros, normalizeName } from '../game/normalize'
+import { shouldShowNoResults } from '../game/presentation'
 import type { Bairro, GameState, Guess } from '../game/types'
 import { useLanguage } from '../i18n'
 import { BairroMap } from '../map/BairroMap'
@@ -13,6 +14,7 @@ interface GuessInputProps {
   status: GameState['status']
   disabled?: boolean
   unavailable?: boolean
+  notice?: string
   onGuess: (bairro: Bairro) => void
 }
 
@@ -22,6 +24,7 @@ export function GuessInput({
   status,
   disabled = false,
   unavailable = false,
+  notice = '',
   onGuess,
 }: GuessInputProps) {
   const { text } = useLanguage()
@@ -45,6 +48,7 @@ export function GuessInput({
     open && (!overlay || normalizeName(query))
       ? matchBairros(query, allBairros)
       : []
+  const noResults = open && shouldShowNoResults(query, matches.length)
   const won = status === 'won'
 
   const closeOverlay = (goBack = true) => {
@@ -91,7 +95,11 @@ export function GuessInput({
   }
 
   const select = (bairro: Bairro, fromOverlay = false) => {
-    if (guessed.has(bairro.cod) || won) return
+    if (won) return
+    if (guessed.has(bairro.cod)) {
+      onGuess(bairro)
+      return
+    }
     onGuess(bairro)
     setQuery('')
     setOpen(false)
@@ -142,7 +150,6 @@ export function GuessInput({
             <button
               aria-selected={index === activeIndex}
               className={`${styles.suggestion} ${index === activeIndex ? styles.active : ''}`}
-              disabled={Boolean(previous)}
               id={`${fromOverlay ? 'touch-' : ''}bairro-option-${bairro.cod}`}
               onPointerDown={(event) => {
                 event.preventDefault()
@@ -157,6 +164,11 @@ export function GuessInput({
           </li>
         )
       })}
+      {noResults && (
+        <li className={styles.noResults} role="presentation">
+          {text.noResults}
+        </li>
+      )}
     </ul>
   )
 
@@ -172,7 +184,9 @@ export function GuessInput({
       }
       aria-autocomplete="list"
       aria-controls={fromOverlay ? 'touch-bairro-options' : 'bairro-options'}
-      aria-expanded={matches.length > 0}
+      aria-expanded={matches.length > 0 || noResults}
+      aria-hidden={overlay && !fromOverlay ? true : undefined}
+      aria-label={text.searchBairro}
       autoComplete="off"
       autoFocus={!touchDevice && !fromOverlay}
       className={styles.input}
@@ -198,6 +212,7 @@ export function GuessInput({
       }
       ref={ref}
       role="combobox"
+      tabIndex={overlay && !fromOverlay ? -1 : undefined}
       type="text"
       value={query}
     />
@@ -205,7 +220,7 @@ export function GuessInput({
 
   return (
     <div className={styles.wrapper}>
-      {!touchDevice && matches.length > 0 && rows(false)}
+      {!touchDevice && (matches.length > 0 || noResults) && rows(false)}
       {input(inputRef)}
       {overlay &&
         createPortal(
@@ -222,7 +237,12 @@ export function GuessInput({
                 {text.cancel}
               </button>
             </div>
-            {matches.length > 0 && rows(true)}
+            {notice && (
+              <p className={styles.overlayNotice} role="status">
+                {notice}
+              </p>
+            )}
+            {(matches.length > 0 || noResults) && rows(true)}
             <div className={styles.overlayMap}>
               <BairroMap
                 compact

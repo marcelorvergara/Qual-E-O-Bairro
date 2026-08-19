@@ -84,7 +84,7 @@
 
 .bucket0 {
   background: var(--correct);
-  color: #fff;
+  color: #25231f;
 }
 .bucket1 {
   background: var(--bucket-1);
@@ -92,7 +92,7 @@
 }
 .bucket2 {
   background: var(--bucket-2);
-  color: #fff;
+  color: #000;
 }
 .bucket3 {
   background: var(--bucket-3);

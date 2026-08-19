@@ -15,6 +15,7 @@ import { useDaily } from './daily/useDaily'
 import { allBairros, poolFor } from './game/data'
 import { formatElapsed, partitionEntries } from './game/leaderboard'
 import { practiceOracle } from './game/oracle'
+import { shouldShowHintExplanation } from './game/presentation'
 import { practiceShareText } from './game/share'
 import {
   beginRequest,
@@ -132,6 +133,7 @@ export default function App() {
     const revealed =
       mode === 'daily' ? await daily.revealHint() : await revealPracticeHint()
     if (!revealed) return
+    if (!shouldShowHintExplanation(mode, true)) return
     let seen = false
     try {
       seen = Boolean(sessionStorage.getItem(hintExplanationKey))
@@ -296,7 +298,10 @@ export default function App() {
           <HintPanel
             texts={game.hintTexts}
             onDismissExplanation={() => setShowHintExplanation(false)}
-            showExplanation={showHintExplanation}
+            showExplanation={shouldShowHintExplanation(
+              mode,
+              showHintExplanation,
+            )}
             used={game.hintsUsed}
           />
           {game.status === 'won' && game.answer && (
@@ -426,6 +431,7 @@ export default function App() {
             (mode === 'daily' && !daily.meta)
           }
           guesses={game.guesses}
+          notice={notice}
           onGuess={mode === 'daily' ? daily.submitGuess : submitPracticeGuess}
           pulseCod={pulseCod}
           status={game.status}

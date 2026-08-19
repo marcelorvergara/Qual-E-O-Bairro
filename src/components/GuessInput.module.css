@@ -19,7 +19,7 @@
 
 .input:focus {
   border-color: #25231f;
-  outline: 2px solid rgb(37 35 31 / 18%);
+  outline: 2px solid rgb(37 35 31 / 60%);
 }
 
 .suggestions {
@@ -67,6 +67,11 @@
   cursor: default;
 }
 
+.noResults {
+  padding: 0.75rem;
+  color: #4d4942;
+}
+
 .overlay {
   position: fixed;
   right: 0;
@@ -91,6 +96,12 @@
   color: #403b34;
   font: inherit;
   cursor: pointer;
+}
+.overlayNotice {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  color: #4d4942;
 }
 .overlaySuggestions {
   max-height: 176px;
