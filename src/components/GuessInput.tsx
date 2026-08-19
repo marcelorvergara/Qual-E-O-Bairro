@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { allBairros } from '../game/data'
-import { matchBairros, normalizeName } from '../game/normalize'
+import {
+  exactBairroMatch,
+  matchBairros,
+  normalizeName,
+} from '../game/normalize'
 import { shouldShowNoResults } from '../game/presentation'
 import type { Bairro, GameState, Guess } from '../game/types'
 import { useLanguage } from '../i18n'
@@ -129,11 +133,13 @@ export function GuessInput({
         return (start + direction + matches.length) % matches.length
       })
     }
-    if (event.key === 'Enter' && matches.length > 0) {
+    if (event.key === 'Enter') {
       event.preventDefault()
       if (activeIndex >= 0) select(matches[activeIndex], fromOverlay)
-      else if (normalizeName(query) !== 'freguesia')
-        select(matches[0], fromOverlay)
+      else {
+        const exactMatch = exactBairroMatch(normalizeName(query), allBairros)
+        if (exactMatch) select(exactMatch, fromOverlay)
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import poolJson from '../../data/pool.json'
 import { bucketFor } from './buckets'
 import { allBairros, HINT_ORDER, hintsFor, poolFor } from './data'
-import { matchBairros } from './normalize'
+import { exactBairroMatch, matchBairros, normalizeName } from './normalize'
 import { practiceOracle } from './oracle'
 import {
   beginRequest,
@@ -27,6 +27,37 @@ describe('name matching', () => {
     expect(
       matchBairros('freguesia', allBairros).map(({ nome }) => nome),
     ).toEqual(['Freguesia (Ilha)', 'Freguesia (Jacarepaguá)'])
+  })
+
+  it.each(['b', 'sa', 'ca', 'freguesia'])(
+    'does not submit the partial name %s',
+    (query) => {
+      expect(exactBairroMatch(normalizeName(query), allBairros)).toBeNull()
+    },
+  )
+
+  it.each([
+    ['Freguesia (Ilha)', 'Freguesia (Ilha)'],
+    ['leblon', 'Leblon'],
+    ['LEBLON', 'Leblon'],
+    ['Leblón', 'Leblon'],
+    ['penha', 'Penha'],
+    ['rocha', 'Rocha'],
+    ['penha circular', 'Penha Circular'],
+  ])('submits the unique exact name %s', (query, expected) => {
+    expect(exactBairroMatch(normalizeName(query), allBairros)?.nome).toBe(
+      expected,
+    )
+  })
+
+  it('requires the exact canonical name to be unique', () => {
+    const leblon = allBairros.find(({ nome }) => nome === 'Leblon')!
+    expect(
+      exactBairroMatch(normalizeName('Leblon'), [
+        leblon,
+        { ...leblon, cod: 'duplicate' },
+      ]),
+    ).toBeNull()
   })
 })
 

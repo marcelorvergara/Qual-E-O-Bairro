@@ -10,6 +10,21 @@ export function normalizeName(value: string): string {
     .replace(/\s+/g, ' ')
 }
 
+export function exactBairroMatch(
+  normalizedQuery: string,
+  bairros: Bairro[],
+): Bairro | null {
+  let exactMatch: Bairro | null = null
+
+  for (const bairro of bairros) {
+    if (normalizeName(bairro.nome) !== normalizedQuery) continue
+    if (exactMatch) return null
+    exactMatch = bairro
+  }
+
+  return exactMatch
+}
+
 export function matchBairros(
   query: string,
   bairros: Bairro[],
