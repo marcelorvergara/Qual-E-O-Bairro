@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   getConsentChoice,
   setConsentChoice,
@@ -7,14 +7,26 @@ import {
 import { useLanguage } from '../i18n'
 import styles from './ConsentBanner.module.css'
 
-export function ConsentBanner() {
+export function ConsentBanner({
+  onClose,
+  open,
+}: {
+  onClose: () => void
+  open: boolean
+}) {
   const { text } = useLanguage()
   const [choice, setChoice] = useState<ConsentChoice>(getConsentChoice)
-  if (choice) return null
+
+  useEffect(() => {
+    if (open) setChoice(getConsentChoice())
+  }, [open])
+
+  if (!open) return null
 
   const choose = (next: Exclude<ConsentChoice, null>) => {
     setConsentChoice(next)
     setChoice(next)
+    onClose()
   }
 
   return (
@@ -25,10 +37,18 @@ export function ConsentBanner() {
     >
       <p>{text.analyticsConsentMessage}</p>
       <div className={styles.actions}>
-        <button onClick={() => choose('denied')} type="button">
+        <button
+          aria-pressed={choice === 'denied'}
+          onClick={() => choose('denied')}
+          type="button"
+        >
           {text.rejectAnalytics}
         </button>
-        <button onClick={() => choose('granted')} type="button">
+        <button
+          aria-pressed={choice === 'granted'}
+          onClick={() => choose('granted')}
+          type="button"
+        >
           {text.acceptAnalytics}
         </button>
       </div>

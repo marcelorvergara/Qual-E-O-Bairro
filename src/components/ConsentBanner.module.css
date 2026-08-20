@@ -34,3 +34,9 @@
   font-weight: 650;
   cursor: pointer;
 }
+
+.actions button[aria-pressed='true'] {
+  border-color: #25231f;
+  background: #25231f;
+  color: #fff;
+}
