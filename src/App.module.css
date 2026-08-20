@@ -60,6 +60,11 @@
   background: #f6f3ed;
 }
 
+.gamePanelWon {
+  --input-height: 0rem;
+  --input-gap: 0rem;
+}
+
 .panelContent {
   position: absolute;
   inset: 0 0 calc(var(--input-height) + var(--input-gap));
@@ -67,7 +72,9 @@
   min-height: 0;
   padding: 0.65rem 0.75rem 0;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .guessStrip {
@@ -81,11 +88,7 @@
 }
 
 .hintViewport {
-  min-height: 0;
   padding-bottom: 0.25rem;
-  flex: 0 1 auto;
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .chip {
@@ -128,6 +131,7 @@
 
 .controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
   font-size: 0.75rem;
@@ -152,13 +156,12 @@
 }
 .feedback {
   display: flex;
-  height: 3.25rem;
+  min-height: 3.25rem;
   flex-wrap: wrap;
   align-items: center;
   margin: 0.35rem 0 0;
   padding: 0.35rem 0.6rem;
   gap: 0.2rem 0.45rem;
-  overflow-y: auto;
   border-radius: 0.4rem;
   background: #fff;
   font-size: 0.78rem;
@@ -227,9 +230,7 @@
 }
 
 .winDetails {
-  max-height: min(13rem, 30vh);
   margin-top: 0.4rem;
-  overflow-y: auto;
   border-radius: 0.4rem;
 }
 
@@ -323,6 +324,17 @@
   }
 }
 
+@media (orientation: landscape) and (min-height: 500px) {
+  .dailyGamePanelWon {
+    min-height: clamp(18rem, 50dvh, 32rem);
+    flex-basis: clamp(18rem, 50dvh, 32rem);
+  }
+
+  .wonAttribution {
+    bottom: clamp(18rem, 50dvh, 32rem);
+  }
+}
+
 @media (orientation: landscape) and (max-height: 499px) {
   .attribution {
     bottom: 0.45rem;
@@ -345,14 +357,14 @@
 
   .panelContent {
     position: absolute;
-    inset: 0.6rem max(0.6rem, env(safe-area-inset-right)) 4.25rem 0.6rem;
+    inset: 0.6rem max(0.6rem, env(safe-area-inset-right))
+      calc(var(--input-height) + var(--input-gap)) 0.6rem;
     padding: 0;
   }
 
   .controls {
     order: 1;
     flex: 0 0 auto;
-    flex-wrap: wrap;
     padding: 0;
   }
 
@@ -378,7 +390,6 @@
 
   .winDetails {
     order: 5;
-    max-height: none;
     flex: 0 0 auto;
   }
 
