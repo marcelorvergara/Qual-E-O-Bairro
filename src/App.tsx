@@ -185,13 +185,18 @@ export default function App() {
         pulseCod={pulseCod}
         status={game.status}
       />
-      <footer className={styles.attribution}>
+      <footer
+        className={`${styles.attribution} ${game.status === 'won' && mode === 'daily' ? styles.wonAttribution : ''}`}
+      >
         <span>{text.attribution}</span>
         <a href="https://mvergara.net" rel="noreferrer" target="_blank">
           {text.portfolio}
         </a>
       </footer>
-      <section className={styles.gamePanel} aria-label={text.guessesArea}>
+      <section
+        className={`${styles.gamePanel} ${game.status === 'won' ? styles.gamePanelWon : ''} ${game.status === 'won' && mode === 'daily' ? styles.dailyGamePanelWon : ''}`}
+        aria-label={text.guessesArea}
+      >
         <div className={styles.panelContent}>
           <div className={styles.guessStrip} aria-label={text.guessHistory}>
             {[...game.guesses].reverse().map((item) => (

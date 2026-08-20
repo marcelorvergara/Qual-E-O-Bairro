@@ -90,6 +90,8 @@ export function GuessInput({
     }
   }, [overlay])
 
+  if (won) return null
+
   const startOverlay = () => {
     if (!touchDevice || overlay) return
     history.pushState({ guessOverlay: true }, '')
@@ -99,7 +101,6 @@ export function GuessInput({
   }
 
   const select = (bairro: Bairro, fromOverlay = false) => {
-    if (won) return
     if (guessed.has(bairro.cod)) {
       onGuess(bairro)
       return
@@ -196,7 +197,7 @@ export function GuessInput({
       autoComplete="off"
       autoFocus={!touchDevice && !fromOverlay}
       className={styles.input}
-      disabled={won || disabled}
+      disabled={disabled}
       onChange={(event) => {
         setQuery(event.target.value)
         setOpen(true)
@@ -208,13 +209,11 @@ export function GuessInput({
       }}
       onKeyDown={(event) => keyDown(event, fromOverlay)}
       placeholder={
-        won
-          ? text.correctInput
-          : unavailable
-            ? text.dailyUnavailableInput
-            : disabled
-              ? text.wait
-              : text.typeBairro
+        unavailable
+          ? text.dailyUnavailableInput
+          : disabled
+            ? text.wait
+            : text.typeBairro
       }
       ref={ref}
       role="combobox"
