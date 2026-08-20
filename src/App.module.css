@@ -32,6 +32,8 @@
   top: var(--map-band);
   left: max(0.75rem, env(safe-area-inset-left));
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   max-width: calc(
     100% - max(0.75rem, env(safe-area-inset-left)) -
       max(0.75rem, env(safe-area-inset-right))
@@ -45,8 +47,18 @@
   font-size: 0.62rem;
 }
 
-.attribution a {
+.attribution a,
+.attribution button {
   color: inherit;
+}
+
+.attribution button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .gamePanel {

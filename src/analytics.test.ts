@@ -282,4 +282,43 @@ describe('consent initialization', () => {
       },
     ])
   })
+
+  it('changes denied consent to granted after reopening preferences', async () => {
+    const dataLayer: (IArguments | unknown[])[] = []
+    const storage = new MemoryStorage()
+    const append = vi.fn()
+    vi.stubEnv('VITE_GA_MEASUREMENT_ID', 'G-TEST')
+    vi.stubGlobal('window', {
+      dataLayer,
+      location: { hostname: 'qualeobairro.com.br' },
+    })
+    vi.stubGlobal('localStorage', storage)
+    vi.stubGlobal('document', {
+      getElementById: () => null,
+      createElement: () => ({}),
+      head: { append },
+    })
+    const { getConsentChoice, initializeAnalytics, setConsentChoice } =
+      await import('./analytics')
+
+    initializeAnalytics()
+    setConsentChoice('denied')
+    expect(getConsentChoice()).toBe('denied')
+
+    setConsentChoice('granted')
+
+    expect(getConsentChoice()).toBe('granted')
+    expect(storage.getItem('qeb:consent:v1')).toBe('granted')
+    expect(Array.from(dataLayer[2])).toEqual([
+      'consent',
+      'update',
+      {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted',
+      },
+    ])
+    expect(append).toHaveBeenCalledOnce()
+  })
 })

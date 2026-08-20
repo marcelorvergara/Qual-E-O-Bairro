@@ -18,6 +18,26 @@
   line-height: 1.35;
 }
 
+.close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  min-width: 2.1rem;
+  min-height: 2.1rem;
+  padding: 0;
+  border: 1px solid #8f887d;
+  border-radius: 0.4rem;
+  background: #f6f3ed;
+  color: inherit;
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.close + p {
+  padding-right: 2.4rem;
+}
+
 .actions {
   display: flex;
   gap: 0.5rem;
@@ -33,4 +53,10 @@
   font: inherit;
   font-weight: 650;
   cursor: pointer;
+}
+
+.actions button[aria-pressed='true'] {
+  border-color: #25231f;
+  background: #25231f;
+  color: #fff;
 }

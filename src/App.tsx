@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import {
+  getConsentChoice,
   trackGameStart,
   trackGuess,
   trackHintUsed,
@@ -42,6 +43,9 @@ export default function App() {
   const [practiceNotice, setPracticeNotice] = useState('')
   const [pulseCod, setPulseCod] = useState<string>()
   const [showHintExplanation, setShowHintExplanation] = useState(false)
+  const [consentOpen, setConsentOpen] = useState(
+    () => getConsentChoice() === null,
+  )
   const practice = useRef<Oracle>(practiceOracle('conhecidos'))
   const practiceGameRef = useRef(practiceGame)
   const practicePending = useRef(false)
@@ -178,7 +182,7 @@ export default function App() {
     : ranking.top
   return (
     <main className={styles.app}>
-      <ConsentBanner />
+      <ConsentBanner onClose={() => setConsentOpen(false)} open={consentOpen} />
       <LanguageToggle className={styles.languageToggle} />
       <BairroMap
         guesses={game.guesses}
@@ -192,6 +196,9 @@ export default function App() {
         <a href="https://mvergara.net" rel="noreferrer" target="_blank">
           {text.portfolio}
         </a>
+        <button onClick={() => setConsentOpen(true)} type="button">
+          {text.privacySettings}
+        </button>
       </footer>
       <section
         className={`${styles.gamePanel} ${game.status === 'won' ? styles.gamePanelWon : ''} ${game.status === 'won' && mode === 'daily' ? styles.dailyGamePanelWon : ''}`}
