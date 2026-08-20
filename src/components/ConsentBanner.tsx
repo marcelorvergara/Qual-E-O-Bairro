@@ -6,6 +6,7 @@ import {
 } from '../analytics'
 import { useLanguage } from '../i18n'
 import styles from './ConsentBanner.module.css'
+import { dismissReopenedConsent } from './consentDialog'
 
 export function ConsentBanner({
   onClose,
@@ -21,6 +22,15 @@ export function ConsentBanner({
     if (open) setChoice(getConsentChoice())
   }, [open])
 
+  useEffect(() => {
+    if (!open || !choice) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') dismissReopenedConsent(choice, onClose)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [choice, onClose, open])
+
   if (!open) return null
 
   const choose = (next: Exclude<ConsentChoice, null>) => {
@@ -35,6 +45,16 @@ export function ConsentBanner({
       className={styles.banner}
       role="dialog"
     >
+      {choice && (
+        <button
+          aria-label={text.closePrivacySettings}
+          className={styles.close}
+          onClick={() => dismissReopenedConsent(choice, onClose)}
+          type="button"
+        >
+          ×
+        </button>
+      )}
       <p>{text.analyticsConsentMessage}</p>
       <div className={styles.actions}>
         <button
