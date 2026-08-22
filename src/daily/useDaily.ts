@@ -9,11 +9,14 @@ import {
 import * as api from '../api/daily'
 import {
   dailyOracle,
-  deviceId,
   restoreServerProgress,
   saveProgress,
   type DailyProgress,
 } from '../game/daily'
+import {
+  dailyDeviceId,
+  requestDailyStoragePersistence,
+} from '../game/dailyIdentity'
 import {
   beginRequest,
   failRequest,
@@ -82,7 +85,7 @@ export function useDaily() {
     setSubmittedPuzzle(
       progress.current.submitted ? currentMeta.puzzleDate : null,
     )
-    oracle.current = dailyOracle(deviceId(), currentMeta.puzzleDate)
+    oracle.current = dailyOracle(dailyDeviceId(), currentMeta.puzzleDate)
     setGame(restored.state)
   }, [])
 
@@ -91,7 +94,7 @@ export function useDaily() {
     bootstrapStarted.current = true
     setError(null)
     api
-      .bootstrap(deviceId())
+      .bootstrap(dailyDeviceId())
       .then((currentMeta) => {
         metaRef.current = currentMeta
         restore(currentMeta)
@@ -102,6 +105,10 @@ export function useDaily() {
         setError(localizedError(caught, copy, copy.errors.DAILY_UNAVAILABLE))
       })
   }, [bootstrapAttempt, restore])
+
+  useEffect(() => {
+    void requestDailyStoragePersistence()
+  }, [])
 
   useEffect(() => {
     if (
@@ -136,7 +143,7 @@ export function useDaily() {
   const resume = async () => {
     if (!meta) return
     try {
-      const currentMeta = await api.bootstrap(deviceId())
+      const currentMeta = await api.bootstrap(dailyDeviceId())
       metaRef.current = currentMeta
       restore(currentMeta)
       setMeta(currentMeta)
@@ -169,7 +176,7 @@ export function useDaily() {
       error: null,
     }))
     try {
-      const result = await api.leaderboard(deviceId())
+      const result = await api.leaderboard(dailyDeviceId())
       setLeaderboard({ ...result, loading: false, error: null })
     } catch (caught) {
       setLeaderboard((current) => ({
@@ -193,7 +200,7 @@ export function useDaily() {
     try {
       await api.submit({
         puzzleDate: saved.puzzleDate,
-        deviceId: deviceId(),
+        deviceId: dailyDeviceId(),
         ...(nicknameRef.current.trim()
           ? { nickname: nicknameRef.current.trim() }
           : {}),
@@ -249,7 +256,7 @@ export function useDaily() {
       return
     }
     api
-      .explainer(deviceId(), meta.puzzleDate)
+      .explainer(dailyDeviceId(), meta.puzzleDate)
       .then((result) => {
         if (!result.available) return
         saveExplainer(answer.cod, result.body)
@@ -276,7 +283,7 @@ export function useDaily() {
       const currentMeta = metaRef.current
       if (!currentMeta) return
       const saved = await api.updateNickname(
-        deviceId(),
+        dailyDeviceId(),
         currentMeta.puzzleDate,
         nickname,
       )

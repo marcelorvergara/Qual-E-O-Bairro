@@ -19,6 +19,8 @@ const ptBR = {
   analyticsConsentLabel: 'Preferências de privacidade',
   analyticsConsentMessage:
     'Podemos usar dados anônimos de uso para melhorar o jogo. Você pode aceitar ou recusar.',
+  dailyIdentityMessage:
+    'No modo Diário, guardamos um identificador anônimo neste dispositivo para manter seu resultado e limitar participações no ranking.',
   rejectAnalytics: 'Recusar',
   acceptAnalytics: 'Aceitar',
   attribution: 'Dados: Instituto Pereira Passos / data.rio',
@@ -138,6 +140,8 @@ const en: typeof ptBR = {
   analyticsConsentLabel: 'Privacy preferences',
   analyticsConsentMessage:
     'We can use anonymous usage data to improve the game. You can accept or reject.',
+  dailyIdentityMessage:
+    'In Daily mode, we store an anonymous identifier on this device to keep your result and limit leaderboard entries.',
   rejectAnalytics: 'Reject',
   acceptAnalytics: 'Accept',
   attribution: 'Data: Instituto Pereira Passos / data.rio',

@@ -56,6 +56,7 @@ export function ConsentBanner({
         </button>
       )}
       <p>{text.analyticsConsentMessage}</p>
+      <p>{text.dailyIdentityMessage}</p>
       <div className={styles.actions}>
         <button
           aria-pressed={choice === 'denied'}

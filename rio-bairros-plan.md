@@ -18,7 +18,7 @@ The daily puzzle is defined in America/Sao_Paulo. The daily answer is cryptograp
 
 Hints: three tiers per bairro, stored in `data/hints.json`, generated offline. Tier 1 is region-level, tier 2 is character, tier 3 is near-giveaway. A hint may not contain the bairro name or any word of it (mechanically checked). In daily mode each tier used adds one to the guess count for ranking; in practice mode hints are free.
 
-Leaderboard: anonymous device ID stored in localStorage, optional nickname (max 20 chars, profanity filter, unique per day not required). Rank by guesses (including hint penalties), tiebreak by elapsed seconds from first guess to win. Show top 50 plus the player's own position. Anti-cheat is best-effort only: server-side validation of the guess sequence against the matrix, rate limit per device.
+Leaderboard: anonymous daily device ID stored in localStorage and mirrored in a first-party cookie, optional nickname (max 20 chars, profanity filter, unique per day not required). The browser requests persistent storage on a best-effort basis. Rank by guesses (including hint penalties), tiebreak by elapsed seconds from first guess to win. Show top 50 plus the player's own position. Anti-cheat is best-effort only: server-side validation of the guess sequence against the matrix, rate limit per device. Clearing site data, using another browser profile, or another device creates a new anonymous identity.
 
 Share text format (PT-BR):
 
