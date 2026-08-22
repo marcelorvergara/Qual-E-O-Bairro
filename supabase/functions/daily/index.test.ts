@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const answer = { puzzle_date: '2026-08-22', puzzle_number: 8, cod: '001' }
+const answer = { puzzle_date: '2026-08-25', puzzle_number: 1, cod: '001' }
 
 function response(body: unknown, status = 200, headers?: HeadersInit) {
   return new Response(JSON.stringify(body), {
@@ -11,7 +11,7 @@ function response(body: unknown, status = 200, headers?: HeadersInit) {
 
 beforeEach(() => {
   vi.useFakeTimers()
-  vi.setSystemTime(new Date('2026-08-22T15:00:00.000Z'))
+  vi.setSystemTime(new Date('2026-08-25T15:00:00.000Z'))
   vi.stubGlobal('Deno', {
     env: {
       get: (name: string) =>
@@ -66,7 +66,7 @@ describe('daily request handler', () => {
         body: JSON.stringify({
           action: 'guess',
           deviceId: 'device-1',
-          puzzleDate: '2026-08-21',
+          puzzleDate: '2026-08-24',
           cod: '001',
         }),
       }),

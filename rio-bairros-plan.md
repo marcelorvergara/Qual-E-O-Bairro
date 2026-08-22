@@ -72,7 +72,7 @@ Acceptance: `npm run build:data` regenerates every file in `data/` deterministic
 
 ### Phase 1 — Static map (agent, ~2h)
 
-TODO: add the optional `data/roads.geojson` and `data/landmarks.json` context layers in a later phase.
+The optional `data/roads.geojson` and `data/landmarks.json` context layers are deferred; the launch ships without them.
 
 Vite + React + TS scaffold. Full-viewport SVG, `geoMercator().fitExtent` on the bairros with padding, one `<path>` per bairro with `data-cod`, thin stroke, neutral fill, hover shows name in a small fixed corner label (no tooltip following the cursor). Roads and landmarks rendered under the strokes at low opacity behind a boolean prop. Handles resize. Mobile-first: works at 360×640 in portrait, with the map letterboxed and the bottom 20% reserved for the input.
 
@@ -104,9 +104,9 @@ Acceptance: two devices see the same daily; the answer is not recoverable from t
 
 EN toggle (strings file, two languages), consent banner and GA4 events (game_start, guess, hint_used, win, share), favicon and OG image, footer with attribution and link to mvergara.net, domain, deploy. Cross-check on iOS Safari for input focus and viewport height quirks.
 
-Pre-launch epoch reset (human-run): the development epoch is `2026-08-15`, and puzzles #2 and #3 are seeded for development only.
+Pre-launch epoch reset (human-run): launch date is `2026-08-25` in America/Sao_Paulo. The development epoch was `2026-08-15`, and its seeded puzzles must not reach production.
 
-1. Set the epoch to the launch date in `supabase/functions/_shared/daily-logic.ts` and `scripts/seed-daily.mjs`, and update the epoch test.
+1. Set the epoch to `2026-08-25` in `supabase/functions/_shared/daily-logic.ts` and `scripts/seed-daily.mjs`, and update the epoch test.
 2. Run this transaction (the answer delete cascades to daily guesses, hints, action counts, and any remaining results):
 
    ```sql
@@ -115,7 +115,7 @@ Pre-launch epoch reset (human-run): the development epoch is `2026-08-15`, and p
    delete from daily_answers;
    commit;
    ```
-3. Run `npm run seed:daily -- --from=<launch date> --days=120`.
+3. Run `npm run seed:daily -- --from=2026-08-25 --days=120`.
 4. Confirm `bootstrap` returns puzzle #1 on launch day.
 5. Bump `qeb:stats:v1` and `qeb:daily:v1` to `v2` so development streaks and answer-specific restored guesses cannot cross into the launch schedule.
 

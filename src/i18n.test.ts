@@ -13,13 +13,21 @@ function LanguageProbe() {
   return createElement('span', null, language)
 }
 
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
+})
 
 describe('English feature flag', () => {
   it('defaults to disabled', () => {
-    expect(englishFeatureEnabled(undefined)).toBe(false)
+    expect(englishFeatureEnabled('')).toBe(false)
     expect(englishFeatureEnabled('false')).toBe(false)
     expect(englishFeatureEnabled('true')).toBe(true)
+  })
+
+  it('reads the enabled value from the Vite environment', () => {
+    vi.stubEnv('VITE_ENABLE_EN', 'true')
+    expect(englishFeatureEnabled()).toBe(true)
   })
 
   it('does not render the toggle when disabled', () => {
@@ -44,5 +52,19 @@ describe('English feature flag', () => {
     )
     expect(markup).toContain('pt-BR')
     expect(markup).not.toContain('en')
+  })
+
+  it('renders English from a stored preference when enabled', () => {
+    vi.stubGlobal('localStorage', { getItem: () => 'en' })
+    const markup = renderToStaticMarkup(
+      createElement(
+        LanguageProvider,
+        { enableEnglish: true },
+        createElement(LanguageToggle),
+        createElement(LanguageProbe),
+      ),
+    )
+    expect(markup).toContain('aria-label="Language"')
+    expect(markup).toContain('>en<')
   })
 })

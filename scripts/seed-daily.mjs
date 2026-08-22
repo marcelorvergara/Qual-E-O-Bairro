@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 
-const epoch = '2026-08-15'
+const epoch = '2026-08-25'
 const timeZone = 'America/Sao_Paulo'
 const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, '')
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY

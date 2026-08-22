@@ -1,4 +1,4 @@
-export const EPOCH_DATE = '2026-08-15'
+export const EPOCH_DATE = '2026-08-25'
 export const SAO_PAULO_TIME_ZONE = 'America/Sao_Paulo'
 
 export interface Matrix {

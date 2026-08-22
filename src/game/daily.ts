@@ -4,7 +4,7 @@ import { newGame, resolveGuess, resolveHint } from './reducer'
 import type { Bairro, Evaluation, GameState, Oracle } from './types'
 
 const DEVICE_KEY = 'qeb:device:v1'
-const DAILY_KEY = 'qeb:daily:v1'
+const DAILY_KEY = 'qeb:daily:v2'
 
 export interface DailyProgress {
   puzzleNumber: number

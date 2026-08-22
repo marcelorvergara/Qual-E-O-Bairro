@@ -7,7 +7,7 @@ interface ExplainerPlaceholderProps {
   className: string
 }
 
-// TODO(phase-3): replace ExplainerPlaceholder with BairroExplainer backed by Supabase.
+// This is the lightweight post-win summary when no generated explainer is available.
 export function ExplainerPlaceholder({
   bairro,
   known,
