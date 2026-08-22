@@ -3,7 +3,6 @@ import { allBairros } from './data'
 import { newGame, resolveGuess, resolveHint } from './reducer'
 import type { Bairro, Evaluation, GameState, Oracle } from './types'
 
-const DEVICE_KEY = 'qeb:device:v1'
 const DAILY_KEY = 'qeb:daily:v2'
 
 export interface DailyProgress {
@@ -14,14 +13,6 @@ export interface DailyProgress {
   firstGuessAt: number | null
   submitted: boolean
   answer?: Bairro
-}
-
-export function deviceId(storage: Storage = localStorage): string {
-  const stored = storage.getItem(DEVICE_KEY)
-  if (stored) return stored
-  const created = crypto.randomUUID()
-  storage.setItem(DEVICE_KEY, created)
-  return created
 }
 
 export function dailyOracle(id: string, puzzleDate: string): Oracle {
