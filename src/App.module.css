@@ -347,7 +347,13 @@
   }
 }
 
-@media (orientation: landscape) and (max-height: 499px) {
+/*
+ * Keep the guess history beside the map on desktop. Previously this layout
+ * only activated for short landscape viewports, which made it appear only
+ * after browser zoom reduced the effective viewport height.
+ */
+@media (orientation: landscape) and (max-height: 499px),
+  (orientation: landscape) and (min-width: 900px) {
   .attribution {
     bottom: 0.45rem;
     max-width: calc(60% - max(1.5rem, env(safe-area-inset-left) + 0.75rem));
@@ -408,5 +414,14 @@
   .explainer {
     order: 6;
     flex: 0 0 auto;
+  }
+
+  .dailyGamePanelWon {
+    min-height: 0;
+    flex-basis: 40%;
+  }
+
+  .wonAttribution {
+    bottom: 0.45rem;
   }
 }
