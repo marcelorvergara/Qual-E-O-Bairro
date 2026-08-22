@@ -14,7 +14,7 @@ Audience: cariocas first (PT-BR), then an EN toggle for the portfolio.
 
 Distance is border-to-border, computed once at build time into a 166×166 matrix (km, one decimal). Adjacency is a boolean derived from the same build step (shared boundary, not just touching at a point). Color scale is a sequential warm ramp with five discrete stops, plus a sixth solid color for "encosta" and a seventh for the correct answer; must remain readable for deuteranopia (verify against a simulator). Input is an accent-insensitive, case-insensitive autocomplete that shows the full canonical name including parentheses ("Freguesia (Ilha)"); the bare word "Freguesia" never resolves to a guess. Guess submission requires an unambiguous canonical match: either selecting an item from the autocomplete list, or pressing Enter when the typed text, after normalization, is an exact match for exactly one canonical name. Partial and prefix-only input never submits: the bare word 'Freguesia' matches no canonical name exactly, because the two real names are 'Freguesia (Ilha)' and 'Freguesia (Jacarepaguá)'. A name that is exact for one bairro while also being a prefix of another does submit — 'Penha' resolves to Penha, not Penha Circular. Repeated guesses are ignored with a toast.
 
-The daily puzzle is defined in America/Sao_Paulo. The daily answer is never in the client bundle and never derivable from a seed; the client asks the server for a salted hash of the answer, checks each guess against it, and the server validates the final result on submission. Daily pool is a curated subset (roughly 70–90 bairros) tagged in data; practice mode offers "conhecidos" (the same pool) and "todos" (all 166). Paquetá and Argentino are excluded from the daily pool; Argentino is excluded from "todos" too.
+The daily puzzle is defined in America/Sao_Paulo. The daily answer is cryptographically randomly selected when seeded, remains DB-only, and is never in the client bundle or derivable from a seed. The server is authoritative for daily guesses: it records accepted guesses, hints, and the first-guess time; it derives ranking score and elapsed time from those records. Bootstrap returns only puzzle metadata and the caller's recorded progress, never an answer verifier. Submissions are accepted only for today in America/Sao_Paulo and are rate-limited per device. Daily pool is a curated subset (roughly 70–90 bairros) tagged in data; practice mode offers "conhecidos" (the same pool) and "todos" (all 166). Paquetá and Argentino are excluded from the daily pool; Argentino is excluded from "todos" too.
 
 Hints: three tiers per bairro, stored in `data/hints.json`, generated offline. Tier 1 is region-level, tier 2 is character, tier 3 is near-giveaway. A hint may not contain the bairro name or any word of it (mechanically checked). In daily mode each tier used adds one to the guess count for ranking; in practice mode hints are free.
 
@@ -42,7 +42,7 @@ Attribution: "Dados: Instituto Pereira Passos / data.rio" in the footer.
 
 ## 3. Stack
 
-Vite + TypeScript + React (small; no Next.js needed, no SSR). d3-geo for projection and SVG paths; no Leaflet, no MapLibre, no tiles. Turf only in build scripts, never in the client. Supabase (existing project or a fresh one) for `daily_answers`, `daily_results`, `bairro_explainers`, with two Edge Functions: `daily` (returns puzzle number, answer hash, salt) and `submit` (validates and stores a result, returns rank). Deploy on Vercel or Cloudflare Pages. GA4 with Consent Mode v2, same pattern as Fábula Infantil. Vitest for unit tests on the pure logic (distance lookup, color bucket, name normalization, share text).
+Vite + TypeScript + React (small; no Next.js needed, no SSR). d3-geo for projection and SVG paths; no Leaflet, no MapLibre, no tiles. Turf only in build scripts, never in the client. Supabase (existing project or a fresh one) for `daily_answers`, server-recorded daily guesses and hints, `daily_results`, `bairro_explainers`, with two Edge Functions: `daily` (returns puzzle metadata and server-evaluated progress) and `submit` (derives and stores a completed result, returns rank). Deploy on Vercel or Cloudflare Pages. GA4 with Consent Mode v2, same pattern as Fábula Infantil. Vitest for unit tests on the pure logic (distance lookup, color bucket, name normalization, share text).
 
 Repository layout:
 
@@ -96,7 +96,7 @@ Acceptance: hint order, cap, and score arithmetic are tested; all three tiers re
 
 ### Phase 3 — Daily mode and leaderboard (agent, ~4h, likely two PRs)
 
-Supabase migrations and the two Edge Functions, plus the generated bairro explainer fetch/cache deferred from Phase 2.5. Daily puzzle number computed from a fixed epoch date in America/Sao_Paulo. Client flow: fetch `daily`, play against the hash, submit on win, show rank. Nickname prompt at first submission. Local persistence of daily state so a refresh does not reset the game. Share button producing the text above (Web Share API on mobile, clipboard fallback). Streak and simple stats in localStorage.
+Supabase migrations and the two Edge Functions, plus the generated bairro explainer fetch/cache deferred from Phase 2.5. Daily puzzle number computed from a fixed epoch date in America/Sao_Paulo. Client flow: fetch `daily`, play through server-authoritative guesses, submit on win, show rank. Nickname prompt at first submission. Local persistence is only a display cache; server-recorded daily state restores a refresh. Share button producing the text above (Web Share API on mobile, clipboard fallback). Streak and simple stats in localStorage.
 
 Acceptance: two devices see the same daily; the answer is not recoverable from the bundle or the network tab before winning; a submitted result with an impossible guess sequence is rejected; leaderboard shows top 50 and own rank; explainers are cached after the first request and fail without a permanent spinner.
 
@@ -107,7 +107,14 @@ EN toggle (strings file, two languages), consent banner and GA4 events (game_sta
 Pre-launch epoch reset (human-run): the development epoch is `2026-08-15`, and puzzles #2 and #3 are seeded for development only.
 
 1. Set the epoch to the launch date in `supabase/functions/_shared/daily-logic.ts` and `scripts/seed-daily.mjs`, and update the epoch test.
-2. Run `delete from daily_results;` and then `delete from daily_answers;` (results first because of the foreign key).
+2. Run this transaction (the answer delete cascades to daily guesses, hints, action counts, and any remaining results):
+
+   ```sql
+   begin;
+   delete from daily_results;
+   delete from daily_answers;
+   commit;
+   ```
 3. Run `npm run seed:daily -- --from=<launch date> --days=120`.
 4. Confirm `bootstrap` returns puzzle #1 on launch day.
 5. Bump `qeb:stats:v1` and `qeb:daily:v1` to `v2` so development streaks and answer-specific restored guesses cannot cross into the launch schedule.
