@@ -4,16 +4,16 @@ import type { LeaderboardEntry } from '../game/leaderboard'
 export interface Bootstrap {
   puzzleNumber: number
   puzzleDate: string
-  salt: string
-  answerHash: string
+  progress: {
+    guesses: ({ cod: string } & Evaluation)[]
+    hints: string[]
+    submitted: boolean
+  }
 }
 
 export interface SubmitPayload {
   puzzleDate: string
   deviceId: string
-  guesses: { cod: string; km: number; adjacent: boolean }[]
-  hints: number
-  elapsedSeconds: number
   nickname?: string
 }
 
@@ -36,13 +36,11 @@ const serverErrorCodes = new Set([
   'INVALID_HINT_TIER',
   'RATE_LIMITED',
   'ALREADY_SUBMITTED',
-  'MATRIX_MISMATCH',
-  'DUPLICATE_CODE',
-  'ANSWER_BEFORE_FINAL',
-  'FINAL_ANSWER_INCORRECT',
-  'INVALID_HINTS',
-  'INVALID_ELAPSED_SECONDS',
-  'INVALID_SCORE',
+  'DUPLICATE_GUESS',
+  'GAME_COMPLETE',
+  'INCOMPLETE_GAME',
+  'IMPOSSIBLE_SEQUENCE',
+  'NOT_TODAY',
   'INVALID_NICKNAME',
   'NO_RESULT',
   'METHOD_NOT_ALLOWED',
@@ -93,25 +91,48 @@ async function call<T>(name: 'daily' | 'submit', body: unknown): Promise<T> {
   return data as T
 }
 
-export function bootstrap(): Promise<Bootstrap> {
-  return call<Record<string, unknown>>('daily', { action: 'bootstrap' }).then(
-    (data) => {
-      if (
-        typeof data.puzzleNumber !== 'number' ||
-        typeof data.puzzleDate !== 'string' ||
-        typeof data.salt !== 'string' ||
-        typeof data.answerHash !== 'string'
+export function bootstrap(deviceId: string): Promise<Bootstrap> {
+  return call<Record<string, unknown>>('daily', {
+    action: 'bootstrap',
+    deviceId,
+  }).then((data) => {
+    const progress = data.progress as Record<string, unknown> | undefined
+    if (
+      typeof data.puzzleNumber !== 'number' ||
+      typeof data.puzzleDate !== 'string' ||
+      !progress ||
+      !Array.isArray(progress.guesses) ||
+      !Array.isArray(progress.hints) ||
+      typeof progress.submitted !== 'boolean'
+    )
+      throw codedError('CLIENT_RESPONSE')
+    const validGuesses = progress.guesses.every((value) => {
+      const guess = value as Record<string, unknown>
+      return (
+        typeof guess.cod === 'string' &&
+        typeof guess.km === 'number' &&
+        typeof guess.adjacent === 'boolean' &&
+        typeof guess.correct === 'boolean'
       )
-        throw codedError('CLIENT_RESPONSE')
-      return data as unknown as Bootstrap
-    },
-  )
+    })
+    if (
+      !validGuesses ||
+      !progress.hints.every((value) => typeof value === 'string')
+    )
+      throw codedError('CLIENT_RESPONSE')
+    return data as unknown as Bootstrap
+  })
 }
 
-export function guess(deviceId: string, cod: string): Promise<Evaluation> {
+export function guess(
+  deviceId: string,
+  puzzleDate: string,
+  cod: string,
+): Promise<Evaluation> {
   return call<Record<string, unknown>>('daily', {
     action: 'guess',
     deviceId,
+    puzzleDate,
     cod,
   }).then((data) => {
     if (
@@ -133,10 +154,11 @@ export function guess(deviceId: string, cod: string): Promise<Evaluation> {
   })
 }
 
-export function hint(deviceId: string, tier: 1 | 2 | 3) {
+export function hint(deviceId: string, puzzleDate: string, tier: 1 | 2 | 3) {
   return call<{ text: string }>('daily', {
     action: 'hint',
     deviceId,
+    puzzleDate,
     tier,
   }).then(({ text }) => {
     if (typeof text !== 'string') throw codedError('CLIENT_RESPONSE')
@@ -184,11 +206,13 @@ export function leaderboard(deviceId: string): Promise<Leaderboard> {
 
 export function updateNickname(
   deviceId: string,
+  puzzleDate: string,
   nickname: string,
 ): Promise<string> {
   return call<Record<string, unknown>>('daily', {
     action: 'nickname',
     deviceId,
+    puzzleDate,
     nickname,
   }).then((data) => {
     if (data.ok !== true || typeof data.nickname !== 'string')
@@ -197,10 +221,14 @@ export function updateNickname(
   })
 }
 
-export function explainer(deviceId: string): Promise<ExplainerResponse> {
+export function explainer(
+  deviceId: string,
+  puzzleDate: string,
+): Promise<ExplainerResponse> {
   return call<Record<string, unknown>>('daily', {
     action: 'explainer',
     deviceId,
+    puzzleDate,
   }).then((data) => {
     if (data.available === false) return { available: false }
     if (data.available !== true || typeof data.body !== 'string')

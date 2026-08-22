@@ -22,3 +22,24 @@ This command executes the SQL but does not add the file to the remote migration 
 | `202608160002_phase_3d_explainer.sql`   | Absent        | Applied out of band with `db query` |
 
 Update this table whenever a new migration is applied.
+
+## Phase 3e deployment order
+
+The daily hardening change is intentionally expand → deploy → contract. Apply the expansion migration first, deploy the `daily` and `submit` Edge Functions that use its transactional RPCs, then apply the contract migration that drops the legacy verifier columns:
+
+```sh
+supabase db query --linked --file supabase/migrations/20260822121742_daily_server_authority.sql
+supabase functions deploy daily submit
+supabase db query --linked --file supabase/migrations/20260822125450_daily_answer_contract.sql
+```
+
+Verify the expansion before deploying functions:
+
+```sql
+select to_regclass('public.daily_guesses'),
+       to_regclass('public.daily_hints'),
+       to_regprocedure('public.record_daily_guess(date,text,text,text,integer)'),
+       has_sequence_privilege('anon', 'public.daily_guesses_id_seq', 'usage');
+```
+
+The first three values must be non-null and the sequence privilege must be false. After the contract migration, verify that `salt` and `answer_hash` are absent from `information_schema.columns` for `daily_answers`.

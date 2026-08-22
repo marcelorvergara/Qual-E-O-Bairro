@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'node:crypto'
+import { randomInt } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 
 const epoch = '2026-08-15'
@@ -29,9 +29,7 @@ for (const puzzleDate of dates) {
   }
   const puzzleNumber = numberForDate(puzzleDate)
   if (puzzleNumber < 1) throw new Error(`${puzzleDate} predates puzzle #1`)
-  const cod = scheduledCode(puzzleNumber)
-  const salt = randomBytes(16).toString('hex')
-  const answerHash = createHash('sha256').update(`${salt}${cod}`).digest('hex')
+  const cod = pool[randomInt(pool.length)]
   const response = await request('daily_answers', {
     method: 'POST',
     headers: { prefer: 'return=minimal' },
@@ -39,8 +37,6 @@ for (const puzzleDate of dates) {
       puzzle_date: puzzleDate,
       puzzle_number: puzzleNumber,
       cod,
-      salt,
-      answer_hash: answerHash,
     }),
   })
   if (!response.ok)
@@ -79,34 +75,6 @@ function addDays(value, count) {
 
 function numberForDate(value) {
   return Math.floor((dateValue(value) - dateValue(epoch)) / 86_400_000) + 1
-}
-
-function scheduledCode(puzzleNumber) {
-  const cycle = Math.floor((puzzleNumber - 1) / pool.length)
-  const shuffled = [...pool]
-  const random = mulberry32(hashSeed(`qual-e-o-bairro:${cycle}`))
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1))
-    ;[shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]]
-  }
-  return shuffled[(puzzleNumber - 1) % pool.length]
-}
-
-function hashSeed(value) {
-  let hash = 2166136261
-  for (const character of value)
-    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619)
-  return hash >>> 0
-}
-
-function mulberry32(seed) {
-  return () => {
-    seed |= 0
-    seed = (seed + 0x6d2b79f5) | 0
-    let value = Math.imul(seed ^ (seed >>> 15), 1 | seed)
-    value = (value + Math.imul(value ^ (value >>> 7), 61 | value)) ^ value
-    return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296
-  }
 }
 
 async function request(path, init) {

@@ -27,14 +27,6 @@ export function puzzleNumberForDate(date: string): number {
   return Math.floor((parse(date) - parse(EPOCH_DATE)) / 86_400_000) + 1
 }
 
-export async function hashAnswer(salt: string, cod: string): Promise<string> {
-  const bytes = new TextEncoder().encode(`${salt}${cod}`)
-  const digest = await crypto.subtle.digest('SHA-256', bytes)
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('')
-}
-
 export function matrixValue(matrix: Matrix, cod: string, answer: string) {
   const guessIndex = matrix.codes.indexOf(cod)
   const answerIndex = matrix.codes.indexOf(answer)
