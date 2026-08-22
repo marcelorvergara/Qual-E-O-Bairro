@@ -4,16 +4,16 @@ import type { LeaderboardEntry } from '../game/leaderboard'
 export interface Bootstrap {
   puzzleNumber: number
   puzzleDate: string
-  salt: string
-  answerHash: string
+  progress: {
+    guesses: ({ cod: string } & Evaluation)[]
+    hints: string[]
+    submitted: boolean
+  }
 }
 
 export interface SubmitPayload {
   puzzleDate: string
   deviceId: string
-  guesses: { cod: string; km: number; adjacent: boolean }[]
-  hints: number
-  elapsedSeconds: number
   nickname?: string
 }
 
@@ -36,13 +36,11 @@ const serverErrorCodes = new Set([
   'INVALID_HINT_TIER',
   'RATE_LIMITED',
   'ALREADY_SUBMITTED',
-  'MATRIX_MISMATCH',
-  'DUPLICATE_CODE',
-  'ANSWER_BEFORE_FINAL',
-  'FINAL_ANSWER_INCORRECT',
-  'INVALID_HINTS',
-  'INVALID_ELAPSED_SECONDS',
-  'INVALID_SCORE',
+  'DUPLICATE_GUESS',
+  'GAME_COMPLETE',
+  'INCOMPLETE_GAME',
+  'IMPOSSIBLE_SEQUENCE',
+  'NOT_TODAY',
   'INVALID_NICKNAME',
   'NO_RESULT',
   'METHOD_NOT_ALLOWED',
@@ -93,19 +91,37 @@ async function call<T>(name: 'daily' | 'submit', body: unknown): Promise<T> {
   return data as T
 }
 
-export function bootstrap(): Promise<Bootstrap> {
-  return call<Record<string, unknown>>('daily', { action: 'bootstrap' }).then(
-    (data) => {
-      if (
-        typeof data.puzzleNumber !== 'number' ||
-        typeof data.puzzleDate !== 'string' ||
-        typeof data.salt !== 'string' ||
-        typeof data.answerHash !== 'string'
+export function bootstrap(deviceId: string): Promise<Bootstrap> {
+  return call<Record<string, unknown>>('daily', {
+    action: 'bootstrap',
+    deviceId,
+  }).then((data) => {
+    const progress = data.progress as Record<string, unknown> | undefined
+    if (
+      typeof data.puzzleNumber !== 'number' ||
+      typeof data.puzzleDate !== 'string' ||
+      !progress ||
+      !Array.isArray(progress.guesses) ||
+      !Array.isArray(progress.hints) ||
+      typeof progress.submitted !== 'boolean'
+    )
+      throw codedError('CLIENT_RESPONSE')
+    const validGuesses = progress.guesses.every((value) => {
+      const guess = value as Record<string, unknown>
+      return (
+        typeof guess.cod === 'string' &&
+        typeof guess.km === 'number' &&
+        typeof guess.adjacent === 'boolean' &&
+        typeof guess.correct === 'boolean'
       )
-        throw codedError('CLIENT_RESPONSE')
-      return data as unknown as Bootstrap
-    },
-  )
+    })
+    if (
+      !validGuesses ||
+      !progress.hints.every((value) => typeof value === 'string')
+    )
+      throw codedError('CLIENT_RESPONSE')
+    return data as unknown as Bootstrap
+  })
 }
 
 export function guess(deviceId: string, cod: string): Promise<Evaluation> {

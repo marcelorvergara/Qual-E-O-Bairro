@@ -10,9 +10,8 @@ import * as api from '../api/daily'
 import {
   dailyOracle,
   deviceId,
-  restoreVerifiedProgress,
+  restoreServerProgress,
   saveProgress,
-  verifyAnswer,
   type DailyProgress,
 } from '../game/daily'
 import {
@@ -77,26 +76,14 @@ export function useDaily() {
   nicknameRef.current = nickname
   textRef.current = text
 
-  const restore = useCallback(async (currentMeta: api.Bootstrap) => {
-    const restored = await restoreVerifiedProgress(
-      currentMeta.puzzleNumber,
-      currentMeta.puzzleDate,
-      currentMeta.salt,
-      currentMeta.answerHash,
-    )
-    progress.current = restored?.progress ?? {
-      puzzleNumber: currentMeta.puzzleNumber,
-      puzzleDate: currentMeta.puzzleDate,
-      guesses: [],
-      hints: [],
-      firstGuessAt: null,
-      submitted: false,
-    }
+  const restore = useCallback((currentMeta: api.Bootstrap) => {
+    const restored = restoreServerProgress(currentMeta)
+    progress.current = restored.progress
     setSubmittedPuzzle(
       progress.current.submitted ? currentMeta.puzzleDate : null,
     )
     oracle.current = dailyOracle(deviceId())
-    setGame(restored?.state ?? newGame('conhecidos'))
+    setGame(restored.state)
   }, [])
 
   useEffect(() => {
@@ -104,10 +91,10 @@ export function useDaily() {
     bootstrapStarted.current = true
     setError(null)
     api
-      .bootstrap()
-      .then(async (currentMeta) => {
+      .bootstrap(deviceId())
+      .then((currentMeta) => {
         metaRef.current = currentMeta
-        await restore(currentMeta)
+        restore(currentMeta)
         setMeta(currentMeta)
       })
       .catch((caught: unknown) => {
@@ -149,7 +136,7 @@ export function useDaily() {
   const resume = async () => {
     if (!meta) return
     try {
-      await restore(meta)
+      restore(meta)
     } catch (caught) {
       setError(localizedError(caught, text, text.errors.DAILY_UNAVAILABLE))
     }
@@ -196,57 +183,42 @@ export function useDaily() {
     }
   }, [])
 
-  const submitResult = useCallback(
-    async (next: GameState) => {
-      const saved = progress.current
-      if (!saved || saved.submitted || submitPending.current) return
-      submitPending.current = true
-      try {
-        await api.submit({
-          puzzleDate: saved.puzzleDate,
-          deviceId: deviceId(),
-          guesses: next.guesses.map(({ cod, km, adjacent }) => ({
-            cod,
-            km,
-            adjacent,
-          })),
-          hints: next.hintsUsed,
-          elapsedSeconds: Math.max(
-            1,
-            Math.floor(
-              (Date.now() - (saved.firstGuessAt ?? Date.now())) / 1000,
-            ),
-          ),
-          ...(nicknameRef.current.trim()
-            ? { nickname: nicknameRef.current.trim() }
-            : {}),
-        })
+  const submitResult = useCallback(async () => {
+    const saved = progress.current
+    if (!saved || saved.submitted || submitPending.current) return
+    submitPending.current = true
+    try {
+      await api.submit({
+        puzzleDate: saved.puzzleDate,
+        deviceId: deviceId(),
+        ...(nicknameRef.current.trim()
+          ? { nickname: nicknameRef.current.trim() }
+          : {}),
+      })
+      saved.submitted = true
+      saveProgress(saved)
+      setSubmittedPuzzle(saved.puzzleDate)
+      setNotice(textRef.current.resultSent)
+    } catch (caught) {
+      if (api.isAlreadySubmitted(caught)) {
         saved.submitted = true
         saveProgress(saved)
         setSubmittedPuzzle(saved.puzzleDate)
-        setNotice(textRef.current.resultSent)
-      } catch (caught) {
-        if (api.isAlreadySubmitted(caught)) {
-          saved.submitted = true
-          saveProgress(saved)
-          setSubmittedPuzzle(saved.puzzleDate)
-          setNotice(textRef.current.resultAlreadySent)
-        } else {
-          const copy = textRef.current
-          const message = localizedError(caught, copy, copy.errors.RESULT_SEND)
-          setNotice(`${message} ${copy.retryNextVisit}`)
-        }
-      } finally {
-        submitPending.current = false
-        void loadLeaderboard()
+        setNotice(textRef.current.resultAlreadySent)
+      } else {
+        const copy = textRef.current
+        const message = localizedError(caught, copy, copy.errors.RESULT_SEND)
+        setNotice(`${message} ${copy.retryNextVisit}`)
       }
-    },
-    [loadLeaderboard],
-  )
+    } finally {
+      submitPending.current = false
+      void loadLeaderboard()
+    }
+  }, [loadLeaderboard])
 
   useEffect(() => {
     if (meta && game.status === 'won' && !progress.current?.submitted) {
-      void submitResult(game)
+      void submitResult()
     }
   }, [game, meta, submitResult])
 
@@ -330,13 +302,6 @@ export function useDaily() {
     const firstGuessAt = progress.current?.firstGuessAt ?? Date.now()
     try {
       const result = await oracle.current.evaluate(bairro.cod)
-      if (
-        result.correct &&
-        meta &&
-        !(await verifyAnswer(meta.salt, bairro.cod, meta.answerHash))
-      ) {
-        throw new Error(text.errors.ANSWER_VERIFY)
-      }
       if (result.correct && !result.answer)
         throw new Error(text.errors.ANSWER_INCOMPLETE)
       const next = resolveGuess(waiting, bairro.cod, result)

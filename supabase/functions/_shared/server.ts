@@ -2,8 +2,16 @@ export interface DailyAnswer {
   puzzle_date: string
   puzzle_number: number
   cod: string
-  salt: string
-  answer_hash: string
+}
+
+export interface DailyGuess {
+  id: number
+  cod: string
+  created_at: string
+}
+
+export interface DailyHint {
+  tier: number
 }
 
 function environment(name: string): string {
@@ -26,7 +34,7 @@ export async function serviceRequest(path: string, init?: RequestInit) {
 }
 
 export async function dailyAnswer(date: string): Promise<DailyAnswer | null> {
-  const select = 'puzzle_date,puzzle_number,cod,salt,answer_hash'
+  const select = 'puzzle_date,puzzle_number,cod'
   const response = await serviceRequest(
     `daily_answers?puzzle_date=eq.${encodeURIComponent(date)}&select=${select}&limit=1`,
   )
@@ -36,10 +44,29 @@ export async function dailyAnswer(date: string): Promise<DailyAnswer | null> {
   return rows[0] ?? null
 }
 
+export async function dailyGuesses(date: string, deviceId: string) {
+  const response = await serviceRequest(
+    `daily_guesses?puzzle_date=eq.${encodeURIComponent(date)}&device_id=eq.${encodeURIComponent(deviceId)}&select=id,cod,created_at&order=id.asc`,
+  )
+  if (!response.ok)
+    throw new Error(`Daily guesses query failed: ${response.status}`)
+  return (await response.json()) as DailyGuess[]
+}
+
+export async function dailyHints(date: string, deviceId: string) {
+  const response = await serviceRequest(
+    `daily_hints?puzzle_date=eq.${encodeURIComponent(date)}&device_id=eq.${encodeURIComponent(deviceId)}&select=tier&order=tier.asc`,
+  )
+  if (!response.ok)
+    throw new Error(`Daily hints query failed: ${response.status}`)
+  return (await response.json()) as DailyHint[]
+}
+
 export async function consumeAction(
   date: string,
   deviceId: string,
-  action: 'guess' | 'hint' | 'leaderboard' | 'nickname' | 'explainer',
+  action:
+    'guess' | 'hint' | 'leaderboard' | 'nickname' | 'explainer' | 'submit',
   limit: number,
 ): Promise<boolean> {
   const response = await serviceRequest('rpc/consume_daily_action', {
