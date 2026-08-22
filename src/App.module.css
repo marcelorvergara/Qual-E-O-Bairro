@@ -317,6 +317,10 @@
     position: static;
     transform: none;
   }
+
+  .guessStrip {
+    margin-top: 0;
+  }
 }
 
 @media (orientation: landscape) {
