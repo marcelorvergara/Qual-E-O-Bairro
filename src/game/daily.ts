@@ -1,7 +1,7 @@
 import * as api from '../api/daily'
 import { allBairros } from './data'
-import { newGame } from './reducer'
-import type { Bairro, GameState, Oracle } from './types'
+import { newGame, resolveGuess, resolveHint } from './reducer'
+import type { Bairro, Evaluation, GameState, Oracle } from './types'
 
 const DEVICE_KEY = 'qeb:device:v1'
 const DAILY_KEY = 'qeb:daily:v1'
@@ -24,11 +24,11 @@ export function deviceId(storage: Storage = localStorage): string {
   return created
 }
 
-export function dailyOracle(id: string): Oracle {
+export function dailyOracle(id: string, puzzleDate: string): Oracle {
   return {
     mode: 'daily',
-    evaluate: (cod) => api.guess(id, cod),
-    hint: (tier) => api.hint(id, tier),
+    evaluate: (cod) => api.guess(id, puzzleDate, cod),
+    hint: (tier) => api.hint(id, puzzleDate, tier),
   }
 }
 
@@ -36,7 +36,11 @@ export function saveProgress(
   value: DailyProgress,
   storage: Storage = localStorage,
 ) {
-  storage.setItem(DAILY_KEY, JSON.stringify(value))
+  try {
+    storage.setItem(DAILY_KEY, JSON.stringify(value))
+  } catch {
+    // The server remains authoritative when local storage is unavailable.
+  }
 }
 
 export function restoreProgress(
@@ -73,32 +77,26 @@ export function restoreProgress(
   }
 }
 
-export async function restoreVerifiedProgress(
-  puzzleNumber: number,
-  puzzleDate: string,
-  salt: string,
-  answerHash: string,
-  storage: Storage = localStorage,
-) {
-  const restored = restoreProgress(puzzleNumber, puzzleDate, storage)
-  const answer = restored?.state.answer
-  if (answer && !(await verifyAnswer(salt, answer.cod, answerHash))) {
-    storage.removeItem(DAILY_KEY)
-    return null
+export function restoreServerProgress(meta: api.Bootstrap): {
+  state: GameState
+  progress: DailyProgress
+} {
+  let state = newGame('conhecidos')
+  for (const hint of meta.progress.hints) state = resolveHint(state, hint)
+  for (const guess of meta.progress.guesses) {
+    const { cod, ...evaluation } = guess
+    state = resolveGuess(state, cod, evaluation as Evaluation)
   }
-  return restored
-}
-
-export async function verifyAnswer(
-  salt: string,
-  cod: string,
-  expected: string,
-): Promise<boolean> {
-  const bytes = new TextEncoder().encode(salt + cod)
-  const digest = await crypto.subtle.digest('SHA-256', bytes)
-  return (
-    [...new Uint8Array(digest)]
-      .map((byte) => byte.toString(16).padStart(2, '0'))
-      .join('') === expected.toLowerCase()
-  )
+  return {
+    state,
+    progress: {
+      puzzleNumber: meta.puzzleNumber,
+      puzzleDate: meta.puzzleDate,
+      guesses: state.guesses,
+      hints: state.hintTexts,
+      firstGuessAt: null,
+      submitted: meta.progress.submitted,
+      answer: state.answer ?? undefined,
+    },
+  }
 }
