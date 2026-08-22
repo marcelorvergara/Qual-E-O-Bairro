@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const today = '2026-08-22'
+const today = '2026-08-25'
 
 function response(body: unknown, status = 200, headers?: HeadersInit) {
   return new Response(JSON.stringify(body), {
@@ -11,7 +11,7 @@ function response(body: unknown, status = 200, headers?: HeadersInit) {
 
 beforeEach(() => {
   vi.useFakeTimers()
-  vi.setSystemTime(new Date('2026-08-22T15:00:00.000Z'))
+  vi.setSystemTime(new Date('2026-08-25T15:00:00.000Z'))
   vi.stubGlobal('Deno', {
     env: {
       get: (name: string) =>
@@ -28,7 +28,7 @@ afterEach(() => {
 
 function answerResponse(input: string) {
   if (input.includes('daily_answers'))
-    return response([{ puzzle_date: today, puzzle_number: 8, cod: '001' }])
+    return response([{ puzzle_date: today, puzzle_number: 1, cod: '001' }])
   if (input.includes('rpc/daily_leaderboard')) return response([])
   if (input.includes('daily_results?'))
     return response([], 200, { 'content-range': '0-0/1' })
@@ -44,7 +44,7 @@ describe('submit request handler', () => {
       new Request('https://function.test', {
         method: 'POST',
         body: JSON.stringify({
-          puzzleDate: '2026-08-23',
+          puzzleDate: '2026-08-26',
           deviceId: 'device-1',
         }),
       }),

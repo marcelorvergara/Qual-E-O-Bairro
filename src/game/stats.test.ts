@@ -71,7 +71,7 @@ describe('daily stats', () => {
     'resets corrupt storage: %s',
     (value) => {
       const storage = new MemoryStorage()
-      storage.setItem('qeb:stats:v1', value)
+      storage.setItem('qeb:stats:v2', value)
       expect(loadStats(storage)).toEqual(emptyStats())
       expect(storage.length).toBe(0)
     },

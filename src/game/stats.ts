@@ -1,4 +1,4 @@
-const STATS_KEY = 'qeb:stats:v1'
+const STATS_KEY = 'qeb:stats:v2'
 
 export interface Stats {
   played: number

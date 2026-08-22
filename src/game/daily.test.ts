@@ -71,6 +71,15 @@ describe('daily persistence', () => {
     expect(restoreProgress(3, '2026-08-17', storage)).toBeNull()
   })
 
+  it('does not restore development progress stored under v1', () => {
+    const storage = new MemoryStorage()
+    storage.setItem(
+      'qeb:daily:v1',
+      JSON.stringify({ puzzleDate: '2026-08-25' }),
+    )
+    expect(restoreProgress(1, '2026-08-25', storage)).toBeNull()
+  })
+
   it('treats unavailable local storage as a non-fatal display-cache failure', () => {
     const unavailable = {
       setItem: () => {

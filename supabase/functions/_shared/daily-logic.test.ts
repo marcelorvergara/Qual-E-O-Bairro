@@ -3,8 +3,8 @@ import { dateInSaoPaulo, hintText, puzzleNumberForDate } from './daily-logic'
 
 describe('daily dates', () => {
   it('numbers the epoch as puzzle one', () => {
-    expect(puzzleNumberForDate('2026-08-15')).toBe(1)
-    expect(puzzleNumberForDate('2026-08-16')).toBe(2)
+    expect(puzzleNumberForDate('2026-08-25')).toBe(1)
+    expect(puzzleNumberForDate('2026-08-26')).toBe(2)
   })
 
   it('rolls over at midnight in America/Sao_Paulo, not UTC', () => {
