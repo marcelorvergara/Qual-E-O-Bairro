@@ -18,11 +18,14 @@ describe('explainer API', () => {
     )
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(explainer('device-1')).resolves.toEqual({ available: false })
+    await expect(explainer('device-1', '2026-08-22')).resolves.toEqual({
+      available: false,
+    })
     expect(fetchMock).toHaveBeenCalledOnce()
     expect(JSON.parse(fetchMock.mock.calls[0][1].body as string)).toEqual({
       action: 'explainer',
       deviceId: 'device-1',
+      puzzleDate: '2026-08-22',
     })
   })
 })
